@@ -1,10 +1,12 @@
 package com.sen4ik.vfb.entities;
 
+import com.sen4ik.vfb.base.Constants;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "contacts", schema = "verse_from_bible")
+@Table(name = "contacts", schema = Constants.SCHEMA)
 public class ContactsEntity {
     private int id;
     private String name;

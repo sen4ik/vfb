@@ -1,10 +1,12 @@
 package com.sen4ik.vfb.entities;
 
+import com.sen4ik.vfb.base.Constants;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "sent_messages_log", schema = "verse_from_bible")
+@Table(name = "sent_messages_log", schema = Constants.SCHEMA)
 public class SentMessagesLogEntity {
     private int id;
     private Integer userId;

@@ -1,10 +1,12 @@
 package com.sen4ik.vfb.entities;
 
+import com.sen4ik.vfb.base.Constants;
+
 import javax.persistence.*;
 import java.sql.Date;
 
 @Entity
-@Table(name = "verses", schema = "verse_from_bible")
+@Table(name = "verses", schema = Constants.SCHEMA)
 public class VersesEntity {
     private int id;
     private String ruSynodal;

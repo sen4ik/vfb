@@ -1,9 +1,11 @@
 package com.sen4ik.vfb.entities;
 
+import com.sen4ik.vfb.base.Constants;
+
 import javax.persistence.*;
 
 @Entity
-@Table(name = "users", schema = "verse_from_bible")
+@Table(name = "users", schema = Constants.SCHEMA)
 public class UsersEntity {
     private int id;
     private String username;

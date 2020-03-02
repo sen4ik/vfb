@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<footer class="page-footer font-small fixed-bottom bg-dark" th:fragment="footer">
+    <div class="footer-copyright text-center py-1 text-white">
+        <p>&copy; <span th:text="${#dates.format(#dates.createNow(),'YYYY')}"></span> - versefrombible.com</p>
+    </div>
+</footer>
+</body>
+</html>
