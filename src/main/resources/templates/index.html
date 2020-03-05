@@ -55,41 +55,53 @@
                 <div class="col-lg-8 mx-auto">
                     <h2>Sign Up</h2>
                     <p class="lead">
-                    <form action="#" th:action="@{/signup}" id="signupform" class="needs-validation" method="post">
+                    <form autocomplete="off" action="#" th:action="@{/signup}" th:object="${contact}" id="signupform" name="signupform" class="needs-validation" method="post">
                         <div class="form-group">
                             <label for="contact_name">Name</label>
-                            <input type="text" class="form-control" id="contact_name" maxlength="40" placeholder="Name" required>
+                            <input th:field="*{name}" type="text" class="form-control" id="contact_name" maxlength="40" placeholder="Name" required>
                             <div class="invalid-feedback">
                                 Please provide a name.
                             </div>
+                            <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
                         </div>
                         <div class="form-group">
                             <label for="phone_number">Phone Number</label>
-                            <input type="tel" pattern="(?:\(\d{3}\)|\d{3})[- ]?\d{3}[- ]?\d{4}" class="form-control" id="phone_number" maxlength="20" placeholder="XXX-XXX-XXXX" required>
+                            <input th:field="*{phoneNumber}" type="tel" pattern="(?:\(\d{3}\)|\d{3})[- ]?\d{3}[- ]?\d{4}" class="form-control" id="phone_number" maxlength="20" placeholder="XXX-XXX-XXXX" required>
                             <div class="invalid-feedback">
                                 Please provide a phone number.
                             </div>
+                            <span th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"></span>
                         </div>
                         <div class="form-group">
                             <label for="bible_translation">Choose Bible Translation</label>
-                            <select class="form-control" id="bible_translation">
-                                <option value="en_esv" selected="true">English - ESV</option>
+                            <select autocomplete="off" th:field="*{bibleTranslation}" class="form-control" id="bible_translation" name="bible_translation">
+                                <option value="en_esv" selected="selected">English - ESV</option>
                                 <option value="en_niv">English - NIV</option>
                                 <option value="en_kjv">English - KJV</option>
                                 <option value="ru_synodal">Russian - Synodal</option>
                             </select>
+                            <span th:if="${#fields.hasErrors('bibleTranslation')}" th:errors="*{bibleTranslation}"></span>
                         </div>
                         <div class="form-group">
                             <label for="send_time">Select time you want to receive verse at</label>
-                            <select class="form-control" id="send_time">
-                                <option value="5.0">5:00 AM</option>
-                                <option value="6.0">6:00 AM</option>
-                                <option value="7.0">7:00 AM</option>
-                                <option value="8.0" selected="true">8:00 AM</option>
-                                <option value="9.0">9:00 AM</option>
-                                <option value="10.0">10:00 AM</option>
-                                <option value="11.0">11:00 AM</option>
+                            <select autocomplete="off" th:field="*{selectedSendTime}" class="form-control" id="send_time">
+                                <option th:value="5.0" th:text="'5:00 AM'">5:00 AM</option>
+                                <option th:value="6.0" th:text="'6:00 AM'">6:00 AM</option>
+                                <option th:value="7.0" th:text="'7:00 AM'">7:00 AM</option>
+                                <option th:value="8.0" th:text="'8:00 AM'" selected>8:00 AM</option>
+                                <option th:value="9.0" th:text="'9:00 AM'">9:00 AM</option>
+                                <option th:value="10.0" th:text="'10:00 AM'">10:00 AM</option>
+                                <option th:value="11.0" th:text="'11:00 AM'">11:00 AM</option>
+<!--                                <option value="5.0">5:00 AM</option>-->
+<!--                                <option value="6.0">6:00 AM</option>-->
+<!--                                <option value="7.0">7:00 AM</option>-->
+<!--                                <option value="8.0" selected="selected">8:00 AM</option>-->
+<!--                                <option value="8.0" selected>8:00 AM</option>-->
+<!--                                <option value="9.0">9:00 AM</option>-->
+<!--                                <option value="10.0">10:00 AM</option>-->
+<!--                                <option value="11.0">11:00 AM</option>-->
                             </select>
+                            <span th:if="${#fields.hasErrors('selectedSendTime')}" th:errors="*{selectedSendTime}"></span>
                         </div>
                         <div class="form-group">
                             <button type="submit" id="signup_submit" form="signupform" class="btn btn-primary">Sign Up</button>
@@ -110,7 +122,7 @@
                         If you no longer wish to receive the verses from the Bible, please reply word 'STOP' to the number you are receiving verses from or use below form.
                     </p>
                     <p class="lead">
-                    <form id="unsubscribeform" class="needs-validation" method="post" action="">
+                    <form id="unsubscribeform" name="unsubscribeform" class="needs-validation" method="post" action="">
                         <div class="form-group">
                             <label for="unsubscribe_phone_number">Phone Number</label>
                             <input type="tel" pattern="(?:\(\d{3}\)|\d{3})[- ]?\d{3}[- ]?\d{4}" class="form-control" id="unsubscribe_phone_number" maxlength="20" placeholder="XXX-XXX-XXXX" required>
