@@ -13,6 +13,8 @@ public class VersesEntity {
     private String enEsv;
     private String enKjv;
     private String enNiv;
+    private String ruVerseLocation;
+    private String enVerseLocation;
     private Date date;
 
     @Id
@@ -63,6 +65,26 @@ public class VersesEntity {
 
     public void setEnNiv(String enNiv) {
         this.enNiv = enNiv;
+    }
+
+    @Basic
+    @Column(name = "ru_verse_location")
+    public String getRuVerseLocation() {
+        return ruVerseLocation;
+    }
+
+    public void setRuVerseLocation(String ruVerseLocation) {
+        this.ruVerseLocation = ruVerseLocation;
+    }
+
+    @Basic
+    @Column(name = "en_verse_location")
+    public String getEnVerseLocation() {
+        return enVerseLocation;
+    }
+
+    public void setEnVerseLocation(String enVerseLocation) {
+        this.enVerseLocation = enVerseLocation;
     }
 
     @Basic

@@ -3,32 +3,149 @@
 
 <div th:replace="fragments/head :: head"></div>
 
-<body>
+<body id="page-top">
 
-<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-    <a class="navbar-brand" href="#">Test.com</a>
-</nav>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
+        <div class="container">
+            <a class="navbar-brand js-scroll-trigger" href="#page-top">Verse From Bible</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link js-scroll-trigger" href="#about">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link js-scroll-trigger" href="#sign_up">Sign Up</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link js-scroll-trigger" href="#unsubscribe">Unsubscribe</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
-<main role="main" class="container">
+    <header class="bg-primary text-white">
+        <div class="container text-center">
+            <h1 th:text="${verse_body}"><!--Jesus answered him, “Truly, truly, I say to you, unless one is born again he cannot see the kingdom of God.”--></h1>
+            <h2 th:text="${verse_location}" class="col-12 float-right text-right"><!--John 3:3--></h2>
+        </div>
+    </header>
 
-    <div class="starter-template">
-        <h1>Spring Boot Web Thymeleaf Example</h1>
-        <h2>
-            <span th:text="'Hello, ' + ${message}"></span>
-        </h2>
-    </div>
+    <section id="about">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <h2>About</h2>
+                    <p class="lead">
+                        Long time ago, when I was a youth pastor, I used to send one Bible verse each morning to all the youth members. Youth liked it. It often was a great starter for more messaging between me and youth members. Today I decided to automate the process and that is what this website is about.
+                        </br></br>
+                        If you live in USA or Canada and wish to receive daily inspirational verses from the Bible to you phone, please use Sign Up form below to subscribe.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    <ol>
-        <li th:each="task : ${tasks}" th:text="${task}"></li>
-    </ol>
+    <section id="sign_up" class="bg-light">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <h2>Sign Up</h2>
+                    <p class="lead">
+                    <form action="#" th:action="@{/signup}" id="signupform" class="needs-validation" method="post">
+                        <div class="form-group">
+                            <label for="contact_name">Name</label>
+                            <input type="text" class="form-control" id="contact_name" maxlength="40" placeholder="Name" required>
+                            <div class="invalid-feedback">
+                                Please provide a name.
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone_number">Phone Number</label>
+                            <input type="tel" pattern="(?:\(\d{3}\)|\d{3})[- ]?\d{3}[- ]?\d{4}" class="form-control" id="phone_number" maxlength="20" placeholder="XXX-XXX-XXXX" required>
+                            <div class="invalid-feedback">
+                                Please provide a phone number.
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="bible_translation">Choose Bible Translation</label>
+                            <select class="form-control" id="bible_translation">
+                                <option value="en_esv" selected="true">English - ESV</option>
+                                <option value="en_niv">English - NIV</option>
+                                <option value="en_kjv">English - KJV</option>
+                                <option value="ru_synodal">Russian - Synodal</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="send_time">Select time you want to receive verse at</label>
+                            <select class="form-control" id="send_time">
+                                <option value="5.0">5:00 AM</option>
+                                <option value="6.0">6:00 AM</option>
+                                <option value="7.0">7:00 AM</option>
+                                <option value="8.0" selected="true">8:00 AM</option>
+                                <option value="9.0">9:00 AM</option>
+                                <option value="10.0">10:00 AM</option>
+                                <option value="11.0">11:00 AM</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" id="signup_submit" form="signupform" class="btn btn-primary">Sign Up</button>
+                        </div>
+                    </form>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-</main>
-<!-- /.container -->
+    <section id="unsubscribe">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <h2>Unsubscribe</h2>
+                    <p class="lead">
+                        If you no longer wish to receive the verses from the Bible, please reply word 'STOP' to the number you are receiving verses from or use below form.
+                    </p>
+                    <p class="lead">
+                    <form id="unsubscribeform" class="needs-validation" method="post" action="">
+                        <div class="form-group">
+                            <label for="unsubscribe_phone_number">Phone Number</label>
+                            <input type="tel" pattern="(?:\(\d{3}\)|\d{3})[- ]?\d{3}[- ]?\d{4}" class="form-control" id="unsubscribe_phone_number" maxlength="20" placeholder="XXX-XXX-XXXX" required>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" id="unsubscribe_submit" form="unsubscribeform" class="btn btn-primary">Unsubscribe</button>
+                        </div>
+                    </form>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-<script type="text/javascript" th:src="@{webjars/bootstrap/4.4.1-1/js/bootstrap.min.js}"></script>
+
+    <!--    <span th:text="'Hello, ' + ${message}"></span>-->
+    <!--    <ol>-->
+    <!--        <li th:each="task : ${tasks}" th:text="${task}"></li>-->
+    <!--    </ol>-->
+
+
+    <!--<script type="text/javascript" th:src="@{webjars/bootstrap/4.4.1-1/js/bootstrap.min.js}"></script>-->
+
+    <!-- Bootstrap core JavaScript -->
+    <script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+    <script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+    <!-- Plugin JavaScript -->
+    <script th:src="@{/vendor/jquery-easing/jquery.easing.min.js}"></script>
+
+    <!-- Custom JavaScript for this theme -->
+    <script th:src="@{/js/scrolling-nav.js}"></script>
+
+    <div class="container" th:replace="fragments/footer :: footer"></div>
 
 </body>
-<div class="container" th:replace="fragments/footer :: footer">
-    <p>footer</p>
-</div>
+
 </html>

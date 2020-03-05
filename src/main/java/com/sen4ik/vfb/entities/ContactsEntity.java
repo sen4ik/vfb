@@ -1,24 +1,59 @@
 package com.sen4ik.vfb.entities;
 
 import com.sen4ik.vfb.base.Constants;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import java.sql.Timestamp;
 
 @Entity
 @Table(name = "contacts", schema = Constants.SCHEMA)
 public class ContactsEntity {
-    private int id;
-    private String name;
-    private String phoneNumber;
-    private String bibleTranslation;
-    private Timestamp addedOn;
-    private Byte deleted;
-    private Byte subscribed;
-    private Double selectedSendTime;
 
     @Id
     @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    @Basic
+    @Column(name = "name")
+    @NotEmpty(message = "Please provide a name")
+    private String name;
+
+    @Basic
+    @Column(name = "phone_number")
+    @NotEmpty(message = "Please provide a phone number")
+    private String phoneNumber;
+
+    @Basic
+    @Column(name = "bible_translation")
+    @NotEmpty(message = "Please provide a bible translation")
+    private String bibleTranslation;
+
+    @Basic
+    @Column(name = "added_on", updatable = false)
+    @CreationTimestamp
+    @ColumnDefault("CURRENT_TIMESTAMP")
+    private Timestamp addedOn;
+
+    @Basic
+    @Column(name = "deleted")
+    private Byte deleted = 0;
+
+    @Basic
+    @Column(name = "subscription_confirmed")
+    private Byte subscriptionConfirmed = 0;
+
+    @Basic
+    @Column(name = "subscribed")
+    private Byte subscribed = 1;
+
+    @Basic
+    @Column(name = "selected_send_time")
+    private Double selectedSendTime;
+
     public int getId() {
         return id;
     }
@@ -27,8 +62,6 @@ public class ContactsEntity {
         this.id = id;
     }
 
-    @Basic
-    @Column(name = "name")
     public String getName() {
         return name;
     }
@@ -37,8 +70,6 @@ public class ContactsEntity {
         this.name = name;
     }
 
-    @Basic
-    @Column(name = "phone_number")
     public String getPhoneNumber() {
         return phoneNumber;
     }
@@ -47,8 +78,6 @@ public class ContactsEntity {
         this.phoneNumber = phoneNumber;
     }
 
-    @Basic
-    @Column(name = "bible_translation")
     public String getBibleTranslation() {
         return bibleTranslation;
     }
@@ -57,8 +86,6 @@ public class ContactsEntity {
         this.bibleTranslation = bibleTranslation;
     }
 
-    @Basic
-    @Column(name = "added_on")
     public Timestamp getAddedOn() {
         return addedOn;
     }
@@ -67,8 +94,6 @@ public class ContactsEntity {
         this.addedOn = addedOn;
     }
 
-    @Basic
-    @Column(name = "deleted")
     public Byte getDeleted() {
         return deleted;
     }
@@ -77,8 +102,6 @@ public class ContactsEntity {
         this.deleted = deleted;
     }
 
-    @Basic
-    @Column(name = "subscribed")
     public Byte getSubscribed() {
         return subscribed;
     }
@@ -87,14 +110,20 @@ public class ContactsEntity {
         this.subscribed = subscribed;
     }
 
-    @Basic
-    @Column(name = "selected_send_time")
     public Double getSelectedSendTime() {
         return selectedSendTime;
     }
 
     public void setSelectedSendTime(Double selectedSendTime) {
         this.selectedSendTime = selectedSendTime;
+    }
+
+    public Byte getSubscriptionConfirmed() {
+        return subscriptionConfirmed;
+    }
+
+    public void setSubscriptionConfirmed(Byte subscriptionConfirmed) {
+        this.subscriptionConfirmed = subscriptionConfirmed;
     }
 
     @Override
