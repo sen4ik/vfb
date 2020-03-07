@@ -11,7 +11,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 import java.util.Date;
@@ -60,12 +59,31 @@ public class HomeController {
             return "error";
         }
 
+        String phoneNumber = contact.getPhoneNumber();
+        String sanitizedPhone = sanitizePhoneNumber(phoneNumber);
+        contact.setPhoneNumber(sanitizedPhone);
         contactsRepository.save(contact);
 
         // model.addAttribute("contact", contact);
-        model.addAttribute("addContactSuccessMessage", "You have been subscribed! We will text you to " + contact.getPhoneNumber() + " for confirmation.");
+        model.addAttribute("addContactSuccessMessage", "You have been subscribed! We will text you to " + phoneNumber + " for confirmation.");
 
         // return "redirect:/home";
+        return "home";
+    }
+
+    private String sanitizePhoneNumber(String pn){
+        return pn.replaceAll("\\(", "").replaceAll("\\)", "").replaceAll("-", "").trim();
+    }
+
+    @PostMapping("/unsubscribe")
+    public String unsubscribe(Model model) {
+
+        return "home";
+    }
+
+    @PostMapping("/contact_me")
+    public String contactMe(Model model) {
+
         return "home";
     }
 
