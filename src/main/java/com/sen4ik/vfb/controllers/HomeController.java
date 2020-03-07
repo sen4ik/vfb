@@ -9,8 +9,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 import java.util.Date;
@@ -28,8 +29,14 @@ public class HomeController {
     private ContactsRepository contactsRepository;
 
     @GetMapping("/")
-    public String main(ContactsEntity contact, Model model) {
+    public String main() {
+        return "redirect:/home";
+    }
 
+    @GetMapping("/home")
+    public String home() {
+
+        /*
         Optional<VersesEntity> verse = versesRepository.findByDate(new Date());
         if (!verse.isPresent()){
             // return "error";
@@ -40,25 +47,45 @@ public class HomeController {
             model.addAttribute("verse_body", verse.get().getEnEsv());
             model.addAttribute("verse_location", verse.get().getEnVerseLocation());
         }
+        */
 
-        model.addAttribute("contact", contact);
+        // model.addAttribute("contact", contact);
 
-        return "index"; // view
+        return "home"; // view
     }
 
-    @PostMapping("/signup")
-    public String addUser(@Valid ContactsEntity contact, BindingResult result, Model model) {
+    @PostMapping("/home")
+    public String addContact(@Valid ContactsEntity contact, Model model, BindingResult result/*, ModelAndView modelAndView*/) {
         if (result.hasErrors()) {
             return "error";
         }
 
         contactsRepository.save(contact);
 
-        model.addAttribute("contact", contact);
+        // model.addAttribute("contact", contact);
+        model.addAttribute("addContactSuccessMessage", "You have been subscribed! We will text you to " + contact.getPhoneNumber() + " for confirmation.");
 
-        // model.addAttribute("contacts", contactsRepository.findAll());
+        // return "redirect:/home";
+        return "home";
+    }
 
-        return "index";
+    @ModelAttribute("contact")
+    private ContactsEntity getContact(){
+        return new ContactsEntity();
+    }
+
+    @ModelAttribute("verse")
+    private VersesEntity getVerse(){
+        Optional<VersesEntity> verse = versesRepository.findByDate(new Date());
+        if (!verse.isPresent()){
+            VersesEntity ve = new VersesEntity();
+            ve.setEnEsv("For God so loved the world, that he gave his only Son, that whoever believes in him should not perish but have eternal life.");
+            ve.setEnVerseLocation("John 3:16");
+            return ve;
+        }
+        else{
+            return verse.get();
+        }
     }
 
     /*
@@ -70,7 +97,7 @@ public class HomeController {
 
         model.addAttribute("message", name);
 
-        return "index"; // view
+        return "home"; // view
     }
     */
 

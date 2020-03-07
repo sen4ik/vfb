@@ -1,6 +1,8 @@
 <!DOCTYPE HTML>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
+<!-- https://startbootstrap.com/template-overviews/scrolling-nav/ -->
+
 <div th:replace="fragments/head :: head"></div>
 
 <body id="page-top">
@@ -22,6 +24,9 @@
                     <li class="nav-item">
                         <a class="nav-link js-scroll-trigger" href="#unsubscribe">Unsubscribe</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link js-scroll-trigger" href="#contact_me">Contact Me</a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -29,8 +34,8 @@
 
     <header class="bg-primary text-white">
         <div class="container text-center">
-            <h1 th:text="${verse_body}"><!--Jesus answered him, “Truly, truly, I say to you, unless one is born again he cannot see the kingdom of God.”--></h1>
-            <h2 th:text="${verse_location}" class="col-12 float-right text-right"><!--John 3:3--></h2>
+            <h1 th:text="${verse.getEnEsv()}"><!--Jesus answered him, “Truly, truly, I say to you, unless one is born again he cannot see the kingdom of God.”--></h1>
+            <h2 th:text="${verse.getEnVerseLocation()}" class="col-12 float-right text-right"><!--John 3:3--></h2>
         </div>
     </header>
 
@@ -55,7 +60,13 @@
                 <div class="col-lg-8 mx-auto">
                     <h2>Sign Up</h2>
                     <p class="lead">
-                    <form autocomplete="off" action="#" th:action="@{/signup}" th:object="${contact}" id="signupform" name="signupform" class="needs-validation" method="post">
+                    <div th:if="${addContactSuccessMessage}" class="alert alert-success alert-dismissible alert-primary fade show" role="alert">
+                        <span th:text=${addContactSuccessMessage}></span>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form autocomplete="off" action="#" th:action="@{/home}" th:object="${contact}" id="signupform" name="signupform" class="needs-validation" method="post">
                         <div class="form-group">
                             <label for="contact_name">Name</label>
                             <input th:field="*{name}" type="text" class="form-control" id="contact_name" maxlength="40" placeholder="Name" required>
@@ -83,7 +94,7 @@
                             <span th:if="${#fields.hasErrors('bibleTranslation')}" th:errors="*{bibleTranslation}"></span>
                         </div>
                         <div class="form-group">
-                            <label for="send_time">Select time you want to receive verse at</label>
+                            <label for="send_time">Select time you want to receive verses at</label>
                             <select autocomplete="off" th:field="*{selectedSendTime}" class="form-control" id="send_time">
                                 <option th:value="5.0" th:text="'5:00 AM'">5:00 AM</option>
                                 <option th:value="6.0" th:text="'6:00 AM'">6:00 AM</option>
@@ -92,14 +103,6 @@
                                 <option th:value="9.0" th:text="'9:00 AM'">9:00 AM</option>
                                 <option th:value="10.0" th:text="'10:00 AM'">10:00 AM</option>
                                 <option th:value="11.0" th:text="'11:00 AM'">11:00 AM</option>
-<!--                                <option value="5.0">5:00 AM</option>-->
-<!--                                <option value="6.0">6:00 AM</option>-->
-<!--                                <option value="7.0">7:00 AM</option>-->
-<!--                                <option value="8.0" selected="selected">8:00 AM</option>-->
-<!--                                <option value="8.0" selected>8:00 AM</option>-->
-<!--                                <option value="9.0">9:00 AM</option>-->
-<!--                                <option value="10.0">10:00 AM</option>-->
-<!--                                <option value="11.0">11:00 AM</option>-->
                             </select>
                             <span th:if="${#fields.hasErrors('selectedSendTime')}" th:errors="*{selectedSendTime}"></span>
                         </div>
@@ -137,26 +140,59 @@
         </div>
     </section>
 
+    <section id="contact_me" class="bg-light">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <h2>Contact Me</h2>
+                    <p class="lead">
+                        If you have any questions, feel free to message me using form below.
+                    </p>
+                    <p class="lead">
+                    <form autocomplete="off" action="#" th:action="@{/contact_me}" id="contact_me_form" name="contact_me_form" class="needs-validation" method="post">
+                        <div class="form-group">
+                            <label for="cm_contact_name">Name</label>
+                            <input type="text" class="form-control" id="cm_contact_name" maxlength="40" placeholder="Name" required>
+                            <div class="invalid-feedback">
+                                Please provide a name.
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="cm_email">Email</label>
+                            <input type="email" class="form-control" id="cm_email" maxlength="40" placeholder="Email" required>
+                            <div class="invalid-feedback">
+                                Please provide an email.
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="cm_phone_number">Phone Number</label>
+                            <input type="tel" pattern="(?:\(\d{3}\)|\d{3})[- ]?\d{3}[- ]?\d{4}" class="form-control" id="cm_phone_number" maxlength="20" placeholder="XXX-XXX-XXXX">
+                        </div>
+                        <div class="form-group">
+                            <label for="cm_message">Message</label>
+                            <textarea class="form-control" id="cm_message" rows="6" placeholder="Message" required></textarea>
+                            <div class="invalid-feedback">
+                                Please type in your message.
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" id="cm_submit" form="contact_me_form" class="btn btn-primary">Send Message</button>
+                        </div>
+                    </form>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!--    <span th:text="'Hello, ' + ${message}"></span>-->
     <!--    <ol>-->
     <!--        <li th:each="task : ${tasks}" th:text="${task}"></li>-->
     <!--    </ol>-->
 
+    <div th:replace="fragments/footer :: footer"></div>
 
-    <!--<script type="text/javascript" th:src="@{webjars/bootstrap/4.4.1-1/js/bootstrap.min.js}"></script>-->
-
-    <!-- Bootstrap core JavaScript -->
-    <script th:src="@{/vendor/jquery/jquery.min.js}"></script>
-    <script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
-
-    <!-- Plugin JavaScript -->
-    <script th:src="@{/vendor/jquery-easing/jquery.easing.min.js}"></script>
-
-    <!-- Custom JavaScript for this theme -->
-    <script th:src="@{/js/scrolling-nav.js}"></script>
-
-    <div class="container" th:replace="fragments/footer :: footer"></div>
+    <div th:replace="fragments/bottom_page_scripts :: bottom_page_scripts"></div>
 
 </body>
 
