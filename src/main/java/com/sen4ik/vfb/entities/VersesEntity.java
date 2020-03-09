@@ -97,31 +97,4 @@ public class VersesEntity {
         this.date = date;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        VersesEntity that = (VersesEntity) o;
-
-        if (id != that.id) return false;
-        if (ruSynodal != null ? !ruSynodal.equals(that.ruSynodal) : that.ruSynodal != null) return false;
-        if (enEsv != null ? !enEsv.equals(that.enEsv) : that.enEsv != null) return false;
-        if (enKjv != null ? !enKjv.equals(that.enKjv) : that.enKjv != null) return false;
-        if (enNiv != null ? !enNiv.equals(that.enNiv) : that.enNiv != null) return false;
-        if (date != null ? !date.equals(that.date) : that.date != null) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = id;
-        result = 31 * result + (ruSynodal != null ? ruSynodal.hashCode() : 0);
-        result = 31 * result + (enEsv != null ? enEsv.hashCode() : 0);
-        result = 31 * result + (enKjv != null ? enKjv.hashCode() : 0);
-        result = 31 * result + (enNiv != null ? enNiv.hashCode() : 0);
-        result = 31 * result + (date != null ? date.hashCode() : 0);
-        return result;
-    }
 }

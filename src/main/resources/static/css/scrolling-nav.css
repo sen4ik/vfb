@@ -10,3 +10,10 @@ header {
 section {
   padding: 150px 0;
 }
+
+.form-group.required .control-label:after {
+  content:" *";
+  color:red;
+  /*position: absolute;*/
+  /*margin-left: 10px;*/
+}

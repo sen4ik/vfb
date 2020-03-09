@@ -86,35 +86,4 @@ public class SentMessagesLogEntity {
         this.timestamp = timestamp;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        SentMessagesLogEntity that = (SentMessagesLogEntity) o;
-
-        if (id != that.id) return false;
-        if (userId != null ? !userId.equals(that.userId) : that.userId != null) return false;
-        if (verseId != null ? !verseId.equals(that.verseId) : that.verseId != null) return false;
-        if (messageBody != null ? !messageBody.equals(that.messageBody) : that.messageBody != null) return false;
-        if (phoneNumberSentTo != null ? !phoneNumberSentTo.equals(that.phoneNumberSentTo) : that.phoneNumberSentTo != null)
-            return false;
-        if (phoneNumberSentFrom != null ? !phoneNumberSentFrom.equals(that.phoneNumberSentFrom) : that.phoneNumberSentFrom != null)
-            return false;
-        if (timestamp != null ? !timestamp.equals(that.timestamp) : that.timestamp != null) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = id;
-        result = 31 * result + (userId != null ? userId.hashCode() : 0);
-        result = 31 * result + (verseId != null ? verseId.hashCode() : 0);
-        result = 31 * result + (messageBody != null ? messageBody.hashCode() : 0);
-        result = 31 * result + (phoneNumberSentTo != null ? phoneNumberSentTo.hashCode() : 0);
-        result = 31 * result + (phoneNumberSentFrom != null ? phoneNumberSentFrom.hashCode() : 0);
-        result = 31 * result + (timestamp != null ? timestamp.hashCode() : 0);
-        return result;
-    }
 }

@@ -19,25 +19,39 @@
     <!-- Custom JavaScript for this theme -->
     <script th:src="@{/js/scrolling-nav.js}"></script>
 
-    <script th:if="${addContactSuccessMessage}" th:inline="javascript">
-        // https://css-tricks.com/snippets/jquery/smooth-scrolling/
+
+    <script th:inline="javascript">
         /*<![CDATA[*/
-        (function($) {
-            let signUpField = $("#sign_up");
-            let offset = signUpField.offset().top;
-            console.log(offset)
 
-            window.scroll({
-                top: offset,
-                left: 0,
-                behavior: 'smooth'
+        let sectionId = /*[[${sectionId}]]*/ 'default';
+        // if(sectionId) scrollToSection("#" + sectionId);
+
+        function scrollToSection(sectionId){
+            // https://css-tricks.com/snippets/jquery/smooth-scrolling/
+            (function($) {
+                let signUpField = $(sectionId);
+                let offset = signUpField.offset().top;
+                // console.log(offset)
+
+                window.scroll({
+                    top: offset,
+                    left: 0,
+                    behavior: 'smooth'
+                });
+
+                // document.querySelector('#sign_up').scrollIntoView({
+                //     behavior: 'smooth'
+                // });
+
+            })(jQuery);
+        }
+
+        function clearHistoryToPreventFormResubmission(){
+            $(document).ready(function(){
+                window.history.replaceState('', '', window.location.href)
             });
+        }
 
-            // document.querySelector('#sign_up').scrollIntoView({
-            //     behavior: 'smooth'
-            // });
-
-        })(jQuery);
         /*]]>*/
     </script>
 

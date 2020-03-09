@@ -61,22 +61,28 @@
                     <h2>Sign Up</h2>
                     <p class="lead">
                     <div th:if="${addContactSuccessMessage}" class="alert alert-success alert-dismissible alert-primary fade show" role="alert">
-                        <span th:text=${addContactSuccessMessage}></span>
+                        <span th:utext=${addContactSuccessMessage}></span>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div th:if="${addContactErrorMessage}" class="alert alert-danger alert-dismissible alert-primary fade show" role="alert">
+                        <span th:utext=${addContactErrorMessage}></span>
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <form autocomplete="off" action="#" th:action="@{/home}" th:object="${contact}" id="signupform" name="signupform" class="needs-validation" method="post">
-                        <div class="form-group">
-                            <label for="contact_name">Name</label>
+                        <div class="form-group required">
+                            <label for="contact_name" class="control-label">Name</label>
                             <input th:field="*{name}" type="text" class="form-control" id="contact_name" maxlength="40" placeholder="Name" required>
                             <div class="invalid-feedback">
                                 Please provide a name.
                             </div>
                             <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
                         </div>
-                        <div class="form-group">
-                            <label for="phone_number">Phone Number</label>
+                        <div class="form-group required">
+                            <label for="phone_number" class="control-label">Phone Number</label>
                             <input th:field="*{phoneNumber}" type="tel" pattern="(?:\(\d{3}\)|\d{3})[- ]?\d{3}[- ]?\d{4}" class="form-control" id="phone_number" maxlength="20" placeholder="XXX-XXX-XXXX" required>
                             <div class="invalid-feedback">
                                 Please provide a phone number.
@@ -125,10 +131,22 @@
                         If you no longer wish to receive the verses from the Bible, please reply word 'STOP' to the number you are receiving verses from or use below form.
                     </p>
                     <p class="lead">
-                    <form id="unsubscribeform" name="unsubscribeform" class="needs-validation" method="post" action="">
-                        <div class="form-group">
-                            <label for="unsubscribe_phone_number">Phone Number</label>
-                            <input type="tel" pattern="(?:\(\d{3}\)|\d{3})[- ]?\d{3}[- ]?\d{4}" class="form-control" id="unsubscribe_phone_number" maxlength="20" placeholder="XXX-XXX-XXXX" required>
+                    <div th:if="${unsubscribeSuccessMessage}" class="alert alert-success alert-dismissible alert-primary fade show" role="alert">
+                        <span th:text=${unsubscribeSuccessMessage}></span>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div th:if="${unsubscribeErrorMessage}" class="alert alert-danger alert-dismissible alert-primary fade show" role="alert">
+                        <span th:utext=${unsubscribeErrorMessage}></span>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form action="#" th:action="@{/unsubscribe}" id="unsubscribeform" name="unsubscribeform" class="needs-validation" method="post">
+                        <div class="form-group required">
+                            <label for="unsubscribe_phone_number" class="control-label">Phone Number</label>
+                            <input type="tel" pattern="(?:\(\d{3}\)|\d{3})[- ]?\d{3}[- ]?\d{4}" class="form-control" id="unsubscribe_phone_number" name="unsubscribe_phone_number" maxlength="20" placeholder="XXX-XXX-XXXX" required>
                         </div>
                         <div class="form-group">
                             <button type="submit" id="unsubscribe_submit" form="unsubscribeform" class="btn btn-primary">Unsubscribe</button>
@@ -149,28 +167,40 @@
                         If you have any questions, feel free to message me using form below.
                     </p>
                     <p class="lead">
+                    <div th:if="${contactMeSuccessMessage}" class="alert alert-success alert-dismissible alert-primary fade show" role="alert">
+                        <span th:utext=${contactMeSuccessMessage}></span>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div th:if="${contactMeErrorMessage}" class="alert alert-danger alert-dismissible alert-primary fade show" role="alert">
+                        <span th:utext=${contactMeErrorMessage}></span>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
                     <form autocomplete="off" action="#" th:action="@{/contact_me}" id="contact_me_form" name="contact_me_form" class="needs-validation" method="post">
-                        <div class="form-group">
-                            <label for="cm_contact_name">Name</label>
-                            <input type="text" class="form-control" id="cm_contact_name" maxlength="40" placeholder="Name" required>
+                        <div class="form-group required">
+                            <label for="cm_contact_name" class="control-label">Name</label>
+                            <input type="text" class="form-control" id="cm_contact_name" name="cm_contact_name" maxlength="40" placeholder="Name" required>
                             <div class="invalid-feedback">
                                 Please provide a name.
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="cm_email">Email</label>
-                            <input type="email" class="form-control" id="cm_email" maxlength="40" placeholder="Email" required>
+                        <div class="form-group required">
+                            <label for="cm_email" class="control-label">Email</label>
+                            <input type="email" class="form-control" id="cm_email" name="cm_email" maxlength="40" placeholder="Email" required>
                             <div class="invalid-feedback">
                                 Please provide an email.
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="cm_phone_number">Phone Number</label>
-                            <input type="tel" pattern="(?:\(\d{3}\)|\d{3})[- ]?\d{3}[- ]?\d{4}" class="form-control" id="cm_phone_number" maxlength="20" placeholder="XXX-XXX-XXXX">
+                            <input type="tel" pattern="(?:\(\d{3}\)|\d{3})[- ]?\d{3}[- ]?\d{4}" class="form-control" id="cm_phone_number" name="cm_phone_number" maxlength="20" placeholder="XXX-XXX-XXXX">
                         </div>
-                        <div class="form-group">
-                            <label for="cm_message">Message</label>
-                            <textarea class="form-control" id="cm_message" rows="6" placeholder="Message" required></textarea>
+                        <div class="form-group required">
+                            <label for="cm_message" class="control-label">Message</label>
+                            <textarea class="form-control" id="cm_message" name="cm_message" rows="6" placeholder="Message" required></textarea>
                             <div class="invalid-feedback">
                                 Please type in your message.
                             </div>
@@ -184,11 +214,6 @@
             </div>
         </div>
     </section>
-
-    <!--    <span th:text="'Hello, ' + ${message}"></span>-->
-    <!--    <ol>-->
-    <!--        <li th:each="task : ${tasks}" th:text="${task}"></li>-->
-    <!--    </ol>-->
 
     <div th:replace="fragments/footer :: footer"></div>
 

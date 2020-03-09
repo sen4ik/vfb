@@ -9,4 +9,5 @@ import java.util.Optional;
 @Repository("contactsRepository")
 public interface ContactsRepository extends JpaRepository<ContactsEntity, Integer> {
     Optional<ContactsEntity> findById(Long id);
+    Optional<ContactsEntity> findByPhoneNumber(String phoneNumber);
 }

@@ -7,6 +7,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.sql.Timestamp;
+import java.util.Objects;
 
 @Entity
 @Table(name = "contacts", schema = Constants.SCHEMA)
@@ -39,16 +40,8 @@ public class ContactsEntity {
     private Timestamp addedOn;
 
     @Basic
-    @Column(name = "deleted")
-    private Byte deleted = 0;
-
-    @Basic
     @Column(name = "subscription_confirmed")
     private Byte subscriptionConfirmed = 0;
-
-    @Basic
-    @Column(name = "subscribed")
-    private Byte subscribed = 1;
 
     @Basic
     @Column(name = "selected_send_time")
@@ -94,22 +87,6 @@ public class ContactsEntity {
         this.addedOn = addedOn;
     }
 
-    public Byte getDeleted() {
-        return deleted;
-    }
-
-    public void setDeleted(Byte deleted) {
-        this.deleted = deleted;
-    }
-
-    public Byte getSubscribed() {
-        return subscribed;
-    }
-
-    public void setSubscribed(Byte subscribed) {
-        this.subscribed = subscribed;
-    }
-
     public Double getSelectedSendTime() {
         return selectedSendTime;
     }
@@ -126,37 +103,4 @@ public class ContactsEntity {
         this.subscriptionConfirmed = subscriptionConfirmed;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        ContactsEntity that = (ContactsEntity) o;
-
-        if (id != that.id) return false;
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        if (phoneNumber != null ? !phoneNumber.equals(that.phoneNumber) : that.phoneNumber != null) return false;
-        if (bibleTranslation != null ? !bibleTranslation.equals(that.bibleTranslation) : that.bibleTranslation != null)
-            return false;
-        if (addedOn != null ? !addedOn.equals(that.addedOn) : that.addedOn != null) return false;
-        if (deleted != null ? !deleted.equals(that.deleted) : that.deleted != null) return false;
-        if (subscribed != null ? !subscribed.equals(that.subscribed) : that.subscribed != null) return false;
-        if (selectedSendTime != null ? !selectedSendTime.equals(that.selectedSendTime) : that.selectedSendTime != null)
-            return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = id;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (phoneNumber != null ? phoneNumber.hashCode() : 0);
-        result = 31 * result + (bibleTranslation != null ? bibleTranslation.hashCode() : 0);
-        result = 31 * result + (addedOn != null ? addedOn.hashCode() : 0);
-        result = 31 * result + (deleted != null ? deleted.hashCode() : 0);
-        result = 31 * result + (subscribed != null ? subscribed.hashCode() : 0);
-        result = 31 * result + (selectedSendTime != null ? selectedSendTime.hashCode() : 0);
-        return result;
-    }
 }
