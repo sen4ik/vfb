@@ -1,0 +1,10 @@
+- Make telerivet send confirmation sms.
+- Integrate with telerivet to confirm subscription with YES/CONFIRM.
+- Integrate with telerivet to stop subscription with STOP.
+- Figure out how to run jobs.
+- Add admin page.
+-- Add new verse.
+-- View existing verses.
+-- Delete verse.
+-- Edit verse.
+- View contacts.

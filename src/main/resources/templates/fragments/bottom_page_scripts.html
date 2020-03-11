@@ -8,6 +8,7 @@
 <div th:fragment="bottom_page_scripts" class="invisible">
 
     <!--<script type="text/javascript" th:src="@{webjars/bootstrap/4.4.1-1/js/bootstrap.min.js}"></script>-->
+    <script src="https://kit.fontawesome.com/03d8faafbe.js" crossorigin="anonymous"></script>
 
     <!-- Bootstrap core JavaScript -->
     <script th:src="@{/vendor/jquery/jquery.min.js}"></script>
@@ -19,11 +20,13 @@
     <!-- Custom JavaScript for this theme -->
     <script th:src="@{/js/scrolling-nav.js}"></script>
 
+    <script th:src="@{/bootstrap-datepicker/js/bootstrap-datepicker.min.js}"></script>
 
     <script th:inline="javascript">
         /*<![CDATA[*/
 
         let sectionId = /*[[${sectionId}]]*/ 'default';
+        // console.log(sectionId)
         if(sectionId) scrollToSection("#" + sectionId);
 
         function scrollToSection(sectionId){
@@ -60,6 +63,19 @@
             // $('#send_time>option:eq(3)').prop('selected', true);
             $("#send_time").val('8.0');
         })(jQuery);
+
+        $(document).ready(function() {
+            if (window.location.href.indexOf("admin") > -1) {
+                $('#add_verse_date').datepicker({
+                    autoclose: true,
+                    todayHighlight: true
+                });
+            }
+        });
+
+        $(".alert-dismissible").fadeTo(4000, 500).slideUp(500, function(){
+            $(".alert-dismissible").alert('close');
+        });
     </script>
 
 </div>

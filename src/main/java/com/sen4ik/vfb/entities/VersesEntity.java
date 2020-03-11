@@ -1,24 +1,50 @@
 package com.sen4ik.vfb.entities;
 
 import com.sen4ik.vfb.base.Constants;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import java.sql.Date;
+import java.util.Date;
 
 @Entity
 @Table(name = "verses", schema = Constants.SCHEMA)
 public class VersesEntity {
-    private int id;
-    private String ruSynodal;
-    private String enEsv;
-    private String enKjv;
-    private String enNiv;
-    private String ruVerseLocation;
-    private String enVerseLocation;
-    private Date date;
 
     @Id
     @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    @Basic
+    @Column(name = "ru_synodal")
+    private String ruSynodal;
+
+    @Basic
+    @Column(name = "en_esv")
+    private String enEsv;
+
+    @Basic
+    @Column(name = "en_kjv")
+    private String enKjv;
+
+    @Basic
+    @Column(name = "en_niv")
+    private String enNiv;
+
+    @Basic
+    @Column(name = "ru_verse_location")
+    private String ruVerseLocation;
+
+    @Basic
+    @Column(name = "en_verse_location")
+    private String enVerseLocation;
+
+    @Basic
+    @Column(name = "date")
+    @DateTimeFormat(pattern = "MM/dd/yyyy")
+    @Temporal(TemporalType.DATE)
+    private Date date;
+
     public int getId() {
         return id;
     }
@@ -27,8 +53,6 @@ public class VersesEntity {
         this.id = id;
     }
 
-    @Basic
-    @Column(name = "ru_synodal")
     public String getRuSynodal() {
         return ruSynodal;
     }
@@ -37,8 +61,6 @@ public class VersesEntity {
         this.ruSynodal = ruSynodal;
     }
 
-    @Basic
-    @Column(name = "en_esv")
     public String getEnEsv() {
         return enEsv;
     }
@@ -47,8 +69,6 @@ public class VersesEntity {
         this.enEsv = enEsv;
     }
 
-    @Basic
-    @Column(name = "en_kjv")
     public String getEnKjv() {
         return enKjv;
     }
@@ -57,8 +77,6 @@ public class VersesEntity {
         this.enKjv = enKjv;
     }
 
-    @Basic
-    @Column(name = "en_niv")
     public String getEnNiv() {
         return enNiv;
     }
@@ -67,8 +85,6 @@ public class VersesEntity {
         this.enNiv = enNiv;
     }
 
-    @Basic
-    @Column(name = "ru_verse_location")
     public String getRuVerseLocation() {
         return ruVerseLocation;
     }
@@ -77,8 +93,6 @@ public class VersesEntity {
         this.ruVerseLocation = ruVerseLocation;
     }
 
-    @Basic
-    @Column(name = "en_verse_location")
     public String getEnVerseLocation() {
         return enVerseLocation;
     }
@@ -87,8 +101,6 @@ public class VersesEntity {
         this.enVerseLocation = enVerseLocation;
     }
 
-    @Basic
-    @Column(name = "date")
     public Date getDate() {
         return date;
     }
