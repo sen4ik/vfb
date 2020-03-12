@@ -2,12 +2,14 @@ package com.sen4ik.vfb.controllers;
 
 import com.sen4ik.vfb.entities.ContactsEntity;
 import com.sen4ik.vfb.entities.VersesEntity;
+import com.sen4ik.vfb.enums.Views;
 import com.sen4ik.vfb.repositories.ContactsRepository;
 import com.sen4ik.vfb.repositories.VersesRepository;
 import com.sen4ik.vfb.services.EmailServiceImpl;
 import com.sen4ik.vfb.services.TelerivetService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -39,9 +41,12 @@ public class HomeController {
     @Autowired
     EmailServiceImpl emailService;
 
+    @Value("${telerivet.enabled}")
+    private Boolean telerivetEnabled;
+
     @GetMapping("/")
     public String main() {
-        return "redirect:/home";
+        return "redirect:/" + Views.home.value;
     }
 
     @GetMapping("/home")
@@ -62,7 +67,7 @@ public class HomeController {
         model.addAttribute("contact", contact);
         */
 
-        return "home"; // view
+        return Views.home.value; // view
     }
 
     @PostMapping("/home")
@@ -70,7 +75,7 @@ public class HomeController {
 
         if(result.hasErrors()) {
             // return "error";
-            return new RedirectView("error");
+            return new RedirectView(Views.admin.value);
         }
 
         // model.addAttribute("addContactSuccessMessage", "You have been subscribed! We will text you to " + phoneNumber + " for confirmation.");
@@ -96,7 +101,7 @@ public class HomeController {
                 redirectAttributes.addFlashAttribute("addContactErrorMessage", "It looks like " +
                         "phone number " + phoneNumber + " is already in our subscription list!</br>If you are " +
                         "having any issues with our services, please contact us using form below.");
-                return new RedirectView("home");
+                return new RedirectView(Views.home.value);
             }
 
             // If a phone is in the database and subscription is not enabled - restore
@@ -105,23 +110,48 @@ public class HomeController {
                         + phoneNumber + " is already in our subscription list but subscription was never " +
                         "confirmed. We have resent confirmation SMS.</br>If you are " +
                         "having other issues with our services, please contact us using form below.");
-                return new RedirectView("home");
+                return new RedirectView(Views.home.value);
             }
 
         }
 
+        Double selectedSendTime = contact.getSelectedSendTime();
+        Double selectedSendTimePacific = selectedSendTime;
+        String selectedTimeZone = contact.getSelectedTimeZone();
+
+        switch(selectedTimeZone) {
+            case "mountain":
+                selectedSendTimePacific = selectedSendTime + 1;
+                break;
+            case "central":
+                selectedSendTimePacific = selectedSendTime + 2;
+                break;
+            case "eastern":
+                selectedSendTimePacific = selectedSendTime + 3;
+                break;
+            case "alaska":
+                selectedSendTimePacific = selectedSendTime - 1;
+                break;
+            case "hawaii":
+                selectedSendTimePacific = selectedSendTime - 3;
+                break;
+        }
+
+        contact.setSelectedSendTimePacific(selectedSendTimePacific);
         contact.setPhoneNumber(sanitizedPhone);
         contactsRepository.save(contact);
 
-        try {
-            telerivetService.sendSingleMessage("+1" + phoneNumber, "It looks like you have subscribed to VerseFromBible.com. If that is correct, please reply YES.");
-        } catch (IOException e) {
-            // TODO:
+        if(telerivetEnabled){
+            try {
+                telerivetService.sendSingleMessage("+1" + phoneNumber, "It looks like you have subscribed to VerseFromBible.com. If that is correct, please reply YES.");
+            } catch (IOException e) {
+                // TODO:
+            }
         }
 
         redirectAttributes.addFlashAttribute("addContactSuccessMessage", "You have been subscribed! We will text you to " + phoneNumber + " for confirmation.");
 
-        return new RedirectView("home");
+        return new RedirectView(Views.home.value);
     }
 
     private String sanitizePhoneNumber(String pn){
@@ -140,13 +170,13 @@ public class HomeController {
             redirectAttributes.addFlashAttribute("unsubscribeErrorMessage", "We don't have " +
                     "phone number " + unsubscribePhoneNumber + " in our subscription list!</br>If you are having other issues " +
                     "with our services, please contact us using form below.");
-            return new RedirectView("home");
+            return new RedirectView(Views.home.value);
         }
 
         contactsRepository.delete(contact.get());
 
         redirectAttributes.addFlashAttribute("unsubscribeSuccessMessage", "Your phone number " + unsubscribePhoneNumber + " have been removed from our subscription list!");
-        return new RedirectView("home");
+        return new RedirectView(Views.home.value);
     }
 
     @PostMapping("/contact_me")
@@ -168,13 +198,13 @@ public class HomeController {
 
             redirectAttributes.addFlashAttribute("contactMeSuccessMessage", "We have received your message and will get back to you as soon as we can.");
 
-            return new RedirectView("home");
+            return new RedirectView(Views.home.value);
         }
         catch (Exception e){
             redirectAttributes.addFlashAttribute("contactMeErrorMessage", "Something failed. We apologize for the inconvenience.</br>Please email us at info@sen4ik.info.");
         }
 
-        return new RedirectView("home");
+        return new RedirectView(Views.home.value);
     }
 
     @ModelAttribute("contact")

@@ -7,7 +7,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.sql.Timestamp;
-import java.util.Objects;
 
 @Entity
 @Table(name = "contacts", schema = Constants.SCHEMA)
@@ -46,6 +45,30 @@ public class ContactsEntity {
     @Basic
     @Column(name = "selected_send_time")
     private Double selectedSendTime;
+
+    @Basic
+    @Column(name = "selected_time_zone")
+    private String selectedTimeZone;
+
+    @Basic
+    @Column(name = "selected_send_time_pacific")
+    private Double selectedSendTimePacific;
+
+    public Double getSelectedSendTimePacific() {
+        return selectedSendTimePacific;
+    }
+
+    public void setSelectedSendTimePacific(Double selectedSendTimePacific) {
+        this.selectedSendTimePacific = selectedSendTimePacific;
+    }
+
+    public String getSelectedTimeZone() {
+        return selectedTimeZone;
+    }
+
+    public void setSelectedTimeZone(String selectedTimeZone) {
+        this.selectedTimeZone = selectedTimeZone;
+    }
 
     public int getId() {
         return id;

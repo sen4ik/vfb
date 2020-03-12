@@ -2,6 +2,7 @@ package com.sen4ik.vfb.controllers;
 
 import com.sen4ik.vfb.entities.ContactsEntity;
 import com.sen4ik.vfb.entities.VersesEntity;
+import com.sen4ik.vfb.enums.Views;
 import com.sen4ik.vfb.repositories.ContactsRepository;
 import com.sen4ik.vfb.repositories.VersesRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +34,7 @@ public class AdminController {
 
     @GetMapping("/admin")
     public String admin() {
-        return "admin";
+        return Views.admin.value;
     }
 
     @InitBinder
@@ -47,15 +48,24 @@ public class AdminController {
 
         if(result.hasErrors()) {
             log.error(result.getAllErrors().toString());
-            return new RedirectView("error");
+            return new RedirectView(Views.error.value);
         }
 
-        versesRepository.save(verse);
+        int verseId = verse.getId();
+        if(verseId == 0){
+            // this is verse add
+            versesRepository.save(verse);
+            redirectAttributes.addFlashAttribute("sectionId", "add_verse");
+            redirectAttributes.addFlashAttribute("addVerseSuccessMessage", "Verse was added!");
+        }
+        else{
+            // this is verse edit
+            versesRepository.save(verse);
+            redirectAttributes.addFlashAttribute("sectionId", "view_verses");
+            redirectAttributes.addFlashAttribute("verseActionSuccessMessage", "Verse was edited successfully!");
+        }
 
-        redirectAttributes.addFlashAttribute("sectionId", "add_verse");
-        redirectAttributes.addFlashAttribute("addVerseSuccessMessage", "Verse was added!");
-
-        return new RedirectView("admin");
+        return new RedirectView(Views.admin.value);
     }
 
     @GetMapping(value = "/admin/verse/{id}/edit")
@@ -65,7 +75,7 @@ public class AdminController {
         // model.addAttribute("verse", verse.get());
         redirectAttributes.addFlashAttribute("verse", verse.get());
 
-        RedirectView redirect = new RedirectView("/admin");
+        RedirectView redirect = new RedirectView("/" + Views.admin.value);
         redirect.setExposeModelAttributes(false);
         return redirect;
     }
@@ -84,9 +94,9 @@ public class AdminController {
         versesRepository.deleteById(id);
 
         redirectAttributes.addFlashAttribute("sectionId", "view_verses");
-        redirectAttributes.addFlashAttribute("deleteVerseSuccessMessage", "Verse was deleted!");
+        redirectAttributes.addFlashAttribute("verseActionSuccessMessage", "Verse was deleted!");
 
-        RedirectView redirect = new RedirectView("/admin");
+        RedirectView redirect = new RedirectView("/" + Views.admin.value);
         redirect.setExposeModelAttributes(false);
         return redirect;
     }

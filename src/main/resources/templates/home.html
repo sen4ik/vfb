@@ -100,17 +100,33 @@
                             <span th:if="${#fields.hasErrors('bibleTranslation')}" th:errors="*{bibleTranslation}"></span>
                         </div>
                         <div class="form-group">
-                            <label for="send_time">Select time you want to receive verses at</label>
-                            <select autocomplete="off" th:field="*{selectedSendTime}" class="form-control" id="send_time">
-                                <option th:value="5.0" th:text="'5:00 AM'">5:00 AM</option>
-                                <option th:value="6.0" th:text="'6:00 AM'">6:00 AM</option>
-                                <option th:value="7.0" th:text="'7:00 AM'">7:00 AM</option>
-                                <option th:value="8.0" th:text="'8:00 AM'" selected>8:00 AM</option>
-                                <option th:value="9.0" th:text="'9:00 AM'">9:00 AM</option>
-                                <option th:value="10.0" th:text="'10:00 AM'">10:00 AM</option>
-                                <option th:value="11.0" th:text="'11:00 AM'">11:00 AM</option>
-                            </select>
-                            <span th:if="${#fields.hasErrors('selectedSendTime')}" th:errors="*{selectedSendTime}"></span>
+                            <div class="form-row">
+                                <div class="col-lg-6">
+                                    <label for="send_time">Select time you want to receive verses</label>
+                                    <select autocomplete="off" th:field="*{selectedSendTime}" class="form-control" id="send_time">
+                                        <option th:value="5.0" th:text="'5:00 AM'">5:00 AM</option>
+                                        <option th:value="6.0" th:text="'6:00 AM'">6:00 AM</option>
+                                        <option th:value="7.0" th:text="'7:00 AM'">7:00 AM</option>
+                                        <option th:value="8.0" th:text="'8:00 AM'" selected>8:00 AM</option>
+                                        <option th:value="9.0" th:text="'9:00 AM'">9:00 AM</option>
+                                        <option th:value="10.0" th:text="'10:00 AM'">10:00 AM</option>
+                                        <option th:value="11.0" th:text="'11:00 AM'">11:00 AM</option>
+                                    </select>
+                                    <span th:if="${#fields.hasErrors('selectedSendTime')}" th:errors="*{selectedSendTime}"></span>
+                                </div>
+                                <div class="col-lg-6">
+                                    <label for="timezone">Time Zone</label>
+                                    <select autocomplete="off" th:field="*{selectedTimeZone}" class="form-control" id="timezone">
+                                        <option th:value="pacific" th:text="'Pacific Time'"></option>
+                                        <option th:value="mountain" th:text="'Mountain Time'"></option>
+                                        <option th:value="central" th:text="'Central Time'">	</option>
+                                        <option th:value="eastern" th:text="'Eastern Time'"></option>
+                                        <option th:value="alaska" th:text="'Alaska Time'"></option>
+                                        <option th:value="hawaii" th:text="'Hawaii Time'"></option>
+                                    </select>
+                                    <span th:if="${#fields.hasErrors('selectedTimeZone')}" th:errors="*{selectedTimeZone}"></span>
+                                </div>
+                            </div>
                         </div>
                         <div class="form-group">
                             <button type="submit" id="signup_submit" form="signupform" class="btn btn-primary">Sign Up</button>

@@ -14,7 +14,7 @@
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
-                        <a class="nav-link js-scroll-trigger" href="#add_verse">Add Verse</a>
+                        <a class="nav-link js-scroll-trigger" href="#add_verse">Add/Edit Verse</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link js-scroll-trigger" href="#view_verses">Verses</a>
@@ -31,7 +31,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-12 mx-auto">
-                    <h2 class="mb-5">Add Verse</h2>
+                    <h2 class="mb-5">Add/Edit Verse</h2>
                     <div th:if="${addVerseSuccessMessage}" class="alert alert-success alert-dismissible alert-primary fade show auto_fade" role="alert">
                         <span th:utext=${addVerseSuccessMessage}></span>
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -39,6 +39,7 @@
                         </button>
                     </div>
                     <form autocomplete="off" action="#" th:action="@{/add_verse}" th:object="${verse}" id="add_verse_form" name="add_verse_form" class="needs-validation" method="post">
+                        <input type="hidden" th:field="*{id}" name="id" />
                         <div class="form-row">
                             <div class="col-md-6 mb-3">
                                 <div class="form-group required">
@@ -120,7 +121,10 @@
                         </div>
                         <div class="form-row">
                             <div class="form-group">
-                                <button type="submit" id="add_verse_form_submit" form="add_verse_form" class="btn btn-primary">Add Verse</button>
+                                <!-- <div th:if="*{id}">
+                                    <button type="submit" id="edit_verse_form_submit" form="add_verse_form" class="btn btn-primary">Edit Verse</button>
+                                </div> -->
+                                <button type="submit" id="add_verse_form_submit" form="add_verse_form" class="btn btn-primary" th:text="${verse.id} ? 'Edit Verse' : 'Add Verse'">>Add Verse</button>
                             </div>
                         </div>
                     </form>
@@ -134,8 +138,8 @@
             <div class="row">
                 <div class="col-lg-12 mx-auto">
                     <h2>Verses</h2>
-                    <div th:if="${deleteVerseSuccessMessage}" class="alert alert-success alert-dismissible alert-primary fade show auto_fade" role="alert">
-                        <span th:utext=${deleteVerseSuccessMessage}></span>
+                    <div th:if="${verseActionSuccessMessage}" class="alert alert-success alert-dismissible alert-primary fade show auto_fade" role="alert">
+                        <span th:utext=${verseActionSuccessMessage}></span>
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -190,6 +194,8 @@
                             <th>Phone Number</th>
                             <th>Bible Translation</th>
                             <th>Send Time</th>
+                            <th>TZ</th>
+                            <th>Send Time Pacific</th>
                             <th>Subscription Confirmed</th>
                             <th>Actions</th>
                         </tr>
@@ -200,7 +206,9 @@
                                 <td th:text="${c.name}"></td>
                                 <td th:text="${c.phoneNumber}"></td>
                                 <td th:text="${c.bibleTranslation}"></td>
-                                <td th:text="${c.selectedSendTime}"></td>
+                                <td th:text="${c.selectedSendTime} + @{''}"></td>
+                                <td th:text="${c.selectedTimeZone}"></td>
+                                <td th:text="${c.selectedSendTimePacific}"></td>
                                 <td th:text="${c.subscriptionConfirmed}"></td>
                                 <td>
                                     <a href="">Edit</a>
