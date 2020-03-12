@@ -12,5 +12,5 @@ public interface ContactsRepository extends JpaRepository<ContactsEntity, Intege
     Optional<ContactsEntity> findById(Long id);
     Optional<ContactsEntity> findByPhoneNumber(String phoneNumber);
     List<ContactsEntity> findBySelectedSendTimePacific(Double selectedSendTimePacific);
-    List<ContactsEntity> findBySelectedSendTimePacificAndBibleTranslation(Double selectedSendTimePacific, String bibleTranslation);
+    List<ContactsEntity> findBySelectedSendTimePacificAndBibleTranslationAndSubscriptionConfirmed(Double selectedSendTimePacific, String bibleTranslation, Byte subscriptionConfirmed);
 }

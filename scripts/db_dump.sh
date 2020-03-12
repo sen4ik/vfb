@@ -10,10 +10,12 @@ fi
 
 HOST=$(awk '/spring.datasource.url/{print $NF}' $PROPERTIES_FILE | awk -F':' '{print $3}' | awk -F'/' '{print $3}')
 PORT=$(awk '/spring.datasource.url/{print $NF}' $PROPERTIES_FILE | awk -F':' '{print $4}' | awk -F'/' '{print $1}')
-DBNAME=$(awk '/spring.datasource.url/{print $NF}' $PROPERTIES_FILE | awk -F'/' '{print $4}')
+DBNAME=$(awk '/spring.datasource.url/{print $NF}' $PROPERTIES_FILE | awk -F'/' '{print $4}' | awk -F'?' '{print $1}')
 USER=$(awk '/spring.datasource.username/{print $NF}' $PROPERTIES_FILE | awk -F'=' '{print $2}')
 PASSWORD=$(awk '/spring.datasource.password/{print $NF}' $PROPERTIES_FILE | awk -F'=' '{print $2}')
 DATEANDTIME=`date +%m-%d-%Y_%H-%M-%S`
 DB_BACKUP_FILE="${SCRIPTPATH}/../db_dump/$DBNAME-$DATEANDTIME.sql.gz"
+
+# echo -e $HOST"\n"$PORT"\n"$DBNAME"\n"$USER"\n"$PASSWORD
 
 mysqldump --column-statistics=0 -h$HOST -u$USER -p$PASSWORD -P$PORT $DBNAME | gzip > $DB_BACKUP_FILE

@@ -1,22 +1,28 @@
 package com.sen4ik.vfb;
 
+import com.sen4ik.vfb.services.JobSchedulerService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
-
-import java.text.SimpleDateFormat;
-import java.time.LocalTime;
-import java.util.Date;
+import org.junit.jupiter.api.TestInstance;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 @Slf4j
+@SpringBootTest
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TempTests {
 
+    @Autowired
+    private JobSchedulerService jobSchedulerService;
+
     @Test
-    public void t() {
-        int currentHour = LocalTime.now().getHour();
-        log.info(currentHour + "");
-        Date currentDate = new Date();
-        SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
-        log.info(df.format(currentDate));
+    public void t() throws Exception {
+        jobSchedulerService.sendVersesForCurrentHour();
+    }
+
+    @Test
+    public void tt() {
+        jobSchedulerService.checkIfVerseForTomorrowExists();
     }
 
 }

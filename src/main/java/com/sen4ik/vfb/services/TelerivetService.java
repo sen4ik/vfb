@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.List;
 
 @Service
 @Component
@@ -36,9 +37,10 @@ public class TelerivetService {
         return sent_msg.getId();
     }
 
-
-    public String sendMessageToGroup(String message, Object[] toNumbers) throws IOException {
-        log.info("CALLED: sendMessageToGroup(\'" + message + "\', \'" + toNumbers.toString() + "\')");
+    public String sendMessageToGroup(String message, List<String> toNumbers) throws IOException {
+        log.info("CALLED: sendMessageToGroup()");
+        log.info("message: " + message);
+        log.info("toNumbers: " + toNumbers.toString());
 
         TelerivetAPI tr = new TelerivetAPI(API_KEY);
         Project project = tr.initProjectById(PROJECT_ID);
