@@ -8,3 +8,4 @@
 -- Delete verse.
 -- Edit verse.
 - View contacts.
+- Secure the admin page.

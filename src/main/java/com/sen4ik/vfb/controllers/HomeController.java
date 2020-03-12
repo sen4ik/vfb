@@ -17,6 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.Date;
 import java.util.Optional;
 
@@ -112,13 +113,11 @@ public class HomeController {
         contact.setPhoneNumber(sanitizedPhone);
         contactsRepository.save(contact);
 
-        /*
         try {
             telerivetService.sendSingleMessage("+1" + phoneNumber, "It looks like you have subscribed to VerseFromBible.com. If that is correct, please reply YES.");
         } catch (IOException e) {
             // TODO:
         }
-        */
 
         redirectAttributes.addFlashAttribute("addContactSuccessMessage", "You have been subscribed! We will text you to " + phoneNumber + " for confirmation.");
 

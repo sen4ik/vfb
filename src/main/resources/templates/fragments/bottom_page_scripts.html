@@ -7,8 +7,8 @@
 <body>
 <div th:fragment="bottom_page_scripts" class="invisible">
 
-    <!--<script type="text/javascript" th:src="@{webjars/bootstrap/4.4.1-1/js/bootstrap.min.js}"></script>-->
-    <script src="https://kit.fontawesome.com/03d8faafbe.js" crossorigin="anonymous"></script>
+    <!-- <script type="text/javascript" th:src="@{webjars/bootstrap/4.4.1-1/js/bootstrap.min.js}"></script> -->
+    <!-- <script src="https://kit.fontawesome.com/03d8faafbe.js" crossorigin="anonymous"></script> -->
 
     <!-- Bootstrap core JavaScript -->
     <script th:src="@{/vendor/jquery/jquery.min.js}"></script>
@@ -55,10 +55,6 @@
             });
         }
 
-        /*]]>*/
-    </script>
-
-    <script th:inline="javascript">
         (function($) {
             // $('#send_time>option:eq(3)').prop('selected', true);
             $("#send_time").val('8.0');
@@ -70,13 +66,21 @@
                     autoclose: true,
                     todayHighlight: true
                 });
+                $('#contacts_table').DataTable();
+                $('#verses_table').DataTable();
             }
         });
 
-        $(".alert-dismissible").fadeTo(4000, 500).slideUp(500, function(){
-            $(".alert-dismissible").alert('close');
+        $(".auto_fade").fadeTo(4000, 500).slideUp(500, function(){
+            $(".auto_fade").alert('close');
         });
+
+        /*]]>*/
     </script>
+
+    <!-- DataTable -->
+    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
 
 </div>
 </body>

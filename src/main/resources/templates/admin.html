@@ -32,7 +32,7 @@
             <div class="row">
                 <div class="col-lg-12 mx-auto">
                     <h2 class="mb-5">Add Verse</h2>
-                    <div th:if="${addVerseSuccessMessage}" class="alert alert-success alert-dismissible alert-primary fade show" role="alert">
+                    <div th:if="${addVerseSuccessMessage}" class="alert alert-success alert-dismissible alert-primary fade show auto_fade" role="alert">
                         <span th:utext=${addVerseSuccessMessage}></span>
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
@@ -134,7 +134,43 @@
             <div class="row">
                 <div class="col-lg-12 mx-auto">
                     <h2>Verses</h2>
-
+                    <div th:if="${deleteVerseSuccessMessage}" class="alert alert-success alert-dismissible alert-primary fade show auto_fade" role="alert">
+                        <span th:utext=${deleteVerseSuccessMessage}></span>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <table id="verses_table" class="table table-striped table-bordered" style="width:100%">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Date</th>
+                            <th>EN ESV</th>
+                            <th>EN KJV</th>
+                            <th>EN NIV</th>
+                            <th>EN Verse Location</th>
+                            <th>RU Synodal</th>
+                            <th>RU Verse Location</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="v : ${verses}">
+                            <td th:text="${v.id}"></td>
+                            <td th:text="${v.date}"></td>
+                            <td th:text="${v.enEsv}"></td>
+                            <td th:text="${v.enKjv}"></td>
+                            <td th:text="${v.enNiv}"></td>
+                            <td th:text="${v.enVerseLocation}"></td>
+                            <td th:text="${v.ruSynodal}"></td>
+                            <td th:text="${v.ruVerseLocation}"></td>
+                            <td>
+                                <a th:href="@{/admin/verse/} + ${v.id} + @{/edit}">Edit</a>
+                                <a th:href="@{/admin/verse/} + ${v.id} + @{/delete}">Delete</a>  <!-- class="btn btn-danger btn-sm"-->
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
 
                 </div>
             </div>
@@ -146,8 +182,32 @@
             <div class="row">
                 <div class="col-lg-12 mx-auto">
                     <h2>Contacts</h2>
-
-
+                    <table id="contacts_table" class="table table-striped table-bordered" style="width:100%">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Phone Number</th>
+                            <th>Bible Translation</th>
+                            <th>Send Time</th>
+                            <th>Subscription Confirmed</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="c : ${contacts}">
+                                <td th:text="${c.id}"></td>
+                                <td th:text="${c.name}"></td>
+                                <td th:text="${c.phoneNumber}"></td>
+                                <td th:text="${c.bibleTranslation}"></td>
+                                <td th:text="${c.selectedSendTime}"></td>
+                                <td th:text="${c.subscriptionConfirmed}"></td>
+                                <td>
+                                    <a href="">Edit</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
