@@ -3,8 +3,8 @@ package com.sen4ik.vfb.enums;
 public enum Views {
 
     error("error"),
-    admin("admin"),
-    home("home");
+    admin("admin/index"),
+    home("index");
 
     public final String value;
 

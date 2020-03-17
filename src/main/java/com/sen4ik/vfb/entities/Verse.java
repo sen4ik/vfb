@@ -8,12 +8,12 @@ import java.util.Date;
 
 @Entity
 @Table(name = "verses", schema = Constants.SCHEMA)
-public class VersesEntity {
+public class Verse {
 
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @Basic
     @Column(name = "ru_synodal")
@@ -45,11 +45,11 @@ public class VersesEntity {
     @Temporal(TemporalType.DATE)
     private Date date;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

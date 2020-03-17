@@ -1,4 +1,4 @@
-package com.sen4ik.vfb.base;
+package com.sen4ik.vfb.scheduler;
 
 import com.sen4ik.vfb.services.JobSchedulerService;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +17,7 @@ public class JobScheduler {
 
     @Scheduled(cron = "0 0 * * * *") // every hour
     // @Scheduled(cron = "0 */1 * * * *")
-    public void sendOutVerses() throws Exception {
+    public void sendOutVerses() {
         jobSchedulerService.sendVersesForCurrentHour();
     }
 

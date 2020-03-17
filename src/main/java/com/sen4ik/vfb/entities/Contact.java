@@ -10,12 +10,12 @@ import java.sql.Timestamp;
 
 @Entity
 @Table(name = "contacts", schema = Constants.SCHEMA)
-public class ContactsEntity {
+public class Contact {
 
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @Basic
     @Column(name = "name")
@@ -70,11 +70,11 @@ public class ContactsEntity {
         this.selectedTimeZone = selectedTimeZone;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

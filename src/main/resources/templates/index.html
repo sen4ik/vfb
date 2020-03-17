@@ -72,7 +72,7 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <form autocomplete="off" action="#" th:action="@{/home}" th:object="${contact}" id="signupform" name="signupform" class="needs-validation" method="post">
+                    <form autocomplete="off" action="#" th:action="@{/index}" th:object="${contact}" id="signupform" name="signupform" class="needs-validation" method="post">
                         <div class="form-group required">
                             <label for="contact_name" class="control-label">Name</label>
                             <input th:field="*{name}" type="text" class="form-control" id="contact_name" maxlength="40" placeholder="Name" required>

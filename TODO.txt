@@ -1,11 +1,18 @@
-- Make telerivet send confirmation sms.
+- Make telerivet send confirmation sms. -- DONE
+- Figure out how to run jobs. -- DONE
+- Add admin page. -- DONE
+-- Add new verse. -- DONE
+-- View existing verses. -- DONE
+-- Delete verse. -- DONE
+-- Edit verse. -- DONE
+- View contacts. -- DONE
+- Secure the admin page. -- DONE
+- Uncomment security in pom -- DONE
+- Add springsecurity class -- DONE
+
 - Integrate with telerivet to confirm subscription with YES/CONFIRM.
 - Integrate with telerivet to stop subscription with STOP.
-- Figure out how to run jobs.
-- Add admin page.
--- Add new verse.
--- View existing verses.
--- Delete verse.
--- Edit verse.
-- View contacts.
-- Secure the admin page.
+
+- confirm token can be reused to set new password
+
+- Cleanup CSS login, register, confirm

@@ -16,7 +16,7 @@ public class TempTests {
     private JobSchedulerService jobSchedulerService;
 
     @Test
-    public void t() throws Exception {
+    public void t() {
         jobSchedulerService.sendVersesForCurrentHour();
     }
 

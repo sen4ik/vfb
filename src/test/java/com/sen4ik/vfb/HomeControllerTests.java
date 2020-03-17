@@ -25,9 +25,9 @@ public class HomeControllerTests {
 
 	@Test
 	public void main() throws Exception {
-		ResultActions resultActions = mockMvc.perform(get("/home"))
+		ResultActions resultActions = mockMvc.perform(get("/index"))
 				.andExpect(status().isOk())
-				.andExpect(view().name("home"))
+				.andExpect(view().name("index"))
 				.andExpect(model().attribute("message", equalTo("This is test message")))
 				.andExpect(content().string(containsString("Hello, This is test message")));
 

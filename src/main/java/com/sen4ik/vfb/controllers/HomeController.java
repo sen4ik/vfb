@@ -1,7 +1,7 @@
 package com.sen4ik.vfb.controllers;
 
-import com.sen4ik.vfb.entities.ContactsEntity;
-import com.sen4ik.vfb.entities.VersesEntity;
+import com.sen4ik.vfb.entities.Contact;
+import com.sen4ik.vfb.entities.Verse;
 import com.sen4ik.vfb.enums.Views;
 import com.sen4ik.vfb.repositories.ContactsRepository;
 import com.sen4ik.vfb.repositories.VersesRepository;
@@ -49,51 +49,24 @@ public class HomeController {
         return "redirect:/" + Views.home.value;
     }
 
-    @GetMapping("/home")
+    @GetMapping("/index")
     public String home() {
-
-        /*
-        Optional<VersesEntity> verse = versesRepository.findByDate(new Date());
-        if (!verse.isPresent()){
-            // return "error";
-            model.addAttribute("verse_body", "For God so loved the world, that he gave his only Son, that whoever believes in him should not perish but have eternal life.");
-            model.addAttribute("verse_location", "John 3:16");
-        }
-        else{
-            model.addAttribute("verse_body", verse.get().getEnEsv());
-            model.addAttribute("verse_location", verse.get().getEnVerseLocation());
-        }
-
-        model.addAttribute("contact", contact);
-        */
-
-        return Views.home.value; // view
+        return Views.home.value;
     }
 
-    @PostMapping("/home")
-    public RedirectView addContact(@Valid ContactsEntity contact, Model model, BindingResult result, ModelAndView modelAndView, RedirectAttributes redirectAttributes) {
+    @PostMapping("/index")
+    public RedirectView addContact(@Valid Contact contact, Model model, BindingResult result, ModelAndView modelAndView, RedirectAttributes redirectAttributes) {
 
         if(result.hasErrors()) {
-            // return "error";
             return new RedirectView(Views.admin.value);
         }
-
-        // model.addAttribute("addContactSuccessMessage", "You have been subscribed! We will text you to " + phoneNumber + " for confirmation.");
-        //return "home";
-
-        // modelAndView.clear();
-        // modelAndView.addObject("addContactSuccessMessage", "You have been subscribed! We will text you to " + phoneNumber + " for confirmation.");
-        // modelAndView.setViewName("home");
-        // return modelAndView;
-
-        // return "redirect:/home";
 
         redirectAttributes.addFlashAttribute("sectionId", "sign_up");
 
         String phoneNumber = contact.getPhoneNumber();
         String sanitizedPhone = sanitizePhoneNumber(phoneNumber);
 
-        Optional<ContactsEntity> existingContact = contactsRepository.findByPhoneNumber(sanitizedPhone);
+        Optional<Contact> existingContact = contactsRepository.findByPhoneNumber(sanitizedPhone);
         if (existingContact.isPresent()){
 
             // What if a phone is already in the database and is subscribed?
@@ -143,7 +116,7 @@ public class HomeController {
 
         if(telerivetEnabled){
             try {
-                telerivetService.sendSingleMessage("+1" + phoneNumber, "It looks like you have subscribed to VerseFromBible.com. If that is correct, please reply YES.");
+                telerivetService.sendSingleMessage("+1" + sanitizedPhone, "It looks like you have subscribed to VerseFromBible.com. If that is correct, please reply YES.");
             } catch (IOException e) {
                 // TODO:
             }
@@ -155,7 +128,7 @@ public class HomeController {
     }
 
     private String sanitizePhoneNumber(String pn){
-        return pn.replaceAll("\\(", "").replaceAll("\\)", "").replaceAll("-", "").trim();
+        return pn.replaceAll("\\(", "").replaceAll("\\)", "").replaceAll("-", "").replaceAll(" ", "").trim();
     }
 
     @PostMapping("/unsubscribe")
@@ -165,7 +138,7 @@ public class HomeController {
 
         String sanitizedUnsubscribePhoneNumber = sanitizePhoneNumber(unsubscribePhoneNumber);
 
-        Optional<ContactsEntity> contact = contactsRepository.findByPhoneNumber(sanitizedUnsubscribePhoneNumber);
+        Optional<Contact> contact = contactsRepository.findByPhoneNumber(sanitizedUnsubscribePhoneNumber);
         if (!contact.isPresent()){
             redirectAttributes.addFlashAttribute("unsubscribeErrorMessage", "We don't have " +
                     "phone number " + unsubscribePhoneNumber + " in our subscription list!</br>If you are having other issues " +
@@ -173,9 +146,17 @@ public class HomeController {
             return new RedirectView(Views.home.value);
         }
 
-        contactsRepository.delete(contact.get());
+        if(telerivetEnabled){
+            try {
+                telerivetService.sendSingleMessage("+1" + contact.get().getPhoneNumber(), "Please reply REMOVE to get removed from our list.");
+            } catch (IOException e) {
+                // TODO:
+            }
+        }
 
-        redirectAttributes.addFlashAttribute("unsubscribeSuccessMessage", "Your phone number " + unsubscribePhoneNumber + " have been removed from our subscription list!");
+        // contactsRepository.delete(contact.get());
+
+        redirectAttributes.addFlashAttribute("unsubscribeSuccessMessage", "We sent you a message to " + unsubscribePhoneNumber + ". Please confirm unsubscription from your phone!");
         return new RedirectView(Views.home.value);
     }
 
@@ -208,15 +189,15 @@ public class HomeController {
     }
 
     @ModelAttribute("contact")
-    private ContactsEntity getContact(){
-        return new ContactsEntity();
+    private Contact getContact(){
+        return new Contact();
     }
 
     @ModelAttribute("verse")
-    private VersesEntity getVerse(){
-        Optional<VersesEntity> verse = versesRepository.findByDate(new Date());
+    private Verse getVerse(){
+        Optional<Verse> verse = versesRepository.findByDate(new Date());
         if (!verse.isPresent()){
-            VersesEntity ve = new VersesEntity();
+            Verse ve = new Verse();
             ve.setEnEsv("For God so loved the world, that he gave his only Son, that whoever believes in him should not perish but have eternal life.");
             ve.setEnVerseLocation("John 3:16");
             return ve;

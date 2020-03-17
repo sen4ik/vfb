@@ -1,7 +1,7 @@
 package com.sen4ik.vfb.services;
 
-import com.sen4ik.vfb.entities.ContactsEntity;
-import com.sen4ik.vfb.entities.VersesEntity;
+import com.sen4ik.vfb.entities.Contact;
+import com.sen4ik.vfb.entities.Verse;
 import com.sen4ik.vfb.repositories.ContactsRepository;
 import com.sen4ik.vfb.repositories.VersesRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.util.*;
@@ -35,7 +36,7 @@ public class JobSchedulerService {
     @Autowired
     TelerivetService telerivetService;
 
-    public void sendVersesForCurrentHour() throws Exception {
+    public void sendVersesForCurrentHour() {
         log.info("CALLED: sendVersesForCurrentHour()");
 
         Date currentDate = new Date();
@@ -43,19 +44,17 @@ public class JobSchedulerService {
         String formattedDate = df.format(currentDate);
         log.info("Current date: " + formattedDate);
 
-        Optional<VersesEntity> verseForTodayOptional = versesRepository.findByDate(currentDate);
+        Optional<Verse> verseForTodayOptional = versesRepository.findByDate(currentDate);
         if (!verseForTodayOptional.isPresent()){
-            String errMsg = "No verses found for " + formattedDate;
-            log.error(errMsg);
-            throw new Exception(errMsg);
+            log.error("No verses found for " + formattedDate);
         }
-        VersesEntity verseForToday = verseForTodayOptional.get();
+        Verse verseForToday = verseForTodayOptional.get();
 
         int currentHour = LocalTime.now().getHour();
         log.info("Current hour: " + currentHour);
 
-        List<ContactsEntity> allContacts = contactsRepository.findAll();
-        Set<String> bibleTranslations = allContacts.stream().map(ContactsEntity::getBibleTranslation).collect(Collectors.toSet());
+        List<Contact> allContacts = contactsRepository.findAll();
+        Set<String> bibleTranslations = allContacts.stream().map(Contact::getBibleTranslation).collect(Collectors.toSet());
         // Set<String> bibleTranslations = allContacts.stream().map(ContactsEntity::getBibleTranslation).collect(Collectors.toSet());
 
         for(String bibleTranslation : bibleTranslations){
@@ -64,10 +63,10 @@ public class JobSchedulerService {
 
             List<String> phoneNumbers = new ArrayList<>();
 
-            List<ContactsEntity> contactsForCurrentTranslation = contactsRepository.findBySelectedSendTimePacificAndBibleTranslationAndSubscriptionConfirmed(Double.valueOf(currentHour), bibleTranslation, (byte) 1);
+            List<Contact> contactsForCurrentTranslation = contactsRepository.findBySelectedSendTimePacificAndBibleTranslationAndSubscriptionConfirmed(Double.valueOf(currentHour), bibleTranslation, (byte) 1);
             if (contactsForCurrentTranslation.size() > 0){
 
-                for(ContactsEntity contact : contactsForCurrentTranslation){
+                for(Contact contact : contactsForCurrentTranslation){
                     String phoneNumber = contact.getPhoneNumber();
                     if(!phoneNumber.isEmpty() && phoneNumber != null){
                         phoneNumbers.add(phoneNumber);
@@ -99,7 +98,12 @@ public class JobSchedulerService {
                 }
 
                 if(telerivetEnabled && !verseToSend.isEmpty() && verseToSend != null){
-                    telerivetService.sendMessageToGroup(verseToSend + " " + verseLocation, phoneNumbers);
+                    try {
+                        telerivetService.sendMessageToGroup(verseToSend + " " + verseLocation, phoneNumbers);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        // TODO:
+                    }
                 }
                 else {
                     log.warn("Telerivet is disabled!");
@@ -124,7 +128,7 @@ public class JobSchedulerService {
         SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
         String formattedTomorrowDate = df.format(dt);
 
-        Optional<VersesEntity> verseForTomorrowOptional = versesRepository.findByDate(tomorrow);
+        Optional<Verse> verseForTomorrowOptional = versesRepository.findByDate(tomorrow);
         if (!verseForTomorrowOptional.isPresent()){
             String errMsg = "No verses found for " + formattedTomorrowDate;
             log.error(errMsg);

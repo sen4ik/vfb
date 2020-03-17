@@ -7,27 +7,45 @@ import java.sql.Timestamp;
 
 @Entity
 @Table(name = "sent_messages_log", schema = Constants.SCHEMA)
-public class SentMessagesLogEntity {
-    private int id;
-    private Integer userId;
-    private Integer verseId;
-    private String messageBody;
-    private String phoneNumberSentTo;
-    private String phoneNumberSentFrom;
-    private Timestamp timestamp;
+public class SentMessagesLog {
 
     @Id
     @Column(name = "id")
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     @Basic
     @Column(name = "user_id")
+    private Integer userId;
+
+    @Basic
+    @Column(name = "verse_id")
+    private Integer verseId;
+
+    @Basic
+    @Column(name = "message_body")
+    private String messageBody;
+
+    @Basic
+    @Column(name = "phone_number_sent_to")
+    private String phoneNumberSentTo;
+
+    @Basic
+    @Column(name = "phone_number_sent_from")
+    private String phoneNumberSentFrom;
+
+    @Basic
+    @Column(name = "timestamp")
+    private Timestamp timestamp;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     public Integer getUserId() {
         return userId;
     }
@@ -36,8 +54,6 @@ public class SentMessagesLogEntity {
         this.userId = userId;
     }
 
-    @Basic
-    @Column(name = "verse_id")
     public Integer getVerseId() {
         return verseId;
     }
@@ -46,8 +62,6 @@ public class SentMessagesLogEntity {
         this.verseId = verseId;
     }
 
-    @Basic
-    @Column(name = "message_body")
     public String getMessageBody() {
         return messageBody;
     }
@@ -56,8 +70,6 @@ public class SentMessagesLogEntity {
         this.messageBody = messageBody;
     }
 
-    @Basic
-    @Column(name = "phone_number_sent_to")
     public String getPhoneNumberSentTo() {
         return phoneNumberSentTo;
     }
@@ -66,8 +78,6 @@ public class SentMessagesLogEntity {
         this.phoneNumberSentTo = phoneNumberSentTo;
     }
 
-    @Basic
-    @Column(name = "phone_number_sent_from")
     public String getPhoneNumberSentFrom() {
         return phoneNumberSentFrom;
     }
@@ -76,8 +86,6 @@ public class SentMessagesLogEntity {
         this.phoneNumberSentFrom = phoneNumberSentFrom;
     }
 
-    @Basic
-    @Column(name = "timestamp")
     public Timestamp getTimestamp() {
         return timestamp;
     }

@@ -1,7 +1,7 @@
 package com.sen4ik.vfb.controllers;
 
-import com.sen4ik.vfb.entities.ContactsEntity;
-import com.sen4ik.vfb.entities.VersesEntity;
+import com.sen4ik.vfb.entities.Contact;
+import com.sen4ik.vfb.entities.Verse;
 import com.sen4ik.vfb.enums.Views;
 import com.sen4ik.vfb.repositories.ContactsRepository;
 import com.sen4ik.vfb.repositories.VersesRepository;
@@ -32,7 +32,7 @@ public class AdminController {
     @Autowired
     private ContactsRepository contactsRepository;
 
-    @GetMapping("/admin")
+    @GetMapping("/admin/index")
     public String admin() {
         return Views.admin.value;
     }
@@ -44,14 +44,14 @@ public class AdminController {
     }
 
     @PostMapping("/add_verse")
-    public RedirectView addContact(@Valid VersesEntity verse, BindingResult result, RedirectAttributes redirectAttributes) {
+    public RedirectView addContact(@Valid Verse verse, BindingResult result, RedirectAttributes redirectAttributes) {
 
         if(result.hasErrors()) {
             log.error(result.getAllErrors().toString());
             return new RedirectView(Views.error.value);
         }
 
-        int verseId = verse.getId();
+        Integer verseId = verse.getId();
         if(verseId == 0){
             // this is verse add
             versesRepository.save(verse);
@@ -70,7 +70,7 @@ public class AdminController {
 
     @GetMapping(value = "/admin/verse/{id}/edit")
     public RedirectView editVerse(@PathVariable("id") Integer id, Model model, RedirectAttributes redirectAttributes) {
-        Optional<VersesEntity> verse = versesRepository.findById(id);
+        Optional<Verse> verse = versesRepository.findById(id);
 
         // model.addAttribute("verse", verse.get());
         redirectAttributes.addFlashAttribute("verse", verse.get());
@@ -102,17 +102,17 @@ public class AdminController {
     }
 
     @ModelAttribute("verse")
-    private VersesEntity getVerse(){
-        return new VersesEntity();
+    private Verse getVerse(){
+        return new Verse();
     }
 
     @ModelAttribute("verses")
-    private List<VersesEntity> getVerses(){
+    private List<Verse> getVerses(){
         return versesRepository.findAll();
     }
 
     @ModelAttribute("contacts")
-    private List<ContactsEntity> getContacts(){
+    private List<Contact> getContacts(){
         return contactsRepository.findAll();
     }
 
