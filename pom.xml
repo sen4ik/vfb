@@ -19,6 +19,7 @@
 
 	<properties>
 		<java.version>1.8</java.version>
+		<start-class>com.sen4ik.vfb.VfbApplication</start-class>
 	</properties>
 
 	<dependencies>
