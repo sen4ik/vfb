@@ -1,6 +1,7 @@
 package com.sen4ik.vfb;
 
 import com.sen4ik.vfb.controllers.HomeController;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ public class HomeControllerTests {
 	private MockMvc mockMvc;
 
 	@Test
+	@Disabled
 	public void main() throws Exception {
 		ResultActions resultActions = mockMvc.perform(get("/index"))
 				.andExpect(status().isOk())
