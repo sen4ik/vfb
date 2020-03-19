@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,9 +33,6 @@ public class TelerivetController {
 
     @Value("${my.phone}")
     private String myPhoneNumber;
-
-    @Value("${vfb.debug}")
-    private Boolean debug;
 
     @Autowired
     ContactsService contactsService;
@@ -61,6 +59,7 @@ public class TelerivetController {
             consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
         )
+    @Async
     public @ResponseBody
     ResponseEntity<String> telerivetHook(HttpServletRequest request) throws ServletException, IOException {
 
@@ -91,19 +90,19 @@ public class TelerivetController {
 
                 Optional<Contact> contact = contactsRepository.findByPhoneNumber(fromNumberSanitized);
                 if (!contact.isPresent()){
-                    return sendMessageInResponse(generalMessage);
+                    return sendMessageInResponse(generalMessage); // tested
                 }
                 else{
                     Contact currentContact = contact.get();
-                    if(currentContact.getSubscriptionConfirmed() == 0){
+                    if(currentContact.getSubscriptionConfirmed() == 0){ // tested
                         currentContact.setSubscriptionConfirmed((byte) 1);
                         contactsRepository.save(currentContact);
                         return sendMessageInResponse("Thank you for confirming subscription to VerseFromBible.com! You will now receive bible verses daily.");
                     }
-                    else if(currentContact.getSubscriptionConfirmed() == 1){
+                    else if(currentContact.getSubscriptionConfirmed() == 1){ // tested: works
                         return sendMessageInResponse("You have confirmed your VerseFromBible.com subscription already. If you are having issues, contact us at VerseFromBible.com.");
                     }
-                    else{
+                    else{ // tested
                         String msg = "Contact " + fromNumberSanitized + " messaged \"" + content + "\" but subscription is not 1 or 0.";
                         log.warn(msg);
                         telerivetService.sendSingleMessage(myPhoneNumber, msg);
@@ -125,7 +124,7 @@ public class TelerivetController {
                 }
             }
             else{
-                log.info("Unexpected message content");
+                log.info("Unexpected message content"); // tested
                 return sendMessageInResponse(generalMessage);
             }
         }

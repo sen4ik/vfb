@@ -10,15 +10,12 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class ContactsService {
 
-    @Value("${vfb.debug}")
-    private Boolean debug;
-
     public String sanitizePhoneNumber(String pn){
         String phoneNumber = pn.replaceAll("\\(", "").replaceAll("\\)", "").replaceAll("-", "").replaceAll(" ", "").trim();
         if(phoneNumber.startsWith("+1")){
             phoneNumber = phoneNumber.substring(2, phoneNumber.length());
         }
-        if (debug) log.debug(phoneNumber);
+        log.debug(phoneNumber);
         return phoneNumber;
     }
 
