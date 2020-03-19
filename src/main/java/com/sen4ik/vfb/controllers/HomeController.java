@@ -5,6 +5,7 @@ import com.sen4ik.vfb.entities.Verse;
 import com.sen4ik.vfb.enums.Views;
 import com.sen4ik.vfb.repositories.ContactsRepository;
 import com.sen4ik.vfb.repositories.VersesRepository;
+import com.sen4ik.vfb.services.ContactsService;
 import com.sen4ik.vfb.services.EmailServiceImpl;
 import com.sen4ik.vfb.services.TelerivetService;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +42,9 @@ public class HomeController {
     @Autowired
     EmailServiceImpl emailService;
 
+    @Autowired
+    ContactsService contactsService;
+
     @Value("${telerivet.enabled}")
     private Boolean telerivetEnabled;
 
@@ -64,7 +68,7 @@ public class HomeController {
         redirectAttributes.addFlashAttribute("sectionId", "sign_up");
 
         String phoneNumber = contact.getPhoneNumber();
-        String sanitizedPhone = sanitizePhoneNumber(phoneNumber);
+        String sanitizedPhone = contactsService.sanitizePhoneNumber(phoneNumber);
 
         Optional<Contact> existingContact = contactsRepository.findByPhoneNumber(sanitizedPhone);
         if (existingContact.isPresent()){
@@ -127,16 +131,12 @@ public class HomeController {
         return new RedirectView(Views.home.value);
     }
 
-    private String sanitizePhoneNumber(String pn){
-        return pn.replaceAll("\\(", "").replaceAll("\\)", "").replaceAll("-", "").replaceAll(" ", "").trim();
-    }
-
     @PostMapping("/unsubscribe")
     public RedirectView unsubscribeContact(@RequestParam(name = "unsubscribe_phone_number") String unsubscribePhoneNumber, RedirectAttributes redirectAttributes) {
 
         redirectAttributes.addFlashAttribute("sectionId", "unsubscribe");
 
-        String sanitizedUnsubscribePhoneNumber = sanitizePhoneNumber(unsubscribePhoneNumber);
+        String sanitizedUnsubscribePhoneNumber = contactsService.sanitizePhoneNumber(unsubscribePhoneNumber);
 
         Optional<Contact> contact = contactsRepository.findByPhoneNumber(sanitizedUnsubscribePhoneNumber);
         if (!contact.isPresent()){
