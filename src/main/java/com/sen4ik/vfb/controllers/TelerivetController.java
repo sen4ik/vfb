@@ -35,19 +35,21 @@ public class TelerivetController {
         )
 //    public @ResponseBody String telerivetHook(@PathVariable("secret") String secret, MultiValueMap paramMap){
     public @ResponseBody String telerivetHook(
-            @RequestParam("secret") String secret,
-            @RequestParam("incoming_message") String incoming_message,
-            @RequestParam("event") String event,
-            @RequestParam("content") String content,
-            @RequestParam("from_number") String from_number){
-
+            @RequestParam("secret") String secret
+//            @RequestParam("incoming_message") String incoming_message,
+//            @RequestParam("event") String event,
+//            @RequestParam("content") String content,
+//            @RequestParam("from_number") String from_number
+    ){
         log.info("CALLED: telerivetHook()");
-        log.info("incoming_message: " + incoming_message);
-        log.info("event: " + event);
-        log.info("content: " + content);
-        log.info("from_number: " + from_number);
 
-        String res = incoming_message + " | " + event + " | " + content + " | " + from_number;
+        log.info("secret: " + secret);
+//        log.info("event: " + event);
+//        log.info("content: " + content);
+//        log.info("from_number: " + from_number);
+
+//        String res = incoming_message + " | " + event + " | " + content + " | " + from_number;
+        String res = secret;
         return res;
     }
 
