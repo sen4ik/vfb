@@ -52,7 +52,7 @@ public class AdminController {
         }
 
         Integer verseId = verse.getId();
-        if(verseId == 0){
+        if(verseId == null || verseId == 0){
             // this is verse add
             versesRepository.save(verse);
             redirectAttributes.addFlashAttribute("sectionId", "add_verse");
