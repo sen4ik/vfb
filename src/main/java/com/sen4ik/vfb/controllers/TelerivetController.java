@@ -31,7 +31,7 @@ public class TelerivetController {
     @PostMapping(
             path = "/hook",
             consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
-            produces = {MediaType.APPLICATION_JSON_VALUE}
+            produces = MediaType.APPLICATION_JSON_VALUE
         )
 //    public @ResponseBody String telerivetHook(@PathVariable("secret") String secret, MultiValueMap paramMap){
     public @ResponseBody String telerivetHook(
@@ -39,7 +39,7 @@ public class TelerivetController {
             @RequestParam("incoming_message") String incoming_message,
             @RequestParam("event") String event,
             @RequestParam("content") String content,
-            @RequestParam("content") String from_number){
+            @RequestParam("from_number") String from_number){
 
         log.info("CALLED: telerivetHook()");
 
