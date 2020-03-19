@@ -48,72 +48,73 @@ public class JobSchedulerService {
         if (!verseForTodayOptional.isPresent()){
             log.error("No verses found for " + formattedDate);
         }
-        Verse verseForToday = verseForTodayOptional.get();
+        else{
+            Verse verseForToday = verseForTodayOptional.get();
 
-        int currentHour = LocalTime.now().getHour();
-        log.info("Current hour: " + currentHour);
+            int currentHour = LocalTime.now().getHour();
+            log.info("Current hour: " + currentHour);
 
-        List<Contact> allContacts = contactsRepository.findAll();
-        Set<String> bibleTranslations = allContacts.stream().map(Contact::getBibleTranslation).collect(Collectors.toSet());
-        // Set<String> bibleTranslations = allContacts.stream().map(ContactsEntity::getBibleTranslation).collect(Collectors.toSet());
+            List<Contact> allContacts = contactsRepository.findAll();
+            Set<String> bibleTranslations = allContacts.stream().map(Contact::getBibleTranslation).collect(Collectors.toSet());
+            // Set<String> bibleTranslations = allContacts.stream().map(ContactsEntity::getBibleTranslation).collect(Collectors.toSet());
 
-        for(String bibleTranslation : bibleTranslations){
+            for(String bibleTranslation : bibleTranslations){
 
-            log.info("Bible Translation: " + bibleTranslation);
+                log.info("Bible Translation: " + bibleTranslation);
 
-            List<String> phoneNumbers = new ArrayList<>();
+                List<String> phoneNumbers = new ArrayList<>();
 
-            List<Contact> contactsForCurrentTranslation = contactsRepository.findBySelectedSendTimePacificAndBibleTranslationAndSubscriptionConfirmed(Double.valueOf(currentHour), bibleTranslation, (byte) 1);
-            if (contactsForCurrentTranslation.size() > 0){
+                List<Contact> contactsForCurrentTranslation = contactsRepository.findBySelectedSendTimePacificAndBibleTranslationAndSubscriptionConfirmed(Double.valueOf(currentHour), bibleTranslation, (byte) 1);
+                if (contactsForCurrentTranslation.size() > 0){
 
-                for(Contact contact : contactsForCurrentTranslation){
-                    String phoneNumber = contact.getPhoneNumber();
-                    if(!phoneNumber.isEmpty() && phoneNumber != null){
-                        phoneNumbers.add(phoneNumber);
+                    for(Contact contact : contactsForCurrentTranslation){
+                        String phoneNumber = contact.getPhoneNumber();
+                        if(!phoneNumber.isEmpty() && phoneNumber != null){
+                            phoneNumbers.add(phoneNumber);
+                        }
                     }
-                }
 
-                log.info("Phone Numbers: " + phoneNumbers.toString());
+                    log.info("Phone Numbers: " + phoneNumbers.toString());
 
-                String verseToSend = "";
-                String verseLocation = "";
-                if(bibleTranslation.equals("en_esv")){
-                    verseToSend = verseForToday.getEnEsv();
-                    verseLocation = verseForToday.getEnVerseLocation();
-                }
-                else if(bibleTranslation.equals("en_niv")){
-                    verseToSend = verseForToday.getEnNiv();
-                    verseLocation = verseForToday.getEnVerseLocation();
-                }
-                else if(bibleTranslation.equals("en_kjv")){
-                    verseToSend = verseForToday.getEnKjv();
-                    verseLocation = verseForToday.getEnVerseLocation();
-                }
-                else if(bibleTranslation.equals("ru_synodal")){
-                    verseToSend = verseForToday.getRuSynodal();
-                    verseLocation = verseForToday.getRuVerseLocation();
+                    String verseToSend = "";
+                    String verseLocation = "";
+                    if(bibleTranslation.equals("en_esv")){
+                        verseToSend = verseForToday.getEnEsv();
+                        verseLocation = verseForToday.getEnVerseLocation();
+                    }
+                    else if(bibleTranslation.equals("en_niv")){
+                        verseToSend = verseForToday.getEnNiv();
+                        verseLocation = verseForToday.getEnVerseLocation();
+                    }
+                    else if(bibleTranslation.equals("en_kjv")){
+                        verseToSend = verseForToday.getEnKjv();
+                        verseLocation = verseForToday.getEnVerseLocation();
+                    }
+                    else if(bibleTranslation.equals("ru_synodal")){
+                        verseToSend = verseForToday.getRuSynodal();
+                        verseLocation = verseForToday.getRuVerseLocation();
+                    }
+                    else{
+                        log.error("Unexpected bible translation present " + bibleTranslation);
+                    }
+
+                    if(telerivetEnabled && !verseToSend.isEmpty() && verseToSend != null){
+                        try {
+                            telerivetService.sendMessageToGroup(verseToSend + " " + verseLocation, phoneNumbers);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            // TODO:
+                        }
+                    }
+                    else {
+                        log.warn("Telerivet is disabled!");
+                    }
+
                 }
                 else{
-                    log.error("Unexpected bible translation present " + bibleTranslation);
+                    log.warn("No contacts for hour " + currentHour + " and bible translation " + bibleTranslation + "!");
                 }
-
-                if(telerivetEnabled && !verseToSend.isEmpty() && verseToSend != null){
-                    try {
-                        telerivetService.sendMessageToGroup(verseToSend + " " + verseLocation, phoneNumbers);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        // TODO:
-                    }
-                }
-                else {
-                    log.warn("Telerivet is disabled!");
-                }
-
             }
-            else{
-                log.warn("No contacts for hour " + currentHour + " and bible translation " + bibleTranslation + "!");
-            }
-
         }
     }
 
