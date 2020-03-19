@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -47,9 +48,13 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 
-		http.authorizeRequests()
+		http
+		    .csrf().ignoringAntMatchers("/telerivet/**").and()
+			.authorizeRequests().antMatchers(HttpMethod.POST, "/telerivet/**").permitAll();
+
+		http
+			.authorizeRequests()
 				.antMatchers("/", "/index", "/unsubscribe", "/contact_me", "/register", "/confirm", "/error", "/access-denied", "/js/**", "/bootstrap-datepicker/**", "/vendor/**", "/css/**", "/img/**").permitAll()
-				// .antMatchers(HttpMethod.POST, "/index", "/unsubscribe", "/contact_me", "/register").permitAll()
 				.anyRequest().fullyAuthenticated()
 				.and()
 				.formLogin()

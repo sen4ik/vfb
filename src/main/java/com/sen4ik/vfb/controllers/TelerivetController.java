@@ -1,66 +1,44 @@
 package com.sen4ik.vfb.controllers;
 
+import com.sen4ik.vfb.entities.TelerivetIncoming;
 import lombok.extern.slf4j.Slf4j;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @Slf4j
+@RequestMapping(path = "/telerivet")
 public class TelerivetController {
 
     @Value("${telerivet.webhook.secret}")
     private String webHookSecret;
 
-    @PostMapping("/telerivet")
-    public void telerivet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    /*
+    @GetMapping(path="/hook")
+    @ResponseBody
+    public String getHook() {
+        log.info("CALLED: getHook()");
+        return "getHook";
+    }
+    */
 
-        log.info("CALLED: telerivet()");
+    // @RequestMapping(value = "/hook", method = RequestMethod.POST)
+    @PostMapping(
+            path = "/hook",
+            consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
+    @ResponseBody
+    public String telerivetHook(@RequestBody TelerivetIncoming telerivetIncoming){
+        log.info("CALLED: telerivetHook()");
 
-        PrintWriter out = response.getWriter();
+        String receivedSecret = telerivetIncoming.getSecret();
 
-        if (!webHookSecret.equals(request.getParameter("secret")))
-        {
-            response.setStatus(403);
-            out.write("Invalid webhook secret");
-            log.info("Invalid webhook secret");
-        }
-        else if ("incoming_message".equals(request.getParameter("event")))
-        {
-            String content = request.getParameter("content");
-            String fromNumber = request.getParameter("from_number");
-            String phoneId = request.getParameter("phone_id");
+        if (!webHookSecret.equals(receivedSecret)){
 
-            // do something with the message, e.g. send an autoreply
-            response.setContentType("application/json");
-
-            try
-            {
-                JSONArray messages = new JSONArray();
-                JSONObject reply = new JSONObject();
-                reply.put("content", "Thanks for your message!");
-                messages.put(reply);
-
-                JSONObject json = new JSONObject();
-                json.put("messages", messages);
-
-                json.write(out);
-            }
-            catch (JSONException ex)
-            {
-                throw new ServletException(ex);
-            }
         }
 
+        return "postHook" + receivedSecret;
     }
 
 }
