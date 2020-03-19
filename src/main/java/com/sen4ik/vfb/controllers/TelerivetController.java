@@ -88,7 +88,7 @@ public class TelerivetController {
 
                 // json.write(out);
 
-                return sendResponse(jsonError, HttpStatus.OK);
+                return sendResponse(json, HttpStatus.OK);
             }
             catch (JSONException ex){
                 throw new ServletException(ex);
