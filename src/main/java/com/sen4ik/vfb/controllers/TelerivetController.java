@@ -1,6 +1,9 @@
 package com.sen4ik.vfb.controllers;
 
+import com.sen4ik.vfb.entities.Contact;
+import com.sen4ik.vfb.repositories.ContactsRepository;
 import com.sen4ik.vfb.services.ContactsService;
+import com.sen4ik.vfb.services.TelerivetService;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -15,7 +18,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.Optional;
 
 @Controller
 @Slf4j
@@ -25,8 +30,19 @@ public class TelerivetController {
     @Value("${telerivet.webhook.secret}")
     private String webHookSecret;
 
+    @Value("${my.phone}")
+    private String myPhoneNumber;
+
     @Autowired
     ContactsService contactsService;
+
+    @Autowired
+    TelerivetService telerivetService;
+
+    @Autowired
+    private ContactsRepository contactsRepository;
+
+    String generalMessage = "Hi, I am VerseFromBible.com bot. If you want to subscribe - go to www.VerseFromBible.com. If you want to stop your subscription - reply STOP.";
 
     /*
     @GetMapping(path="/hook")
@@ -43,7 +59,7 @@ public class TelerivetController {
             produces = MediaType.APPLICATION_JSON_VALUE
         )
     public @ResponseBody
-    ResponseEntity<String> telerivetHook(HttpServletRequest request) throws ServletException {
+    ResponseEntity<String> telerivetHook(HttpServletRequest request) throws ServletException, IOException {
 
         log.info("CALLED: telerivetHook()");
 
@@ -69,22 +85,47 @@ public class TelerivetController {
 
             Arrays.asList("REMOVE", "remove", "STOP", "stop");
 
-            if(Arrays.asList("YES", "yes").contains(content.trim())){
+            if(content.trim().equalsIgnoreCase("yes")){
                 log.info("Confirming subscription");
 
+                Optional<Contact> contact = contactsRepository.findByPhoneNumber(fromNumberSanitized);
+                if (!contact.isPresent()){
+                    return sendMessageInResponse(generalMessage);
+                }
+                else{
+                    Contact currentContact = contact.get();
+                    if(currentContact.getSubscriptionConfirmed() == 0){
+                        currentContact.setSubscriptionConfirmed((byte) 1);
+                        contactsRepository.save(currentContact);
+                        return sendMessageInResponse("Thank you for confirming subscription to VerseFromBible.com! You will now receive bible verses daily.");
+                    }
+                    else if(currentContact.getSubscriptionConfirmed() == 1){
+                        return sendMessageInResponse("You have confirmed your VerseFromBible.com subscription already. If you are having issues, contact us at VerseFromBible.com.");
+                    }
+                    else{
+                        String msg = "Contact " + fromNumberSanitized + " messaged \"" + content + "\" but subscription is not 1 or 0.";
+                        log.warn(msg);
+                        telerivetService.sendSingleMessage(myPhoneNumber, msg);
+                    }
+                }
 
-
-                return sendMessageInResponse("Thank you for confirming subscription to VerseFromBible.com! You will now receive bible verses daily.");
             }
-            else if(Arrays.asList("REMOVE", "remove", "STOP", "stop").contains(content.trim())){
+            else if(Arrays.asList("REMOVE", "remove", "STOP", "stop", "Remove", "Stop").contains(content.trim())){
                 log.info("Unsubscribe");
 
-
-                return sendMessageInResponse("You have been completely unsubscribed from VerseFromBible.com");
+                Optional<Contact> contact = contactsRepository.findByPhoneNumber(fromNumberSanitized);
+                if (!contact.isPresent()){
+                    return sendMessageInResponse(generalMessage);
+                }
+                else{
+                    Contact currentContact = contact.get();
+                    contactsRepository.delete(currentContact);
+                    return sendMessageInResponse("You have been completely unsubscribed from VerseFromBible.com");
+                }
             }
             else{
                 log.info("Unexpected message content");
-                return sendMessageInResponse("Hi, I am VerseFromBible.com bot. If you want to stop your subscription - reply STOP. If you want to subscribe - go to www.VerseFromBible.com.");
+                return sendMessageInResponse(generalMessage);
             }
         }
 

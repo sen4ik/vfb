@@ -39,7 +39,7 @@ public class RegisterController {
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    @Value("${email.mine}")
+    @Value("${my.email}")
     private String from;
 
     @RequestMapping(value="/register", method = RequestMethod.GET)

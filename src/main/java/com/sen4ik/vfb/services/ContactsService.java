@@ -10,7 +10,11 @@ import org.springframework.stereotype.Service;
 public class ContactsService {
 
     public String sanitizePhoneNumber(String pn){
-        return pn.replaceAll("\\(", "").replaceAll("\\)", "").replaceAll("-", "").replaceAll(" ", "").trim();
+        String phoneNumber = pn.replaceAll("\\(", "").replaceAll("\\)", "").replaceAll("-", "").replaceAll(" ", "").trim();
+        if(phoneNumber.startsWith("+1")){
+            phoneNumber.substring(2, phoneNumber.length());
+        }
+        return phoneNumber;
     }
 
 }

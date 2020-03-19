@@ -10,8 +10,8 @@
 - Uncomment security in pom -- DONE
 - Add springsecurity class -- DONE
 
-- Integrate with telerivet to confirm subscription with YES/CONFIRM.
-- Integrate with telerivet to stop subscription with STOP.
+- Integrate with telerivet to confirm subscription with YES/CONFIRM. -- DONE
+- Integrate with telerivet to stop subscription with STOP. -- DONE
 
 - confirm token can be reused to set new password
 

@@ -15,7 +15,7 @@ public class EmailServiceImpl {
     @Autowired
     public JavaMailSender emailSender;
 
-    @Value("${email.mine}")
+    @Value("${my.email}")
     private String to;
 
     @Async

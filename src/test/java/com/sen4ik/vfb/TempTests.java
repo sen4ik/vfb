@@ -28,4 +28,14 @@ public class TempTests {
         jobSchedulerService.checkIfVerseForTomorrowExists();
     }
 
+    @Test
+    @Disabled
+    public void ttt() {
+        String phoneNumber = "+19168683391";
+        phoneNumber = phoneNumber.substring(2, phoneNumber.length());
+        log.info(phoneNumber);
+    }
+
+
+
 }
