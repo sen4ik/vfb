@@ -38,7 +38,7 @@ public class TelerivetController {
     */
 
     @PostMapping(
-            path = "/hook",
+            path = " /hook",
             consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
         )
