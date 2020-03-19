@@ -33,6 +33,9 @@ public class TelerivetController {
     @Value("${my.phone}")
     private String myPhoneNumber;
 
+    @Value("${vfb.debug}")
+    private Boolean debug;
+
     @Autowired
     ContactsService contactsService;
 
@@ -83,9 +86,7 @@ public class TelerivetController {
             log.info("fromNumber: " + fromNumberMasked);
             log.info("phoneId: " + phoneId);
 
-            Arrays.asList("REMOVE", "remove", "STOP", "stop");
-
-            if(content.trim().equalsIgnoreCase("yes")){
+            if(content.trim().toLowerCase().equals("yes")){
                 log.info("Confirming subscription");
 
                 Optional<Contact> contact = contactsRepository.findByPhoneNumber(fromNumberSanitized);

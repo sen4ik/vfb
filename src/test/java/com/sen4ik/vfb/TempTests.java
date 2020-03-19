@@ -1,5 +1,6 @@
 package com.sen4ik.vfb;
 
+import com.sen4ik.vfb.services.BibleApiService;
 import com.sen4ik.vfb.services.JobSchedulerService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Disabled;
