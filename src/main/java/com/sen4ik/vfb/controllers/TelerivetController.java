@@ -42,7 +42,7 @@ public class TelerivetController {
         )
 //    public @ResponseBody String telerivetHook(@PathVariable("secret") String secret, MultiValueMap paramMap){
     public @ResponseBody
-    ResponseEntity<JSONObject> telerivetHook(
+    ResponseEntity<String> telerivetHook(
             @RequestParam("secret") String secret, HttpServletRequest request, HttpServletResponse response
 //            @RequestParam("incoming_message") String incoming_message,
 //            @RequestParam("event") String event,
@@ -55,14 +55,15 @@ public class TelerivetController {
 //        log.info("event: " + event);
 //        log.info("content: " + content);
 //        log.info("from_number: " + from_number);
-
 //        String res = incoming_message + " | " + event + " | " + content + " | " + from_number;
-        PrintWriter out = response.getWriter();
+
+        // PrintWriter out = response.getWriter();
+        log.info("secret param from request " + request.getParameter("secret"));
 
         if (!webHookSecret.equals(request.getParameter("secret")))
         {
             response.setStatus(403);
-            out.write("Invalid webhook secret");
+            // out.write("Invalid webhook secret");
             log.info("Invalid webhook secret");
         }
         else if ("incoming_message".equals(request.getParameter("event")))
@@ -75,7 +76,7 @@ public class TelerivetController {
             log.info(content + " | " + fromNumber + " | " + phoneId);
             // do something with the message, e.g. send an autoreply
 
-            response.setContentType("application/json");
+            // response.setContentType("application/json");
 
             try
             {
@@ -87,11 +88,12 @@ public class TelerivetController {
                 JSONObject json = new JSONObject();
                 json.put("messages", messages);
 
-                json.write(out);
+                // json.write(out);
+                log.info("JSON: " + json.toString());
 
                 return ResponseEntity.status(HttpStatus.OK)
                         .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-                        .body(json);
+                        .body(json.toString());
             }
             catch (JSONException ex){
                 throw new ServletException(ex);
@@ -102,7 +104,7 @@ public class TelerivetController {
         json.put("messages", "Error");
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-                .body(json);
+                .body(json.toString());
     }
 
 }
