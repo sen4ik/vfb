@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.util.Arrays;
 
 @Controller
 @Slf4j
@@ -43,25 +43,18 @@ public class TelerivetController {
             produces = MediaType.APPLICATION_JSON_VALUE
         )
     public @ResponseBody
-    ResponseEntity<String> telerivetHook(// @RequestParam("secret") String secret,
-            HttpServletRequest request, HttpServletResponse response) throws ServletException {
+    ResponseEntity<String> telerivetHook(HttpServletRequest request) throws ServletException {
 
         log.info("CALLED: telerivetHook()");
 
         JSONObject jsonError = new JSONObject();
         jsonError.put("messages", "Error");
 
-        // PrintWriter out = response.getWriter();
-
-        if (!webHookSecret.equals(request.getParameter("secret")))
-        {
-            // out.write("Invalid webhook secret");
+        if (!webHookSecret.equals(request.getParameter("secret"))){
             log.error("Invalid secret provided!");
-            // response.setStatus(403);
-            return sendResponse(jsonError, HttpStatus.INTERNAL_SERVER_ERROR);
+            return sendJsonResponse(jsonError, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        else if ("incoming_message".equals(request.getParameter("event")))
-        {
+        else if ("incoming_message".equals(request.getParameter("event"))){
             log.info("Incoming message received");
 
             String content = request.getParameter("content");
@@ -74,38 +67,52 @@ public class TelerivetController {
             log.info("fromNumber: " + fromNumberMasked);
             log.info("phoneId: " + phoneId);
 
-            // response.setContentType("application/json");
+            Arrays.asList("REMOVE", "remove", "STOP", "stop");
 
-            try
-            {
-                JSONArray messages = new JSONArray();
-                JSONObject reply = new JSONObject();
-                reply.put("content", "Thanks for your message!");
-                messages.put(reply);
+            if(Arrays.asList("YES", "yes").contains(content.trim())){
+                log.info("Confirming subscription");
 
-                JSONObject json = new JSONObject();
-                json.put("messages", messages);
 
-                // json.write(out);
 
-                return sendResponse(json, HttpStatus.OK);
+                return sendMessageInResponse("Thank you for confirming subscription to VerseFromBible.com! You will now receive bible verses daily.");
             }
-            catch (JSONException ex){
-                throw new ServletException(ex);
+            else if(Arrays.asList("REMOVE", "remove", "STOP", "stop").contains(content.trim())){
+                log.info("Unsubscribe");
+
+
+                return sendMessageInResponse("You have been completely unsubscribed from VerseFromBible.com");
+            }
+            else{
+                log.info("Unexpected message content");
+                return sendMessageInResponse("Hi, I am VerseFromBible.com bot. If you want to stop your subscription - reply STOP. If you want to subscribe - go to www.VerseFromBible.com.");
             }
         }
 
-//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-//                .body(json.toString());
-
-        return sendResponse(jsonError, HttpStatus.INTERNAL_SERVER_ERROR);
+        return sendJsonResponse(jsonError, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    private ResponseEntity<String> sendResponse(JSONObject json, HttpStatus httpStatus){
+    private ResponseEntity<String> sendJsonResponse(JSONObject json, HttpStatus httpStatus){
         return ResponseEntity.status(httpStatus)
                 .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
                 .body(json.toString());
+    }
+
+    private ResponseEntity<String> sendMessageInResponse(String message) throws ServletException {
+        try
+        {
+            JSONArray messages = new JSONArray();
+            JSONObject reply = new JSONObject();
+            reply.put("content", message);
+            messages.put(reply);
+
+            JSONObject json = new JSONObject();
+            json.put("messages", messages);
+
+            return sendJsonResponse(json, HttpStatus.OK);
+        }
+        catch (JSONException ex){
+            throw new ServletException(ex);
+        }
     }
 
 }
