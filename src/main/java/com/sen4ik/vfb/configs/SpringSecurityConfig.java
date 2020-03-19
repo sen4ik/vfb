@@ -48,7 +48,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 
 		http.authorizeRequests()
-				.antMatchers("/telerivet", "/", "/index", "/unsubscribe", "/contact_me", "/register", "/confirm", "/error", "/js/**", "/bootstrap-datepicker/**", "/vendor/**", "/css/**", "/img/**").permitAll()
+				.antMatchers("/", "/index", "/unsubscribe", "/contact_me", "/register", "/confirm", "/error", "/access-denied", "/js/**", "/bootstrap-datepicker/**", "/vendor/**", "/css/**", "/img/**").permitAll()
 				// .antMatchers(HttpMethod.POST, "/index", "/unsubscribe", "/contact_me", "/register").permitAll()
 				.anyRequest().fullyAuthenticated()
 				.and()
