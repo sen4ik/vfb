@@ -67,11 +67,14 @@ public class TelerivetController {
         }
         else if ("incoming_message".equals(request.getParameter("event")))
         {
+            log.info("incoming_message");
             String content = request.getParameter("content");
             String fromNumber = request.getParameter("from_number");
             String phoneId = request.getParameter("phone_id");
 
+            log.info(content + " | " + fromNumber + " | " + phoneId);
             // do something with the message, e.g. send an autoreply
+
             response.setContentType("application/json");
 
             try
@@ -94,9 +97,6 @@ public class TelerivetController {
                 throw new ServletException(ex);
             }
         }
-
-        String res = secret;
-
 
         JSONObject json = new JSONObject();
         json.put("messages", "Error");
