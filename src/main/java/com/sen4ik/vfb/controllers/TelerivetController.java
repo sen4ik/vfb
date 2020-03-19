@@ -42,6 +42,10 @@ public class TelerivetController {
             @RequestParam("from_number") String from_number){
 
         log.info("CALLED: telerivetHook()");
+        log.info("incoming_message: " + incoming_message);
+        log.info("event: " + event);
+        log.info("content: " + content);
+        log.info("from_number: " + from_number);
 
         String res = incoming_message + " | " + event + " | " + content + " | " + from_number;
         return res;
