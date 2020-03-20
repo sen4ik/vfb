@@ -81,7 +81,7 @@ public class AdminController {
         redirectAttributes.addFlashAttribute("verse", verse.get());
 
         RedirectView redirect = new RedirectView("/" + Views.admin.value);
-        redirect.setExposeModelAttributes(false);
+        //redirect.setExposeModelAttributes(false);
         return redirect;
     }
 
@@ -92,17 +92,10 @@ public class AdminController {
         Verse verse = bibleApiService.getBibleVerse(bookName, chapterNumber, verseNumber);
         redirectAttributes.addFlashAttribute("verse", verse);
         RedirectView redirect = new RedirectView("/" + Views.admin.value);
-        redirect.setExposeModelAttributes(false);
+        //redirect.setExposeModelAttributes(false);
         return redirect;
     }
 
-    private RedirectView redirectTo_exposeModelAttributesDisabled(String url){
-        RedirectView redirect = new RedirectView(url);
-        redirect.setExposeModelAttributes(false);
-        return redirect;
-    }
-
-    // @RequestMapping(value = "/admin/verse/{id}/delete", method = RequestMethod.GET)
     @GetMapping("/admin/verse/{id}/delete")
     public RedirectView deleteVerse(@PathVariable("id") Integer id,
                                     RedirectAttributes redirectAttributes) {
@@ -113,7 +106,7 @@ public class AdminController {
         redirectAttributes.addFlashAttribute("verseActionSuccessMessage", "Verse was deleted!");
 
         RedirectView redirect = new RedirectView("/" + Views.admin.value);
-        redirect.setExposeModelAttributes(false);
+        //redirect.setExposeModelAttributes(false);
         return redirect;
     }
 
