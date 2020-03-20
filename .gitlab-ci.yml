@@ -28,6 +28,7 @@ deploy:
       sudo rm -rf /opt/wildfly/standalone/deployments/vfb* && \
       git fetch origin && \
       git reset --hard origin/master && \
+      sed -i "/spring.devtools.restart.enabled=/c\spring.devtools.restart.enabled=false" src/main/resources/application.properties && \
       sed -i "/scheduler.enabled=/c\scheduler.enabled=true" src/main/resources/application.properties && \
       sed -i "/telerivet.api-key=/c\telerivet.api-key=${TELERIVET_API_KEY}" src/main/resources/application.properties && \
       sed -i "/telerivet.project-id=/c\telerivet.project-id=${TELERIVET_PROJECT_ID}" src/main/resources/application.properties && \
