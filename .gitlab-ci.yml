@@ -44,7 +44,7 @@ deploy:
       sudo cp target/vfb.war /opt/wildfly/standalone/deployments && \
       sudo systemctl start wildfly && \
       sleep 5 && \
-      tail -n 15 /opt/wildfly/standalone/log/server.log" -o "StrictHostKeyChecking no"
+      tail -n 15 /opt/wildfly/standalone/log/server.log"
   environment:
     name: prod
     url: https://$DOMAIN/
