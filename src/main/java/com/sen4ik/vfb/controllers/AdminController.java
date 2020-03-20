@@ -5,6 +5,7 @@ import com.sen4ik.vfb.entities.Verse;
 import com.sen4ik.vfb.enums.Views;
 import com.sen4ik.vfb.repositories.ContactsRepository;
 import com.sen4ik.vfb.repositories.VersesRepository;
+import com.sen4ik.vfb.services.BibleApiService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -17,6 +18,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -31,6 +33,9 @@ public class AdminController {
 
     @Autowired
     private ContactsRepository contactsRepository;
+
+    @Autowired
+    private BibleApiService bibleApiService;
 
     @GetMapping("/admin/index")
     public String admin() {
@@ -75,6 +80,17 @@ public class AdminController {
         // model.addAttribute("verse", verse.get());
         redirectAttributes.addFlashAttribute("verse", verse.get());
 
+        RedirectView redirect = new RedirectView("/" + Views.admin.value);
+        redirect.setExposeModelAttributes(false);
+        return redirect;
+    }
+
+    @PostMapping(value = "/admin/lookup_verse")
+    public RedirectView lookupVerse(@RequestParam("book_name") String bookName,
+                                    @RequestParam("chapter_number") Integer chapterNumber,
+                                    @RequestParam("verse_number") Integer verseNumber, Model model, RedirectAttributes redirectAttributes) throws IOException {
+        Verse verse = bibleApiService.getBibleVerse(bookName, chapterNumber, verseNumber);
+        redirectAttributes.addFlashAttribute("verse", verse);
         RedirectView redirect = new RedirectView("/" + Views.admin.value);
         redirect.setExposeModelAttributes(false);
         return redirect;
