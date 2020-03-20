@@ -81,7 +81,7 @@ public class AdminController {
         redirectAttributes.addFlashAttribute("verse", verse.get());
 
         RedirectView redirect = new RedirectView("/" + Views.admin.value);
-        // redirect.setExposeModelAttributes(false);
+        redirect.setExposeModelAttributes(false);
         return redirect;
     }
 
