@@ -1,0 +1,51 @@
+image: java:8
+
+variables:
+  MAVEN_CLI_OPTS: "-s .m2/settings.xml --batch-mode"
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+
+cache:
+  paths:
+    - .m2/repository/
+    - target/
+    - .mvn
+    - src/main/resources/application.properties
+
+stages:
+  - build
+  - deploy
+
+build:
+  stage: build
+  script:
+    - chmod +x mvnw
+    - ./mvnw clean package -DskipTests=true
+
+deploy:
+  deploy: deploy
+  script:
+    - |
+      ssh -A sen4ik@$DEPLOY_SERVER_IP -p$DEPLOY_SERVER_PORT "cd /home/sen4ik/workspace/vfb && \
+      sudo systemctl stop wildfly && \
+      sudo rm -rf /opt/wildfly/standalone/deployments/vfb* && \
+      git fetch origin && \
+      git reset --hard origin/master && \
+      sed -i "/scheduler.enabled=/c\scheduler.enabled=true" src/main/resources/application.properties && \
+      sed -i "/telerivet.api-key=/c\telerivet.api-key=${TELERIVET_API_KEY}" src/main/resources/application.properties && \
+      sed -i "/telerivet.project-id=/c\telerivet.project-id=${TELERIVET_PROJECT_ID}" src/main/resources/application.properties && \
+      sed -i "/telerivet.webhook.secret=/c\telerivet.webhook.secret=${TELERIVET_WEBHOOK_SECRET}" src/main/resources/application.properties && \
+      sed -i "/telerivet.enabled=/c\telerivet.enabled=true" src/main/resources/application.properties && \
+      sed -i "/bible.api.key=/c\bible.api.key=${BIBLE_API_KEY}" src/main/resources/application.properties && \
+      sed -i "/esv.api.key=/c\esv.api.key=${ESV_API_KEY}" src/main/resources/application.properties && \
+      sed -i "/my.email=/c\my.email=${MY_EMAIL}" src/main/resources/application.properties && \
+      sed -i "/my.phone=/c\my.phone=${MY_PHONE}" src/main/resources/application.properties && \
+      sed -i "/spring.mail.host=/c\spring.mail.host=${MAIL_HOST}" src/main/resources/application.properties && \
+      sed -i "/spring.mail.username=/c\spring.mail.username=${MAIL_USERNAME}" src/main/resources/application.properties && \
+      sed -i "/spring.mail.password=/c\spring.mail.password=${MAIL_PASSWORD}" src/main/resources/application.properties && \
+      mvn clean package -DskipTests=true && \
+      sudo cp target/vfb.war /opt/wildfly/standalone/deployments && \
+      sleep 5 && \
+      tail -n 15 /opt/wildfly/standalone/log/server.log" -o "StrictHostKeyChecking no"
+  environment:
+    name: prod
+    url: https://$DOMAIN/
