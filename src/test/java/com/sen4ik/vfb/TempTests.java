@@ -2,6 +2,7 @@ package com.sen4ik.vfb;
 
 import com.sen4ik.vfb.services.BibleApiService;
 import com.sen4ik.vfb.services.JobSchedulerService;
+import com.sen4ik.vfb.services.TelerivetService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,9 @@ public class TempTests {
 
     @Autowired
     private JobSchedulerService jobSchedulerService;
+
+    @Autowired
+    private TelerivetService telerivetService;
 
     @Test
     @Disabled
@@ -37,6 +41,10 @@ public class TempTests {
         log.info(phoneNumber);
     }
 
-
+    @Test
+    @Disabled
+    public void tttt() {
+        telerivetService.getBlockedContacts();
+    }
 
 }

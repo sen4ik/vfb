@@ -35,4 +35,9 @@ public class JobScheduler {
         jobSchedulerService.checkIfVerseForTomorrowExists();
     }
 
+    @Scheduled(cron = "0 */30 * * * *") // every half an hour
+    public void checkBlockedNumbers() {
+        jobSchedulerService.processBlockedPhoneNumbers();
+    }
+
 }

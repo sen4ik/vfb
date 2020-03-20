@@ -34,6 +34,9 @@ public class JobSchedulerService {
     private Boolean telerivetEnabled;
 
     @Autowired
+    private ContactsService contactsService;
+
+    @Autowired
     TelerivetService telerivetService;
 
     public void sendVersesForCurrentHour() {
@@ -138,6 +141,24 @@ public class JobSchedulerService {
         }
         else{
             log.info("Verse for tomorrow is present.");
+        }
+    }
+
+    public void processBlockedPhoneNumbers(){
+        log.info("CALLED: processBlockedPhoneNumbers()");
+        List<com.telerivet.Contact> blockedContacts = telerivetService.getBlockedContacts();
+
+        if(blockedContacts.size() > 0){
+            for(com.telerivet.Contact contact : blockedContacts){
+                String phoneNumber = contact.getPhoneNumber();
+                String sanitizedPhoneNumber = contactsService.sanitizePhoneNumber(phoneNumber);
+                log.info("phoneNumber: " + telerivetService.maskPhoneNumber(sanitizedPhoneNumber));
+
+                Optional<Contact> foundContact = contactsRepository.findByPhoneNumber(sanitizedPhoneNumber);
+                if(foundContact.isPresent()){
+                    contactsRepository.delete(foundContact.get());
+                }
+            }
         }
     }
 

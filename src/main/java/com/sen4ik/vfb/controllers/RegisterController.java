@@ -5,6 +5,7 @@ import com.nulabinc.zxcvbn.Strength;
 import com.nulabinc.zxcvbn.Zxcvbn;
 import com.sen4ik.vfb.entities.Role;
 import com.sen4ik.vfb.entities.User;
+import com.sen4ik.vfb.enums.Views;
 import com.sen4ik.vfb.services.EmailServiceImpl;
 import com.sen4ik.vfb.services.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -58,12 +59,12 @@ public class RegisterController {
 
         if (userExists != null) {
             modelAndView.addObject("alreadyRegisteredMessage", "Oops!  There is already a user registered with the email provided.");
-            modelAndView.setViewName("register");
+            modelAndView.setViewName(Views.register.value);
             bindingResult.reject("email");
         }
 
         if (bindingResult.hasErrors()) {
-            modelAndView.setViewName("register");
+            modelAndView.setViewName(Views.register.value);
         }
         else { // new user so we create user and send confirmation e-mail
 
@@ -91,7 +92,7 @@ public class RegisterController {
             emailService.sendEmail(registrationEmail);
 
             modelAndView.addObject("confirmationMessage", "A confirmation e-mail has been sent to " + user.getEmail());
-            modelAndView.setViewName("register");
+            modelAndView.setViewName(Views.register.value);
         }
 
         return modelAndView;
@@ -108,7 +109,7 @@ public class RegisterController {
             modelAndView.addObject("confirmationToken", user.getConfirmationToken());
         }
 
-        modelAndView.setViewName("confirm");
+        modelAndView.setViewName(Views.confirm.value);
         return modelAndView;
     }
 
@@ -116,7 +117,7 @@ public class RegisterController {
     @RequestMapping(value="/confirm", method = RequestMethod.POST)
     public ModelAndView processRegistration(ModelAndView modelAndView, BindingResult bindingResult, @RequestParam Map<String, String> requestParams, RedirectAttributes redir) {
 
-        modelAndView.setViewName("confirm");
+        modelAndView.setViewName(Views.confirm.value);
 
         String password = requestParams.get("password");
         String tokenStr = requestParams.get("token");
@@ -151,7 +152,7 @@ public class RegisterController {
 
         modelAndView.addObject("successMessage", "Your password has been set!");
         modelAndView.addObject("user", user);
-        modelAndView.setViewName("login");
+        modelAndView.setViewName(Views.login.value);
         return modelAndView;
     }
 }

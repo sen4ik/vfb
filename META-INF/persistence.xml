@@ -3,7 +3,7 @@
 
     <persistence-unit name="persistenceUnit">
         <class>com.sen4ik.vfb.entities.Contact</class>
-        <class>com.sen4ik.vfb.entities.SentMessagesLog</class>
+        <class>com.sen4ik.vfb.entities.ActionLog</class>
         <class>com.sen4ik.vfb.entities.User</class>
         <class>com.sen4ik.vfb.entities.Verse</class>
         <properties>

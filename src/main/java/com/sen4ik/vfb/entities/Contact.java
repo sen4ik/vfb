@@ -1,6 +1,9 @@
 package com.sen4ik.vfb.entities;
 
 import com.sen4ik.vfb.base.Constants;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -10,6 +13,9 @@ import java.sql.Timestamp;
 
 @Entity
 @Table(name = "contacts", schema = Constants.SCHEMA)
+@NoArgsConstructor
+@Getter
+@Setter
 public class Contact {
 
     @Id
@@ -53,77 +59,5 @@ public class Contact {
     @Basic
     @Column(name = "selected_send_time_pacific")
     private Double selectedSendTimePacific;
-
-    public Double getSelectedSendTimePacific() {
-        return selectedSendTimePacific;
-    }
-
-    public void setSelectedSendTimePacific(Double selectedSendTimePacific) {
-        this.selectedSendTimePacific = selectedSendTimePacific;
-    }
-
-    public String getSelectedTimeZone() {
-        return selectedTimeZone;
-    }
-
-    public void setSelectedTimeZone(String selectedTimeZone) {
-        this.selectedTimeZone = selectedTimeZone;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public String getBibleTranslation() {
-        return bibleTranslation;
-    }
-
-    public void setBibleTranslation(String bibleTranslation) {
-        this.bibleTranslation = bibleTranslation;
-    }
-
-    public Timestamp getAddedOn() {
-        return addedOn;
-    }
-
-    public void setAddedOn(Timestamp addedOn) {
-        this.addedOn = addedOn;
-    }
-
-    public Double getSelectedSendTime() {
-        return selectedSendTime;
-    }
-
-    public void setSelectedSendTime(Double selectedSendTime) {
-        this.selectedSendTime = selectedSendTime;
-    }
-
-    public Byte getSubscriptionConfirmed() {
-        return subscriptionConfirmed;
-    }
-
-    public void setSubscriptionConfirmed(Byte subscriptionConfirmed) {
-        this.subscriptionConfirmed = subscriptionConfirmed;
-    }
 
 }
