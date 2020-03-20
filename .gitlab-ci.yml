@@ -44,6 +44,7 @@ deploy:
       sed -i "/spring.mail.password=/c\spring.mail.password=${MAIL_PASSWORD}" src/main/resources/application.properties && \
       mvn clean package -DskipTests=true && \
       sudo cp target/vfb.war /opt/wildfly/standalone/deployments && \
+      sudo systemctl start wildfly && \
       sleep 5 && \
       tail -n 15 /opt/wildfly/standalone/log/server.log" -o "StrictHostKeyChecking no"
   environment:
