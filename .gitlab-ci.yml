@@ -22,7 +22,7 @@ build:
     - ./mvnw clean package -DskipTests=true
 
 deploy:
-  deploy: deploy
+  stage: deploy
   script:
     - |
       ssh -A sen4ik@$DEPLOY_SERVER_IP -p$DEPLOY_SERVER_PORT "cd /home/sen4ik/workspace/vfb && \
