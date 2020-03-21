@@ -15,16 +15,19 @@ public class EmailServiceImpl {
     @Autowired
     public JavaMailSender emailSender;
 
+    @Value("${spring.mail.username}")
+    private String mailEmail;
+
     @Value("${my.email}")
-    private String to;
+    private String myEmail;
 
     @Async
-    public void sendEmail(String from, String subject, String text) {
+    public void sendEmail(String subject, String text) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(to);
+        message.setTo(myEmail);
         message.setSubject(subject);
         message.setText(text);
-        message.setFrom(from);
+        message.setFrom(mailEmail);
         emailSender.send(message);
     }
 

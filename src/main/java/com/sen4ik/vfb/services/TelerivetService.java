@@ -57,7 +57,7 @@ public class TelerivetService {
     String generalMessage = "Hi, I am VerseFromBible.com bot. If you want to subscribe - go to www.VerseFromBible.com. If you want to stop your subscription - reply STOP.";
 
     public String sendSingleMessage(String phoneNumber, String message) throws IOException {
-        log.info("CALLED: sendSingleMessage(\'" + phoneNumber + "\', \'" + message + "\')");
+        log.info("CALLED: sendSingleMessage(\'" + maskPhoneNumber(phoneNumber) + "\', \'" + message + "\')");
 
 //        TelerivetAPI tr = new TelerivetAPI(API_KEY);
 //        Project project = tr.initProjectById(PROJECT_ID);

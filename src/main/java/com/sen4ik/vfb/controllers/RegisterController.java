@@ -40,7 +40,7 @@ public class RegisterController {
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    @Value("${my.email}")
+    @Value("${spring.mail.username}")
     private String from;
 
     @RequestMapping(value="/register", method = RequestMethod.GET)

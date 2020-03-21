@@ -171,11 +171,13 @@ public class HomeController {
         redirectAttributes.addFlashAttribute("sectionId", "contact_me");
 
         try{
-            StringBuilder emailBody = new StringBuilder("Hi ");
-            emailBody.append("Name: " + cmContactName);
-            emailBody.append("Phone number: " + cmPhoneNumber);
-            emailBody.append("Message: " + cmMessage);
-            emailService.sendEmail(cmEmail, "VerseFromBible Contact Form Message", emailBody.toString());
+            StringBuilder emailBody = new StringBuilder("Hi " + "\n\n");
+            emailBody.append("Name: " + cmContactName + "\n");
+            emailBody.append("Email: " + cmEmail + "\n");
+            emailBody.append("Phone number: " + cmPhoneNumber + "\n");
+            emailBody.append("Message: " + cmMessage + "\n\n");
+            emailBody.append("VerseFromBible.com");
+            emailService.sendEmail("VerseFromBible Contact Form Message", emailBody.toString());
 
             redirectAttributes.addFlashAttribute("contactMeSuccessMessage", "We have received your message and will get back to you as soon as we can.");
 

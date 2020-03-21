@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+
 @Component
 @Slf4j
 public class JobScheduler {
@@ -17,6 +19,13 @@ public class JobScheduler {
     @Autowired
     private JobSchedulerService jobSchedulerService;
 
+    @PostConstruct
+    private void init(){
+        if(!schedulerEnabled){
+            log.warn("Scheduler is disabled!");
+        }
+    }
+
     // https://stackoverflow.com/questions/30887822/spring-cron-vs-normal-cron
     @Scheduled(cron = "0 0 * * * *") // every hour
     // @Scheduled(cron = "0 */1 * * * *")
@@ -24,20 +33,21 @@ public class JobScheduler {
         if(schedulerEnabled){
             jobSchedulerService.sendVersesForCurrentHour();
         }
-        else{
-            log.warn("Scheduler is disabled!");
-        }
     }
 
     @Scheduled(cron = "0 0 8 * * *") // every day at 8 AM
     // @Scheduled(cron = "0 */1 * * * *") // every minutes
     public void checkVersesForTomorrowExists() {
-        jobSchedulerService.checkIfVerseForTomorrowExists();
+        if(schedulerEnabled) {
+            jobSchedulerService.checkIfVerseForTomorrowExists();
+        }
     }
 
     @Scheduled(cron = "0 */30 * * * *") // every half an hour
     public void checkBlockedNumbers() {
-        jobSchedulerService.processBlockedPhoneNumbers();
+        if(schedulerEnabled) {
+            jobSchedulerService.processBlockedPhoneNumbers();
+        }
     }
 
 }
