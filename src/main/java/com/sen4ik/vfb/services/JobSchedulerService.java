@@ -77,7 +77,7 @@ public class JobSchedulerService {
                         }
                     }
 
-                    log.info("Phone Numbers: " + phoneNumbers.toString());
+                    // log.debug("Phone Numbers: " + phoneNumbers.toString());
 
                     String verseToSend = "";
                     String verseLocation = "";
@@ -151,7 +151,7 @@ public class JobSchedulerService {
             for(com.telerivet.Contact contact : blockedContacts){
                 String phoneNumber = contact.getPhoneNumber();
                 String sanitizedPhoneNumber = contactsService.sanitizePhoneNumber(phoneNumber);
-                log.info("phoneNumber: " + telerivetService.maskPhoneNumber(sanitizedPhoneNumber));
+                log.info("Blocked phone number to be removed: " + telerivetService.maskPhoneNumber(sanitizedPhoneNumber));
 
                 Optional<Contact> foundContact = contactsRepository.findByPhoneNumber(sanitizedPhoneNumber);
                 if(foundContact.isPresent()){

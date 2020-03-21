@@ -43,7 +43,7 @@ public class JobScheduler {
         }
     }
 
-    @Scheduled(cron = "0 */30 * * * *") // every half an hour
+    @Scheduled(cron = "0 30 * * * *") // every half an hour
     public void checkBlockedNumbers() {
         if(schedulerEnabled) {
             jobSchedulerService.processBlockedPhoneNumbers();

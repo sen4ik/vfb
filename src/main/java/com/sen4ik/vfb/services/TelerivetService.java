@@ -18,6 +18,7 @@ import javax.annotation.PostConstruct;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -73,7 +74,7 @@ public class TelerivetService {
     public String sendMessageToGroup(String message, List<String> toNumbers) throws IOException {
         log.info("CALLED: sendMessageToGroup()");
         log.info("message: " + message);
-        log.info("toNumbers: " + toNumbers.toString());
+        log.info("toNumbers: " + maskPhoneNumber(toNumbers).toString());
 
 //        TelerivetAPI tr = new TelerivetAPI(API_KEY);
 //        Project project = tr.initProjectById(PROJECT_ID);
@@ -161,13 +162,11 @@ public class TelerivetService {
                 log.info("Start");
                 return sendMessageInResponse("Hi. It looks like you are interested in subscribing for daily Bible verses. Please use Sign Up form on www.VerseFromBible.com.");
             }
-            /*
             // Telerivet automatically blocks phone numbers who sent STOP message.
-            // We do query for blocked phone numbers every half an hour. Check
-            else if(Arrays.asList("REMOVE", "remove", "STOP", "stop", "Remove", "Stop").contains(content.trim())){
-                log.info("Unsubscribe");
-
-                Optional<Contact> contact = contactsRepository.findByPhoneNumber(fromNumberSanitized);
+            // We do query for blocked phone numbers every half an hour (check scheduler).
+            else if(Arrays.asList("STOP", "stop", "Stop").contains(content.trim())){
+                log.info("Stop/Remove received. Phone number is blocked and will be processed later.");
+                /*Optional<Contact> contact = contactsRepository.findByPhoneNumber(fromNumberSanitized);
                 if (!contact.isPresent()){
                     return sendMessageInResponse(generalMessage);
                 }
@@ -175,9 +174,8 @@ public class TelerivetService {
                     Contact currentContact = contact.get();
                     contactsRepository.delete(currentContact);
                     return sendMessageInResponse("You have been completely unsubscribed from VerseFromBible.com");
-                }
+                }*/
             }
-            */
             else{
                 log.info("Unexpected message content"); // tested
                 return sendMessageInResponse(generalMessage);
@@ -190,6 +188,14 @@ public class TelerivetService {
     public String maskPhoneNumber(String phoneNumber){
         phoneNumber = phoneNumber.substring(0, phoneNumber.length() - 4) + "****";
         return phoneNumber;
+    }
+
+    public List<String> maskPhoneNumber(List<String> phoneNumbers){
+        List<String> masked = new ArrayList<>();
+        for(String pn : phoneNumbers){
+            masked.add(maskPhoneNumber(pn));
+        }
+        return masked;
     }
 
     private ResponseEntity<String> sendJsonResponse(JSONObject json, HttpStatus httpStatus){
