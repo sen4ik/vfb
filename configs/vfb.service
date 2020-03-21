@@ -1,0 +1,16 @@
+[Unit]
+Description=vfb
+After=syslog.target
+
+[Service]
+EnvironmentFile=/opt/vfb/vfb-env
+WorkingDirectory=/opt/vfb/current
+User=sen4ik
+ExecStart=/usr/bin/java -Duser.timezone=America/Los_Angeles $LOGGING $JAVA_OPTS -Dserver.port=${PORT} -jar $BINARY
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=vfb-web
+SuccessExitStatus=143
+
+[Install]
+WantedBy=multi-user.target
