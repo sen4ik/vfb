@@ -46,6 +46,9 @@ public class TelerivetService {
     @Autowired
     private ContactsRepository contactsRepository;
 
+    @Autowired
+    private JobSchedulerService jobSchedulerService;
+
     TelerivetAPI tr;
     Project project;
 
@@ -55,19 +58,14 @@ public class TelerivetService {
         project = tr.initProjectById(PROJECT_ID);
     }
 
-    String generalMessage = "Hi, I am VerseFromBible.com bot. If you want to subscribe - go to www.VerseFromBible.com. If you want to stop your subscription - reply STOP.";
+    String generalMessage = "Hi, I am VerseFromBible.com bot. If you want to subscribe - go to www.VerseFromBible.com. If you want to stop your subscription - reply STOP";
 
     public String sendSingleMessage(String phoneNumber, String message) throws IOException {
         log.info("CALLED: sendSingleMessage(\'" + maskPhoneNumber(phoneNumber) + "\', \'" + message + "\')");
-
-//        TelerivetAPI tr = new TelerivetAPI(API_KEY);
-//        Project project = tr.initProjectById(PROJECT_ID);
-
         Message sent_msg = project.sendMessage(Util.options(
                 "content", message,
                 "to_number", phoneNumber
         ));
-
         return sent_msg.getId();
     }
 
@@ -75,10 +73,6 @@ public class TelerivetService {
         log.info("CALLED: sendMessageToGroup()");
         log.info("message: " + message);
         log.info("toNumbers: " + maskPhoneNumber(toNumbers).toString());
-
-//        TelerivetAPI tr = new TelerivetAPI(API_KEY);
-//        Project project = tr.initProjectById(PROJECT_ID);
-
         Broadcast broadcast = project.sendBroadcast(Util.options(
                 "content", message,
                 "to_numbers", toNumbers // new Object[] {"+14155550123", "+14255550234", "+16505550345"}
@@ -91,23 +85,28 @@ public class TelerivetService {
     }
 
     public List<Contact> getAllContacts(){
-//        TelerivetAPI tr = new TelerivetAPI(API_KEY);
-//        Project project = tr.initProjectById(PROJECT_ID);
-
         List<com.telerivet.Contact> contacts = project.queryContacts().all();
         return contacts;
     }
 
     public List<Contact> getBlockedContacts(){
-
-        TelerivetAPI tr = new TelerivetAPI(API_KEY);
-        Project project = tr.initProjectById(PROJECT_ID);
-
         List<com.telerivet.Contact> blockedContacts = project.queryContacts(Util.options(
                 "send_blocked", true
         )).all();
-
         return blockedContacts;
+    }
+
+    public void deleteContact(String contactId) throws IOException {
+        log.info("CALLED: deleteContact()");
+        Contact contact = project.initContactById(contactId);
+        contact.delete();
+    }
+
+    public void unblockContact(String contactId) throws IOException {
+        log.info("CALLED: unblockContacts()");
+        Contact contact = project.initContactById(contactId);
+        contact.setSendBlocked(false);
+        contact.save();
     }
 
     public ResponseEntity<String> telerivetHook(HttpServletRequest request) throws ServletException, IOException {
@@ -133,7 +132,7 @@ public class TelerivetService {
             log.info("fromNumber: " + fromNumberMasked);
             log.debug("phoneId: " + phoneId);
 
-            if(content.trim().toLowerCase().equals("yes")){
+            if(content.trim().toLowerCase().equals("yes") || content.trim().toLowerCase().equals("yes.")){
                 log.info("Confirming subscription");
 
                 Optional<com.sen4ik.vfb.entities.Contact> contact = contactsRepository.findByPhoneNumber(fromNumberSanitized);
@@ -162,10 +161,12 @@ public class TelerivetService {
                 log.info("Start");
                 return sendMessageInResponse("Hi. It looks like you are interested in subscribing for daily Bible verses. Please use Sign Up form on www.VerseFromBible.com.");
             }
-            // Telerivet automatically blocks phone numbers who sent STOP message.
-            // We do query for blocked phone numbers every half an hour (check scheduler).
             else if(Arrays.asList("STOP", "stop", "Stop").contains(content.trim())){
-                log.info("Stop/Remove received. Phone number is blocked and will be processed later.");
+                // Telerivet automatically blocks phone numbers who sent STOP message.
+                // We wont be able to text such contact back, because telerivet blocked it as soon as it received STOP.
+                // We will query telerivet contacts and delete the ones that are blocked from our DB.
+                log.info("Stop/Remove received.");
+                jobSchedulerService.processBlockedContacts();
                 /*Optional<Contact> contact = contactsRepository.findByPhoneNumber(fromNumberSanitized);
                 if (!contact.isPresent()){
                     return sendMessageInResponse(generalMessage);
@@ -182,7 +183,6 @@ public class TelerivetService {
             }
         }
 
-        // return sendJsonResponse(jsonError, HttpStatus.INTERNAL_SERVER_ERROR);
         return sendJsonResponse(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 

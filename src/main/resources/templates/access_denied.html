@@ -1,13 +1,27 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Access Denied</title>
+    <link th:href="@{/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/css/main.css}" rel="stylesheet">
 </head>
 <body>
-<div class="content">
-    <h1>Access denied</h1>
-    <p><a href="/" th:href="@{/}">Back to home page</a></p>
-</div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="error-template">
+                    <h1>Access denied</h1>
+                    <div class="error-details">
+                        Sorry, you don't have permissions!
+                    </div>
+                    <div class="error-actions">
+                        <a href="/" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-home"></span>Take Me Home</a>
+                        <a href="mailto:support@versefrombible.com" class="btn btn-secondary btn-lg"><span class="glyphicon glyphicon-envelope"></span>Contact Support</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:replace="fragments/bottom_page_scripts :: bottom_page_scripts"></div>
 </body>
 </html>

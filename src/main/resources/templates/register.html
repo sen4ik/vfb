@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<html xmlns:th="http://www.thymeleaf.org">
 <html lang="en">
 <div th:replace="fragments/head :: head"></div>
 <style>
@@ -8,58 +7,14 @@
   body {
     height: 100%;
   }
-
-  body {
-    display: -ms-flexbox;
-    display: -webkit-box;
-    display: flex;
-    -ms-flex-align: center;
-    -ms-flex-pack: center;
-    -webkit-box-align: center;
-    align-items: center;
-    -webkit-box-pack: center;
-    justify-content: center;
-    padding-top: 40px;
-    padding-bottom: 40px;
-    background-color: #f5f5f5;
-  }
-
-  .form_register {
-    width: 100%;
-    max-width: 530px;
-    padding: 15px;
-    margin: 0 auto;
-  }
-
-  .form_register .form-control {
-    position: relative;
-    box-sizing: border-box;
-    height: auto;
-    padding: 10px;
-    font-size: 16px;
-  }
-
-  .form_register .form-group label{
-      margin-left: 2px;
-  }
-
-  .form_register .form-control:focus {
-    z-index: 2;
-  }
-
-  .form_register input {
-    margin-bottom: 10px;
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-  }
 </style>
-<body class="text-center">
+<body class="text-center bcl">
 
     <div class="container">
 
         <h4>New User Registration</h4>
 
-        <form autocomplete="off" action="#" th:action="@{/register}" th:object="${user}" method="post" class="form_register">
+        <form autocomplete="off" action="#" th:action="@{/register}" th:object="${user}" method="post" class="fcl">
 
             <div th:if="${confirmationMessage}" class="alert alert-success" role="alert" th:text="${confirmationMessage}"></div>
 

@@ -11,7 +11,9 @@
 - Add springsecurity class -- DONE
 - Integrate with telerivet to confirm subscription with YES/CONFIRM. -- DONE
 - Integrate with telerivet to stop subscription with STOP. -- DONE
+- When blocked phone is removed from my DB, i need to remove the block on Telerivet side -- DONE
+- Cleanup CSS login, register, confirm. -- DONE
 
-- confirm token can be reused to set new password. fix it.
-- Cleanup CSS login, register, confirm
-- Add Contact redirects to http://versefrombible.com/vfb/index How do i get rid of vfb?
+- Confirmation token can be reused to set new password. Is this a problem? Should i expired in 15 minutes?
+
+- Switch to Twilio.

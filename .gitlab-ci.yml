@@ -29,12 +29,14 @@ deploy:
       git reset --hard origin/master && \
       sed -i "/spring.devtools.restart.enabled=/c\spring.devtools.restart.enabled=false" src/main/resources/application.properties && \
       sed -i "/scheduler.enabled=/c\scheduler.enabled=true" src/main/resources/application.properties && \
+      sed -i "/twilio.sid=/c\twilio.sid=${TWILIO_SID}" src/main/resources/application.properties && \
+      sed -i "/twilio.auth-token=/c\twilio.auth-token=${TWILIO_AUTH_TOKEN}" src/main/resources/application.properties && \
+      sed -i "/twilio.phone-number=/c\twilio.phone-number=${TWILIO_PHONE_NUMBER}" src/main/resources/application.properties && \
       sed -i "/telerivet.api-key=/c\telerivet.api-key=${TELERIVET_API_KEY}" src/main/resources/application.properties && \
       sed -i "/telerivet.project-id=/c\telerivet.project-id=${TELERIVET_PROJECT_ID}" src/main/resources/application.properties && \
       sed -i "/telerivet.webhook.secret=/c\telerivet.webhook.secret=${TELERIVET_WEBHOOK_SECRET}" src/main/resources/application.properties && \
       sed -i "/telerivet.enabled=/c\telerivet.enabled=true" src/main/resources/application.properties && \
       sed -i "/bible.api.key=/c\bible.api.key=${BIBLE_API_KEY}" src/main/resources/application.properties && \
-      sed -i "/esv.api.key=/c\esv.api.key=${ESV_API_KEY}" src/main/resources/application.properties && \
       sed -i "/my.email=/c\my.email=${MY_EMAIL}" src/main/resources/application.properties && \
       sed -i "/my.phone=/c\my.phone=${MY_PHONE}" src/main/resources/application.properties && \
       sed -i "/spring.mail.host=/c\spring.mail.host=${MAIL_HOST}" src/main/resources/application.properties && \

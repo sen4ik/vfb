@@ -43,8 +43,14 @@ public class RegisterController {
     @Value("${spring.mail.username}")
     private String from;
 
+    @Value("${registration.enabled}")
+    private Boolean registrationEnabled;
+
     @RequestMapping(value="/register", method = RequestMethod.GET)
     public ModelAndView showRegistrationPage(ModelAndView modelAndView, User user){
+
+        if(!registrationEnabled) return checkIfRegistrationIsEnabled(modelAndView);
+
         modelAndView.addObject("user", user);
         modelAndView.setViewName("register");
         return modelAndView;
@@ -52,6 +58,8 @@ public class RegisterController {
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public ModelAndView processRegistrationForm(ModelAndView modelAndView, @Valid User user, BindingResult bindingResult, HttpServletRequest request) {
+
+        if(!registrationEnabled) return checkIfRegistrationIsEnabled(modelAndView);
 
         // Lookup user in database by e-mail
         User userExists = userService.findByEmail(user.getEmail());
@@ -101,6 +109,8 @@ public class RegisterController {
     @RequestMapping(value="/confirm", method = RequestMethod.GET)
     public ModelAndView confirmRegistration(ModelAndView modelAndView, @RequestParam("token") String token) {
 
+        if(!registrationEnabled) return checkIfRegistrationIsEnabled(modelAndView);
+
         User user = userService.findByConfirmationToken(token);
 
         if (user == null) { // No token found in DB
@@ -117,6 +127,8 @@ public class RegisterController {
     @RequestMapping(value="/confirm", method = RequestMethod.POST)
     public ModelAndView processRegistration(ModelAndView modelAndView, BindingResult bindingResult, @RequestParam Map<String, String> requestParams, RedirectAttributes redir) {
 
+        if(!registrationEnabled) return checkIfRegistrationIsEnabled(modelAndView);
+
         modelAndView.setViewName(Views.confirm.value);
 
         String password = requestParams.get("password");
@@ -127,7 +139,7 @@ public class RegisterController {
         Strength strength = passwordCheck.measure(password);
 
         if (strength.getScore() < 3) {
-            //modelAndView.addObject("errorMessage", "Your password is too weak. Choose a stronger one.");
+            // modelAndView.addObject("errorMessage", "Your password is too weak. Choose a stronger one.");
             bindingResult.reject("password");
             Feedback feedback = strength.getFeedback();
             String warning = feedback.getWarning();
@@ -153,6 +165,13 @@ public class RegisterController {
         modelAndView.addObject("successMessage", "Your password has been set!");
         modelAndView.addObject("user", user);
         modelAndView.setViewName(Views.login.value);
+        return modelAndView;
+    }
+
+    private ModelAndView checkIfRegistrationIsEnabled(ModelAndView modelAndView){
+        modelAndView.addObject("additionalDetails", "Administrator disabled registration. " +
+                "If you have any concerns - please use contact form on a website to contact administrator.");
+        modelAndView.setViewName("error");
         return modelAndView;
     }
 }

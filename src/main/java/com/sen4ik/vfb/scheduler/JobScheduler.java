@@ -8,6 +8,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.io.IOException;
 
 @Component
 @Slf4j
@@ -44,9 +45,9 @@ public class JobScheduler {
     }
 
     @Scheduled(cron = "0 30 * * * *") // every half an hour
-    public void checkBlockedNumbers() {
+    public void checkBlockedNumbers() throws IOException {
         if(schedulerEnabled) {
-            jobSchedulerService.processBlockedPhoneNumbers();
+            jobSchedulerService.processBlockedContacts();
         }
     }
 

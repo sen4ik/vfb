@@ -53,6 +53,10 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 			.authorizeRequests().antMatchers(HttpMethod.POST, "/telerivet/**").permitAll();
 
 		http
+			.csrf().ignoringAntMatchers("/twilio/**").and()
+			.authorizeRequests().antMatchers(HttpMethod.POST, "/twilio/**").permitAll();
+
+		http
 			.authorizeRequests()
 				.antMatchers("/", "/index", "/unsubscribe", "/contact_me", "/register", "/confirm", "/error", "/access_denied", "/js/**", "/bootstrap-datepicker/**", "/vendor/**", "/css/**", "/img/**").permitAll()
 				.anyRequest().fullyAuthenticated()

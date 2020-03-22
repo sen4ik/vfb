@@ -8,6 +8,7 @@ import com.sen4ik.vfb.repositories.VersesRepository;
 import com.sen4ik.vfb.services.ContactsService;
 import com.sen4ik.vfb.services.EmailServiceImpl;
 import com.sen4ik.vfb.services.TelerivetService;
+import com.sen4ik.vfb.services.TwilioService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,16 +38,22 @@ public class HomeController {
     private ContactsRepository contactsRepository;
 
     @Autowired
-    TelerivetService telerivetService;
+    private TelerivetService telerivetService;
 
     @Autowired
-    EmailServiceImpl emailService;
+    private EmailServiceImpl emailService;
 
     @Autowired
-    ContactsService contactsService;
+    private ContactsService contactsService;
 
     @Value("${telerivet.enabled}")
     private Boolean telerivetEnabled;
+
+    @Autowired
+    private TwilioService twilioService;
+
+    @Value("${twilio.enabled}")
+    private Boolean twilioEnabled;
 
     @GetMapping("/")
     public String main() {
@@ -118,9 +125,14 @@ public class HomeController {
         contact.setPhoneNumber(sanitizedPhone);
         contactsRepository.save(contact);
 
+        String message = "It looks like you have subscribed to VerseFromBible.com. If that is correct, please reply YES.";
+        if(twilioEnabled){
+            twilioService.sendSingleMessage("+1" + sanitizedPhone, message);
+        }
+
         if(telerivetEnabled){
             try {
-                telerivetService.sendSingleMessage("+1" + sanitizedPhone, "It looks like you have subscribed to VerseFromBible.com. If that is correct, please reply YES.");
+                telerivetService.sendSingleMessage("+1" + sanitizedPhone, message);
             } catch (IOException e) {
                 // TODO:
             }
@@ -146,9 +158,14 @@ public class HomeController {
             return new RedirectView(Views.home.value);
         }
 
+        String message = "Please confirm you want to unsubscribe by replying with the word STOP.";
+        if(twilioEnabled){
+            twilioService.sendSingleMessage("+1" + contact.get().getPhoneNumber(), message);
+        }
+
         if(telerivetEnabled){
             try {
-                telerivetService.sendSingleMessage("+1" + contact.get().getPhoneNumber(), "Please confirm you want to unsubscribe by replying with the word STOP.");
+                telerivetService.sendSingleMessage("+1" + contact.get().getPhoneNumber(), message);
             } catch (IOException e) {
                 // TODO:
             }

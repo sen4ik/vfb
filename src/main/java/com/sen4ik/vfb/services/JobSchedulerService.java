@@ -140,13 +140,14 @@ public class JobSchedulerService {
         }
     }
 
-    public void processBlockedPhoneNumbers(){
-        log.info("CALLED: processBlockedPhoneNumbers()");
+    public void processBlockedContacts() throws IOException {
+        log.info("CALLED: processBlockedContacts()");
         List<com.telerivet.Contact> blockedContacts = telerivetService.getBlockedContacts();
 
         if(blockedContacts.size() > 0){
             for(com.telerivet.Contact contact : blockedContacts){
                 String phoneNumber = contact.getPhoneNumber();
+                String contactId = contact.getId();
                 String sanitizedPhoneNumber = contactsService.sanitizePhoneNumber(phoneNumber);
                 log.info("Blocked phone number to be removed: " + telerivetService.maskPhoneNumber(sanitizedPhoneNumber));
 
@@ -154,6 +155,10 @@ public class JobSchedulerService {
                 if(foundContact.isPresent()){
                     contactsRepository.delete(foundContact.get());
                 }
+
+                telerivetService.unblockContact(contactId);
+
+                telerivetService.deleteContact(contactId);
             }
         }
     }
