@@ -182,7 +182,8 @@ public class TelerivetService {
             }
         }
 
-        return sendJsonResponse(jsonError, HttpStatus.INTERNAL_SERVER_ERROR);
+        // return sendJsonResponse(jsonError, HttpStatus.INTERNAL_SERVER_ERROR);
+        return sendJsonResponse(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     public String maskPhoneNumber(String phoneNumber){
@@ -199,9 +200,16 @@ public class TelerivetService {
     }
 
     private ResponseEntity<String> sendJsonResponse(JSONObject json, HttpStatus httpStatus){
+        String response;
+        if(json == null){
+            response = "";
+        }
+        else{
+            response = json.toString();
+        }
         return ResponseEntity.status(httpStatus)
                 .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-                .body(json.toString());
+                .body(response);
     }
 
     private ResponseEntity<String> sendMessageInResponse(String message) throws ServletException {
