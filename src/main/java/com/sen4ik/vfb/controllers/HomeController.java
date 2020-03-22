@@ -148,7 +148,7 @@ public class HomeController {
 
         if(telerivetEnabled){
             try {
-                telerivetService.sendSingleMessage("+1" + contact.get().getPhoneNumber(), "Please reply REMOVE to get removed from our list.");
+                telerivetService.sendSingleMessage("+1" + contact.get().getPhoneNumber(), "Please confirm you want to unsubscribe by replying with the word STOP.");
             } catch (IOException e) {
                 // TODO:
             }

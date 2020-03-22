@@ -80,18 +80,15 @@ public class JobSchedulerService {
                     // log.debug("Phone Numbers: " + phoneNumbers.toString());
 
                     String verseToSend = "";
-                    String verseLocation = "";
+                    String verseLocation = verseForToday.getEnVerseLocation();
                     if(bibleTranslation.equals("en_esv")){
                         verseToSend = verseForToday.getEnEsv();
-                        verseLocation = verseForToday.getEnVerseLocation();
                     }
                     else if(bibleTranslation.equals("en_niv")){
                         verseToSend = verseForToday.getEnNiv();
-                        verseLocation = verseForToday.getEnVerseLocation();
                     }
                     else if(bibleTranslation.equals("en_kjv")){
                         verseToSend = verseForToday.getEnKjv();
-                        verseLocation = verseForToday.getEnVerseLocation();
                     }
                     else if(bibleTranslation.equals("ru_synodal")){
                         verseToSend = verseForToday.getRuSynodal();
