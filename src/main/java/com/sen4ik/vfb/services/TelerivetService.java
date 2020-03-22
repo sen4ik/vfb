@@ -131,7 +131,7 @@ public class TelerivetService {
 
             log.info("content: " + content);
             log.info("fromNumber: " + fromNumberMasked);
-            log.info("phoneId: " + phoneId);
+            log.debug("phoneId: " + phoneId);
 
             if(content.trim().toLowerCase().equals("yes")){
                 log.info("Confirming subscription");

@@ -19,9 +19,9 @@ public class LoginController {
         return new ModelAndView("login");
     }
 
-    @GetMapping("/access-denied")
+    @GetMapping("/access_denied")
     public String accessDenied() {
-        return "/access-denied";
+        return "/access_denied";
     }
 
     @ModelAttribute(value = "user")
