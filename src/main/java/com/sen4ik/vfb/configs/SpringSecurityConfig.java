@@ -1,11 +1,9 @@
 package com.sen4ik.vfb.configs;
 
-import com.sen4ik.vfb.filters.TwilioRequestValidatorFilter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
@@ -39,14 +37,6 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	public SpringSecurityConfig(AccessDeniedHandler accessDeniedHandler) {
 		this.accessDeniedHandler = accessDeniedHandler;
 	}
-
-//	@Bean
-//	public FilterRegistrationBean<TwilioRequestValidatorFilter> twilioFilter(){
-//		FilterRegistrationBean<TwilioRequestValidatorFilter> registrationBean = new FilterRegistrationBean<>();
-//		registrationBean.setFilter(new TwilioRequestValidatorFilter());
-//		registrationBean.addUrlPatterns("/twilio/*");
-//		return registrationBean;
-//	}
 
 	/**
 	 * HTTPSecurity configurer

@@ -1,7 +1,8 @@
 package com.sen4ik.vfb.filters;
 
 import com.twilio.security.RequestValidator;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -16,13 +17,21 @@ import java.util.stream.Collectors;
 // https://www.baeldung.com/spring-boot-add-filter
 public class TwilioRequestValidatorFilter implements Filter {
 
-    @Value("${twilio.auth-token}")
+//    @Value("${twilio.auth-token}")
     private String AUTH_TOKEN;
-
     private RequestValidator requestValidator;
+
+//    @Autowired
+//    Environment env;
+
+    @Autowired
+    public TwilioRequestValidatorFilter(String AUTH_TOKEN){
+        this.AUTH_TOKEN = AUTH_TOKEN;
+    }
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
+//        AUTH_TOKEN = env.getRequiredProperty("twilio.auth-token");
         requestValidator = new RequestValidator(AUTH_TOKEN);
     }
 
