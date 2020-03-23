@@ -86,7 +86,6 @@ public class TwilioService {
         }
 
         return ResponseEntity.status(HttpStatus.OK)
-                .header("Content-Type", MediaType.APPLICATION_XML_VALUE)
                 .body(response.toXml());
     }
 }

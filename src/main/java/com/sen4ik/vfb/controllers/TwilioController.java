@@ -25,7 +25,7 @@ public class TwilioController {
     @PostMapping(
             path = "/hook",
             consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE
+            produces = MediaType.APPLICATION_XML_VALUE
         )
     @Async
     public @ResponseBody
