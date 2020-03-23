@@ -51,6 +51,7 @@ public class TwilioRequestValidatorFilter implements Filter {
             // Concatenates the request URL with the query string
             String pathAndQueryUrl = getRequestUrlAndQueryString(httpRequest);
             pathAndQueryUrl = pathAndQueryUrl.replace("http", "https");
+
             log.info("pathAndQueryUrl: " + pathAndQueryUrl);
             // Extracts only the POST parameters and converts the parameters Map type
             Map<String, String> postParams = extractPostParams(httpRequest);
@@ -100,6 +101,12 @@ public class TwilioRequestValidatorFilter implements Filter {
     }
 
     private String getRequestUrlAndQueryString(HttpServletRequest request) {
+
+        String scheme = request.getScheme(); //will return "https" when connection is secured
+        log.info("scheme: " + scheme);
+        boolean isSecured = request.isSecure();
+        log.info("isSecured: " + isSecured);
+
         String queryString = request.getQueryString();
         String requestUrl = request.getRequestURL().toString();
         if(queryString != null && queryString != "") {
