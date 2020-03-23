@@ -50,7 +50,7 @@ public class TwilioRequestValidatorFilter implements Filter {
 
             // Concatenates the request URL with the query string
             String pathAndQueryUrl = getRequestUrlAndQueryString(httpRequest);
-            pathAndQueryUrl = pathAndQueryUrl.replace("http", "https");
+            pathAndQueryUrl = pathAndQueryUrl.replace("http://", "https://");
 
             log.info("pathAndQueryUrl: " + pathAndQueryUrl);
             // Extracts only the POST parameters and converts the parameters Map type
@@ -102,10 +102,16 @@ public class TwilioRequestValidatorFilter implements Filter {
 
     private String getRequestUrlAndQueryString(HttpServletRequest request) {
 
-        String scheme = request.getScheme(); //will return "https" when connection is secured
+        // Scheme below is not https, isSecure is not true. This behavior can happen if you have a load-balancer
+        // in front of the application. Even though requests are done in HTTPS the load-balancer will reissue
+        // them as plain http requests which produce this behavior.
+        String scheme = request.getScheme();
         log.info("scheme: " + scheme);
         boolean isSecured = request.isSecure();
         log.info("isSecured: " + isSecured);
+        // Solution is to have X-Forwarded-Proto in nginx.conf
+        String xForwardedProto = request.getHeader("X-Forwarded-Proto");
+        log.info("xForwardedProto: " + xForwardedProto);
 
         String queryString = request.getQueryString();
         String requestUrl = request.getRequestURL().toString();
