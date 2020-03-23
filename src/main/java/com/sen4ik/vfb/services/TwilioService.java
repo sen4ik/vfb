@@ -66,6 +66,9 @@ public class TwilioService {
 
         // https://www.twilio.com/docs/sms/twiml
 
+        String signatureHeader = httpServletRequest.getHeader("X-Twilio-Signature");
+        log.info("signatureHeader: " + signatureHeader);
+
         String body = httpServletRequest.getParameter("Body");
         String from = httpServletRequest.getParameter("From");
         log.info(body);
@@ -83,7 +86,7 @@ public class TwilioService {
         }
 
         return ResponseEntity.status(HttpStatus.OK)
-                .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-                .body("");
+                .header("Content-Type", MediaType.APPLICATION_XML_VALUE)
+                .body(response.toXml());
     }
 }
