@@ -3,7 +3,6 @@ package com.sen4ik.vfb.filters;
 import com.twilio.security.RequestValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +13,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+// https://www.twilio.com/docs/usage/tutorials/how-to-secure-your-servlet-app-by-validating-incoming-twilio-requests
 
 @Slf4j
 public class TwilioRequestValidatorFilter implements Filter {
@@ -37,27 +38,21 @@ public class TwilioRequestValidatorFilter implements Filter {
 
         boolean isValidRequest = false;
         if (request instanceof HttpServletRequest) {
-            log.info("====================> working on request");
             HttpServletRequest httpRequest = (HttpServletRequest) request;
 
             // Concatenates the request URL with the query string
             String pathAndQueryUrl = getRequestUrlAndQueryString(httpRequest);
-            log.info("pathAndQueryUrl: " + pathAndQueryUrl);
-
             // Extracts only the POST parameters and converts the parameters Map type
             Map<String, String> postParams = extractPostParams(httpRequest);
-            log.info("postParams: " + postParams.toString());
             String signatureHeader = httpRequest.getHeader("X-Twilio-Signature");
-            log.info("signatureHeader: " + signatureHeader);
 
             isValidRequest = requestValidator.validate(
                     pathAndQueryUrl,
                     postParams,
                     signatureHeader);
-            log.info("isValidRequest: " + isValidRequest);
         }
 
-        log.info("isValidRequest: " + isValidRequest);
+        log.info("TwilioRequestValidatorFilter: isValidRequest: " + isValidRequest);
 
         if(isValidRequest) {
             chain.doFilter(request, response);

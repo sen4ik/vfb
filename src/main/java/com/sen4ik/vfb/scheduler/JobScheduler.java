@@ -1,6 +1,7 @@
 package com.sen4ik.vfb.scheduler;
 
 import com.sen4ik.vfb.services.JobSchedulerService;
+import com.sen4ik.vfb.services.TelerivetService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,8 +18,14 @@ public class JobScheduler {
     @Value("${scheduler.enabled}")
     private Boolean schedulerEnabled;
 
+    @Value("${telerivet.enabled}")
+    private Boolean telerivetEnabled;
+
     @Autowired
     private JobSchedulerService jobSchedulerService;
+
+    @Autowired
+    private TelerivetService telerivetService;
 
     @PostConstruct
     private void init(){
@@ -45,9 +52,9 @@ public class JobScheduler {
     }
 
     @Scheduled(cron = "0 30 * * * *") // every half an hour
-    public void checkBlockedNumbers() throws IOException {
-        if(schedulerEnabled) {
-            jobSchedulerService.processBlockedContacts();
+    public void processBlockedTelerivetContacts() throws IOException {
+        if(schedulerEnabled && telerivetEnabled) {
+            telerivetService.processBlockedTelerivetContacts();
         }
     }
 

@@ -14,6 +14,7 @@
 - When blocked phone is removed from my DB, i need to remove the block on Telerivet side -- DONE
 - Cleanup CSS login, register, confirm. -- DONE
 
-- Confirmation token can be reused to set new password. Is this a problem? Should i expired in 15 minutes?
+- Confirmation token can be reused to set new password. Is this a problem? Should ii expire in 15 minutes?
 
 - Switch to Twilio.
+- Add captcha to all forms on home page.

@@ -4,6 +4,7 @@ import com.sen4ik.vfb.entities.Contact;
 import com.sen4ik.vfb.entities.Verse;
 import com.sen4ik.vfb.repositories.ContactsRepository;
 import com.sen4ik.vfb.repositories.VersesRepository;
+import com.twilio.type.PhoneNumber;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,14 +31,17 @@ public class JobSchedulerService {
     @Autowired
     private ContactsRepository contactsRepository;
 
-    @Value("${telerivet.enabled}")
-    private Boolean telerivetEnabled;
+//    @Value("${telerivet.enabled}")
+//    private Boolean telerivetEnabled;
+
+    @Value("${twilio.enabled}")
+    private Boolean twilioEnabled;
+
+//    @Autowired
+//    private TelerivetService telerivetService;
 
     @Autowired
-    private ContactsService contactsService;
-
-    @Autowired
-    TelerivetService telerivetService;
+    private TwilioService twilioService;
 
     public void sendVersesForCurrentHour() {
         log.info("CALLED: sendVersesForCurrentHour()");
@@ -65,7 +69,7 @@ public class JobSchedulerService {
 
                 log.info("Bible Translation: " + bibleTranslation);
 
-                List<String> phoneNumbers = new ArrayList<>();
+                List<PhoneNumber> phoneNumbers = new ArrayList<>();
 
                 List<Contact> contactsForCurrentTranslation = contactsRepository.findBySelectedSendTimePacificAndBibleTranslationAndSubscriptionConfirmed(Double.valueOf(currentHour), bibleTranslation, (byte) 1);
                 if (contactsForCurrentTranslation.size() > 0){
@@ -73,7 +77,7 @@ public class JobSchedulerService {
                     for(Contact contact : contactsForCurrentTranslation){
                         String phoneNumber = contact.getPhoneNumber();
                         if(!phoneNumber.isEmpty() && phoneNumber != null){
-                            phoneNumbers.add(phoneNumber);
+                            phoneNumbers.add(new PhoneNumber(phoneNumber));
                         }
                     }
 
@@ -98,16 +102,17 @@ public class JobSchedulerService {
                         log.error("Unexpected bible translation present " + bibleTranslation);
                     }
 
-                    if(telerivetEnabled && !verseToSend.isEmpty() && verseToSend != null){
-                        try {
-                            telerivetService.sendMessageToGroup(verseToSend + " " + verseLocation, phoneNumbers);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            // TODO:
-                        }
+                    if(twilioEnabled && !verseToSend.isEmpty() && verseToSend != null){
+                        twilioService.sendMessageToList(phoneNumbers, verseToSend + " " + verseLocation);
+//                        try {
+//                            telerivetService.sendMessageToGroup(, );
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                            // TODO:
+//                        }
                     }
                     else {
-                        log.warn("Telerivet is disabled!");
+                        log.warn("Twilio is disabled!");
                     }
 
                 }
@@ -137,29 +142,6 @@ public class JobSchedulerService {
         }
         else{
             log.info("Verse for tomorrow is present.");
-        }
-    }
-
-    public void processBlockedContacts() throws IOException {
-        log.info("CALLED: processBlockedContacts()");
-        List<com.telerivet.Contact> blockedContacts = telerivetService.getBlockedContacts();
-
-        if(blockedContacts.size() > 0){
-            for(com.telerivet.Contact contact : blockedContacts){
-                String phoneNumber = contact.getPhoneNumber();
-                String contactId = contact.getId();
-                String sanitizedPhoneNumber = contactsService.sanitizePhoneNumber(phoneNumber);
-                log.info("Blocked phone number to be removed: " + telerivetService.maskPhoneNumber(sanitizedPhoneNumber));
-
-                Optional<Contact> foundContact = contactsRepository.findByPhoneNumber(sanitizedPhoneNumber);
-                if(foundContact.isPresent()){
-                    contactsRepository.delete(foundContact.get());
-                }
-
-                telerivetService.unblockContact(contactId);
-
-                telerivetService.deleteContact(contactId);
-            }
         }
     }
 

@@ -1,22 +1,26 @@
 package com.sen4ik.vfb.services;
 
+import com.sen4ik.vfb.base.Constants;
+import com.sen4ik.vfb.entities.Contact;
+import com.sen4ik.vfb.repositories.ContactsRepository;
 import com.twilio.Twilio;
+import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.twiml.MessagingResponse;
-import com.twilio.twiml.TwiMLException;
+import com.twilio.type.PhoneNumber;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import com.twilio.rest.api.v2010.account.Message;
-import com.twilio.type.PhoneNumber;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Component
@@ -31,6 +35,15 @@ public class TwilioService {
 
     @Value("${twilio.phone-number}")
     private String twilioPhoneNumber;
+
+    @Autowired
+    private ContactsService contactsService;
+
+    @Autowired
+    private ContactsRepository contactsRepository;
+
+    @Value("${my.phone}")
+    private String myPhoneNumber;
 
     @PostConstruct
     private void init(){
@@ -60,32 +73,70 @@ public class TwilioService {
         }
     }
 
+    // https://www.twilio.com/docs/sms/twiml
     public ResponseEntity<String> twilioHook(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-
         log.info("CALLED: twilioHook()");
 
-        // https://www.twilio.com/docs/sms/twiml
-
-        String signatureHeader = httpServletRequest.getHeader("X-Twilio-Signature");
-        log.info("signatureHeader: " + signatureHeader);
-
+        // String signatureHeader = httpServletRequest.getHeader("X-Twilio-Signature");
         String body = httpServletRequest.getParameter("Body");
         String from = httpServletRequest.getParameter("From");
-        log.info(body);
-        log.info(from);
 
-        com.twilio.twiml.messaging.Message message = new com.twilio.twiml.messaging.Message.Builder("Hi there 1").build();
-        com.twilio.twiml.messaging.Message message2 = new com.twilio.twiml.messaging.Message.Builder("Hi there 2").build();
-        MessagingResponse response = new MessagingResponse.Builder()
-                .message(message).message(message2).build();
+        String fromNumberSanitized = contactsService.sanitizePhoneNumber(from);
+        String fromNumberMasked = contactsService.maskPhoneNumber(fromNumberSanitized);
+        log.info("From: " + fromNumberMasked);
+        log.info("Body: " + body);
 
-        try {
-            System.out.println(response.toXml());
-        } catch (TwiMLException e) {
-            e.printStackTrace();
+        if(body.trim().toLowerCase().equals("yes") || body.trim().toLowerCase().equals("yes.")) {
+            log.info("Confirming subscription");
+
+            Optional<Contact> contact = contactsRepository.findByPhoneNumber(fromNumberSanitized);
+            if (!contact.isPresent()) {
+                return returnResponse(Constants.generalMessage);
+            } else {
+                com.sen4ik.vfb.entities.Contact currentContact = contact.get();
+                if(currentContact.getSubscriptionConfirmed() == 0){
+                    currentContact.setSubscriptionConfirmed((byte) 1);
+                    contactsRepository.save(currentContact);
+                    return returnResponse("Thank you for confirming subscription to VerseFromBible.com! You will now receive bible verses daily.");
+                }
+                else if(currentContact.getSubscriptionConfirmed() == 1){
+                    return returnResponse("You have confirmed your VerseFromBible.com subscription already. If you are having issues, contact us at VerseFromBible.com.");
+                }
+                else{
+                    String msg = "Contact " + fromNumberSanitized + " messaged \"" + body + "\" but subscription is not 1 or 0.";
+                    log.warn(msg);
+                    sendSingleMessage(myPhoneNumber, msg);
+                }
+            }
+        }
+        else if(body.trim().toLowerCase().equals("start") || body.trim().toLowerCase().equals("start.")){
+            log.info("Start Subscription");
+            return returnResponse("Hi. It looks like you are interested in subscribing for daily Bible verses. Please use Sign Up form on www.VerseFromBible.com.");
+        }
+        else if(Arrays.asList("STOP", "stop", "Stop").contains(body.trim())){
+            log.info("Stop/Remove received");
+            processBlockedTwilioContacts();
         }
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(response.toXml());
+        return returnResponse(Constants.generalMessage);
+    }
+
+    private void processBlockedTwilioContacts() {
+        log.info("CALLED: processBlockedTwilioContacts()");
+
+
+    }
+
+    private ResponseEntity<String> returnResponse(String messageText){
+        return ResponseEntity.status(HttpStatus.OK).body(buildResponse(messageText));
+    }
+
+    private String buildResponse(String messageText){
+        com.twilio.twiml.messaging.Message message = new com.twilio.twiml.messaging.Message.Builder(messageText).build();
+        // com.twilio.twiml.messaging.Message message2 = new com.twilio.twiml.messaging.Message.Builder("Hi there 2").build();
+        // MessagingResponse response = new MessagingResponse.Builder().message(message).message(message2).build();
+        MessagingResponse response = new MessagingResponse.Builder().message(message).build();
+        log.info(response.toXml());
+        return response.toXml();
     }
 }

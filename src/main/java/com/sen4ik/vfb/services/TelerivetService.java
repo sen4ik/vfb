@@ -1,5 +1,6 @@
 package com.sen4ik.vfb.services;
 
+import com.sen4ik.vfb.base.Constants;
 import com.sen4ik.vfb.repositories.ContactsRepository;
 import com.telerivet.*;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +19,6 @@ import javax.annotation.PostConstruct;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -46,9 +46,6 @@ public class TelerivetService {
     @Autowired
     private ContactsRepository contactsRepository;
 
-    @Autowired
-    private JobSchedulerService jobSchedulerService;
-
     TelerivetAPI tr;
     Project project;
 
@@ -58,10 +55,8 @@ public class TelerivetService {
         project = tr.initProjectById(PROJECT_ID);
     }
 
-    String generalMessage = "Hi, I am VerseFromBible.com bot. If you want to subscribe - go to www.VerseFromBible.com. If you want to stop your subscription - reply STOP";
-
     public String sendSingleMessage(String phoneNumber, String message) throws IOException {
-        log.info("CALLED: sendSingleMessage(\'" + maskPhoneNumber(phoneNumber) + "\', \'" + message + "\')");
+        log.info("CALLED: sendSingleMessage(\'" + contactsService.maskPhoneNumber(phoneNumber) + "\', \'" + message + "\')");
         Message sent_msg = project.sendMessage(Util.options(
                 "content", message,
                 "to_number", phoneNumber
@@ -72,7 +67,7 @@ public class TelerivetService {
     public String sendMessageToGroup(String message, List<String> toNumbers) throws IOException {
         log.info("CALLED: sendMessageToGroup()");
         log.info("message: " + message);
-        log.info("toNumbers: " + maskPhoneNumber(toNumbers).toString());
+        log.info("toNumbers: " + contactsService.maskPhoneNumber(toNumbers).toString());
         Broadcast broadcast = project.sendBroadcast(Util.options(
                 "content", message,
                 "to_numbers", toNumbers // new Object[] {"+14155550123", "+14255550234", "+16505550345"}
@@ -126,7 +121,7 @@ public class TelerivetService {
             String fromNumber = request.getParameter("from_number");
             String phoneId = request.getParameter("phone_id");
             String fromNumberSanitized = contactsService.sanitizePhoneNumber(fromNumber);
-            String fromNumberMasked = maskPhoneNumber(fromNumberSanitized);
+            String fromNumberMasked = contactsService.maskPhoneNumber(fromNumberSanitized);
 
             log.info("content: " + content);
             log.info("fromNumber: " + fromNumberMasked);
@@ -137,7 +132,7 @@ public class TelerivetService {
 
                 Optional<com.sen4ik.vfb.entities.Contact> contact = contactsRepository.findByPhoneNumber(fromNumberSanitized);
                 if (!contact.isPresent()){
-                    return sendMessageInResponse(generalMessage); // tested
+                    return sendMessageInResponse(Constants.generalMessage); // tested
                 }
                 else{
                     com.sen4ik.vfb.entities.Contact currentContact = contact.get();
@@ -166,7 +161,7 @@ public class TelerivetService {
                 // We wont be able to text such contact back, because telerivet blocked it as soon as it received STOP.
                 // We will query telerivet contacts and delete the ones that are blocked from our DB.
                 log.info("Stop/Remove received.");
-                jobSchedulerService.processBlockedContacts();
+                processBlockedTelerivetContacts();
                 /*Optional<Contact> contact = contactsRepository.findByPhoneNumber(fromNumberSanitized);
                 if (!contact.isPresent()){
                     return sendMessageInResponse(generalMessage);
@@ -179,24 +174,34 @@ public class TelerivetService {
             }
             else{
                 log.info("Unexpected message content"); // tested
-                return sendMessageInResponse(generalMessage);
+                return sendMessageInResponse(Constants.generalMessage);
             }
         }
 
         return sendJsonResponse(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    public String maskPhoneNumber(String phoneNumber){
-        phoneNumber = phoneNumber.substring(0, phoneNumber.length() - 4) + "****";
-        return phoneNumber;
-    }
+    public void processBlockedTelerivetContacts() throws IOException {
+        log.info("CALLED: processBlockedTelerivetContacts()");
+        List<com.telerivet.Contact> blockedContacts = getBlockedContacts();
 
-    public List<String> maskPhoneNumber(List<String> phoneNumbers){
-        List<String> masked = new ArrayList<>();
-        for(String pn : phoneNumbers){
-            masked.add(maskPhoneNumber(pn));
+        if(blockedContacts.size() > 0){
+            for(com.telerivet.Contact contact : blockedContacts){
+                String phoneNumber = contact.getPhoneNumber();
+                String contactId = contact.getId();
+                String sanitizedPhoneNumber = contactsService.sanitizePhoneNumber(phoneNumber);
+                log.info("Blocked phone number to be removed: " + contactsService.maskPhoneNumber(sanitizedPhoneNumber));
+
+                Optional<com.sen4ik.vfb.entities.Contact> foundContact = contactsRepository.findByPhoneNumber(sanitizedPhoneNumber);
+                if(foundContact.isPresent()){
+                    contactsRepository.delete(foundContact.get());
+                }
+
+                unblockContact(contactId);
+
+                deleteContact(contactId);
+            }
         }
-        return masked;
     }
 
     private ResponseEntity<String> sendJsonResponse(JSONObject json, HttpStatus httpStatus){

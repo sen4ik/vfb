@@ -163,16 +163,6 @@ public class HomeController {
             twilioService.sendSingleMessage("+1" + contact.get().getPhoneNumber(), message);
         }
 
-        if(telerivetEnabled){
-            try {
-                telerivetService.sendSingleMessage("+1" + contact.get().getPhoneNumber(), message);
-            } catch (IOException e) {
-                // TODO:
-            }
-        }
-
-        // contactsRepository.delete(contact.get());
-
         redirectAttributes.addFlashAttribute("unsubscribeSuccessMessage", "We sent you a message to " + unsubscribePhoneNumber + ". Please confirm unsubscription from your phone!");
         return new RedirectView(Views.home.value);
     }
