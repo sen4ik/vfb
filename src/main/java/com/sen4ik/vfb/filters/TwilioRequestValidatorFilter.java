@@ -50,9 +50,8 @@ public class TwilioRequestValidatorFilter implements Filter {
 
             // Concatenates the request URL with the query string
             String pathAndQueryUrl = getRequestUrlAndQueryString(httpRequest);
-            pathAndQueryUrl = pathAndQueryUrl.replace("http://", "https://");
-
             log.info("pathAndQueryUrl: " + pathAndQueryUrl);
+
             // Extracts only the POST parameters and converts the parameters Map type
             Map<String, String> postParams = extractPostParams(httpRequest);
             log.info("postParams: " + postParams.toString());
@@ -105,23 +104,21 @@ public class TwilioRequestValidatorFilter implements Filter {
         // Scheme below is not https, isSecure is not true. This behavior can happen if you have a load-balancer
         // (or using reverse proxy) in front of the application. Even though requests are done in HTTPS the
         // load-balancer will reissue them as plain http requests which produce this behavior.
-        String scheme = request.getScheme();
-        log.info("scheme: " + scheme);
-        boolean isSecured = request.isSecure();
-        log.info("isSecured: " + isSecured);
-        // Solution is to have X-Forwarded-Proto in nginx.conf
-        String xForwardedProto = request.getHeader("X-Forwarded-Proto");
-        log.info("xForwardedProto: " + xForwardedProto);
-        log.info("X-Forwarded-For: " + request.getHeader("X-Forwarded-For"));
-        log.info("X-Real-IP: " + request.getHeader("X-Real-IP"));
-        log.info("Host: " + request.getHeader("Host"));
-        log.info("X-WhatsMyScheme: " + request.getHeader("X-WhatsMyScheme"));
-        log.info(request.getHeaderNames().toString());
-
-
+        // log.info("scheme: " + request.getScheme());
+        // log.info("isSecured: " + request.isSecure());
+        // Solution is to have X-Forwarded-Proto in nginx.conf.
+        // For some reason X-Forwarded-Proto results too many redirects issue. I was tired and added custom header.
+        // String xForwardedProto = request.getHeader("X-Forwarded-Proto");
+        // log.info("xForwardedProto: " + xForwardedProto);
 
         String queryString = request.getQueryString();
         String requestUrl = request.getRequestURL().toString();
+
+        String scheme = request.getHeader("X-WhatsMyScheme");
+        if(!requestUrl.startsWith(scheme)){
+            requestUrl.replace("http://", "https://");
+        }
+
         if(queryString != null && queryString != "") {
             return requestUrl + "?" + queryString;
         }
