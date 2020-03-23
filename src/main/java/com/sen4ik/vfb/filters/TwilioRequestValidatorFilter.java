@@ -103,8 +103,8 @@ public class TwilioRequestValidatorFilter implements Filter {
     private String getRequestUrlAndQueryString(HttpServletRequest request) {
 
         // Scheme below is not https, isSecure is not true. This behavior can happen if you have a load-balancer
-        // in front of the application. Even though requests are done in HTTPS the load-balancer will reissue
-        // them as plain http requests which produce this behavior.
+        // (or using reverse proxy) in front of the application. Even though requests are done in HTTPS the
+        // load-balancer will reissue them as plain http requests which produce this behavior.
         String scheme = request.getScheme();
         log.info("scheme: " + scheme);
         boolean isSecured = request.isSecure();
@@ -112,6 +112,13 @@ public class TwilioRequestValidatorFilter implements Filter {
         // Solution is to have X-Forwarded-Proto in nginx.conf
         String xForwardedProto = request.getHeader("X-Forwarded-Proto");
         log.info("xForwardedProto: " + xForwardedProto);
+        log.info("X-Forwarded-For: " + request.getHeader("X-Forwarded-For"));
+        log.info("X-Real-IP: " + request.getHeader("X-Real-IP"));
+        log.info("Host: " + request.getHeader("Host"));
+        log.info("X-WhatsMyScheme: " + request.getHeader("X-WhatsMyScheme"));
+        log.info(request.getHeaderNames().toString());
+
+
 
         String queryString = request.getQueryString();
         String requestUrl = request.getRequestURL().toString();
