@@ -40,13 +40,13 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 		this.accessDeniedHandler = accessDeniedHandler;
 	}
 
-	@Bean
-	public FilterRegistrationBean<TwilioRequestValidatorFilter> twilioFilter(){
-		FilterRegistrationBean<TwilioRequestValidatorFilter> registrationBean = new FilterRegistrationBean<>();
-		registrationBean.setFilter(new TwilioRequestValidatorFilter());
-		registrationBean.addUrlPatterns("/twilio/*");
-		return registrationBean;
-	}
+//	@Bean
+//	public FilterRegistrationBean<TwilioRequestValidatorFilter> twilioFilter(){
+//		FilterRegistrationBean<TwilioRequestValidatorFilter> registrationBean = new FilterRegistrationBean<>();
+//		registrationBean.setFilter(new TwilioRequestValidatorFilter());
+//		registrationBean.addUrlPatterns("/twilio/*");
+//		return registrationBean;
+//	}
 
 	/**
 	 * HTTPSecurity configurer
