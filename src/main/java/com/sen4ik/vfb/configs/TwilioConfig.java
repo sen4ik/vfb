@@ -16,18 +16,9 @@ public class TwilioConfig {
     public FilterRegistrationBean<TwilioRequestValidatorFilter> twilioFilter(){
         FilterRegistrationBean<TwilioRequestValidatorFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(new TwilioRequestValidatorFilter(AUTH_TOKEN));
-        // registrationBean.setOrder(Integer.MAX_VALUE);
         registrationBean.addUrlPatterns("/twilio/*");
         registrationBean.setOrder(2);
         return registrationBean;
     }
-
-    //	@Bean
-//	public FilterRegistrationBean securityFilterChain(@Qualifier(AbstractSecurityWebApplicationInitializer.DEFAULT_FILTER_NAME) Filter securityFilter) {
-//		FilterRegistrationBean registration = new FilterRegistrationBean(securityFilter);
-//		registration.setOrder(Integer.MAX_VALUE - 1);
-//		registration.setName(AbstractSecurityWebApplicationInitializer.DEFAULT_FILTER_NAME);
-//		return registration;
-//	}
 
 }

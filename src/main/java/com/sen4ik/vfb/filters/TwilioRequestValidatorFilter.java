@@ -15,16 +15,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-// https://www.baeldung.com/spring-boot-add-filter
 @Slf4j
 public class TwilioRequestValidatorFilter implements Filter {
 
-//    @Value("${twilio.auth-token}")
     private String AUTH_TOKEN;
     private RequestValidator requestValidator;
-
-//    @Autowired
-//    Environment env;
 
     @Autowired
     public TwilioRequestValidatorFilter(String AUTH_TOKEN){
@@ -33,15 +28,12 @@ public class TwilioRequestValidatorFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-//        AUTH_TOKEN = env.getRequiredProperty("twilio.auth-token");
         requestValidator = new RequestValidator(AUTH_TOKEN);
     }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-
-        log.info("====================> filtering");
 
         boolean isValidRequest = false;
         if (request instanceof HttpServletRequest) {
@@ -113,10 +105,9 @@ public class TwilioRequestValidatorFilter implements Filter {
 
         String queryString = request.getQueryString();
         String requestUrl = request.getRequestURL().toString();
-
         String scheme = request.getHeader("X-WhatsMyScheme");
         if(!requestUrl.startsWith(scheme)){
-            requestUrl.replace("http://", "https://");
+            requestUrl = requestUrl.replace("http://", "https://");
         }
 
         if(queryString != null && queryString != "") {
