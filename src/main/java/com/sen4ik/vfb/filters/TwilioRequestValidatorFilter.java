@@ -1,6 +1,7 @@
 package com.sen4ik.vfb.filters;
 
 import com.twilio.security.RequestValidator;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 
@@ -15,6 +16,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 // https://www.baeldung.com/spring-boot-add-filter
+@Slf4j
 public class TwilioRequestValidatorFilter implements Filter {
 
 //    @Value("${twilio.auth-token}")
@@ -39,21 +41,30 @@ public class TwilioRequestValidatorFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
 
+        log.info("====================> filtering");
+
         boolean isValidRequest = false;
         if (request instanceof HttpServletRequest) {
+            log.info("====================> working on request");
             HttpServletRequest httpRequest = (HttpServletRequest) request;
 
             // Concatenates the request URL with the query string
             String pathAndQueryUrl = getRequestUrlAndQueryString(httpRequest);
+            log.info("pathAndQueryUrl: " + pathAndQueryUrl);
             // Extracts only the POST parameters and converts the parameters Map type
             Map<String, String> postParams = extractPostParams(httpRequest);
+            log.info("postParams: " + postParams.toString());
             String signatureHeader = httpRequest.getHeader("X-Twilio-Signature");
+            log.info("signatureHeader: " + signatureHeader);
 
             isValidRequest = requestValidator.validate(
                     pathAndQueryUrl,
                     postParams,
                     signatureHeader);
+            log.info("isValidRequest: " + isValidRequest);
         }
+
+        log.info("isValidRequest: " + isValidRequest);
 
         if(isValidRequest) {
             chain.doFilter(request, response);

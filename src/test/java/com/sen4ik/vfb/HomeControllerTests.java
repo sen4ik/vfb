@@ -1,7 +1,6 @@
 package com.sen4ik.vfb;
 
 import com.sen4ik.vfb.controllers.HomeController;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +11,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.servlet.ModelAndView;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -25,16 +23,23 @@ public class HomeControllerTests {
 	private MockMvc mockMvc;
 
 	@Test
-	@Disabled
 	public void main() throws Exception {
 		ResultActions resultActions = mockMvc.perform(get("/index"))
 				.andExpect(status().isOk())
 				.andExpect(view().name("index"))
-				.andExpect(model().attribute("message", equalTo("This is test message")))
-				.andExpect(content().string(containsString("Hello, This is test message")));
+//				.andExpect(model().attribute("attr", hasSize(2))
+				.andExpect(content().string(containsString("About")))
+				.andExpect(content().string(containsString("Sign Up")))
+				.andExpect(model().attribute("verse", hasItem(
+						allOf(
+								hasProperty("getEnEsv", is(not(empty()))),
+								hasProperty("getEnVerseLocation", is(not(empty())))
+						)
+				)));
 
 		MvcResult mvcResult = resultActions.andReturn();
 		ModelAndView mv = mvcResult.getModelAndView();
+
 	}
 
 }
