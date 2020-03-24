@@ -52,16 +52,21 @@ public class TwilioService {
 
     public void sendSingleMessage(String to, String messageText) {
         log.info("CALLED: sendSingleMessage()");
+        log.info("To: " + contactsService.maskPhoneNumber(to));
+        log.info("Message Text: " + messageText);
+
         Message message = Message
-                .creator(new PhoneNumber(to), // to
-                        new PhoneNumber(twilioPhoneNumber), // from
+                .creator(new PhoneNumber(to),
+                        new PhoneNumber(twilioPhoneNumber),
                         messageText)
                 .create();
         log.debug(message.getSid());
     }
 
-    public void sendMessageToList(List<PhoneNumber> toNumbers, String messageText) {
-        log.info("CALLED: sendMessageToList()");
+    public void sendMessageToGroup(List<PhoneNumber> toNumbers, String messageText) {
+        log.info("CALLED: sendMessageToGroup()");
+        log.info("To: " + contactsService.maskPhoneNumber(toNumbers));
+        log.info("Message Text: " + messageText);
 
         for(PhoneNumber pn : toNumbers){
             Message message = Message

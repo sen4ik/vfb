@@ -67,7 +67,6 @@ public class TelerivetService {
     public String sendMessageToGroup(String message, List<String> toNumbers) throws IOException {
         log.info("CALLED: sendMessageToGroup()");
         log.info("message: " + message);
-        log.info("toNumbers: " + contactsService.maskPhoneNumber(toNumbers).toString());
         Broadcast broadcast = project.sendBroadcast(Util.options(
                 "content", message,
                 "to_numbers", toNumbers // new Object[] {"+14155550123", "+14255550234", "+16505550345"}

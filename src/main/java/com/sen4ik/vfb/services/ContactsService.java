@@ -1,5 +1,6 @@
 package com.sen4ik.vfb.services;
 
+import com.twilio.type.PhoneNumber;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -26,10 +27,10 @@ public class ContactsService {
         return phoneNumber;
     }
 
-    public List<String> maskPhoneNumber(List<String> phoneNumbers){
+    public List<String> maskPhoneNumber(List<PhoneNumber> phoneNumbers){
         List<String> masked = new ArrayList<>();
-        for(String pn : phoneNumbers){
-            masked.add(maskPhoneNumber(pn));
+        for(PhoneNumber pn : phoneNumbers){
+            masked.add(maskPhoneNumber(pn.toString()));
         }
         return masked;
     }

@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.util.*;
@@ -103,7 +102,7 @@ public class JobSchedulerService {
                     }
 
                     if(twilioEnabled && !verseToSend.isEmpty() && verseToSend != null){
-                        twilioService.sendMessageToList(phoneNumbers, verseToSend + " " + verseLocation);
+                        twilioService.sendMessageToGroup(phoneNumbers, verseToSend + " " + verseLocation);
 //                        try {
 //                            telerivetService.sendMessageToGroup(, );
 //                        } catch (IOException e) {
