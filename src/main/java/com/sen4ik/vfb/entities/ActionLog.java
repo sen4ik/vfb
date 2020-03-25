@@ -4,6 +4,8 @@ import com.sen4ik.vfb.base.Constants;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -33,19 +35,25 @@ public class ActionLog {
     private String messageBody;
 
     @Basic
-    @Column(name = "phone_number_sent_to")
-    private String phoneNumberSentTo;
+    @Column(name = "to")
+    private String to;
 
     @Basic
-    @Column(name = "phone_number_sent_from")
-    private String phoneNumberSentFrom;
+    @Column(name = "from")
+    private String from;
 
     @Basic
     @Column(name = "timestamp")
+    @CreationTimestamp
+    @ColumnDefault("CURRENT_TIMESTAMP")
     private Timestamp timestamp;
 
     @Basic
     @Column(name = "action")
     private String action;
+
+    @Basic
+    @Column(name = "notes")
+    private String notes;
 
 }

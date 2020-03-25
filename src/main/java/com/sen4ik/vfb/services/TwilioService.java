@@ -42,6 +42,9 @@ public class TwilioService {
     @Autowired
     private ContactsRepository contactsRepository;
 
+    @Autowired
+    private ActionsLogService actionsLogService;
+
     @Value("${my.phone}")
     private String myPhoneNumber;
 
@@ -61,6 +64,8 @@ public class TwilioService {
                         messageText)
                 .create();
         log.debug(message.getSid());
+
+        actionsLogService.messageSent(to, twilioPhoneNumber, messageText, "sid=" + message.getSid());
     }
 
     public void sendMessageToGroup(List<PhoneNumber> toNumbers, String messageText) {
@@ -75,6 +80,8 @@ public class TwilioService {
                             messageText)
                     .create();
             log.debug(message.getSid());
+
+            actionsLogService.messageSent(pn.toString(), twilioPhoneNumber, messageText, "sid=" + message.getSid());
         }
     }
 
@@ -82,30 +89,31 @@ public class TwilioService {
     public ResponseEntity<String> twilioHook(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         log.info("CALLED: twilioHook()");
 
-        // String signatureHeader = httpServletRequest.getHeader("X-Twilio-Signature");
         String body = httpServletRequest.getParameter("Body");
         String from = httpServletRequest.getParameter("From");
-
+        String messageSid = httpServletRequest.getParameter("MessageSid");
         String fromNumberSanitized = contactsService.sanitizePhoneNumber(from);
         String fromNumberMasked = contactsService.maskPhoneNumber(fromNumberSanitized);
         log.info("From: " + fromNumberMasked);
         log.info("Body: " + body);
+
+        actionsLogService.log(null, null, body, twilioPhoneNumber, fromNumberSanitized, ActionsLogService.Actions.received.value, "messageSid=" + messageSid);
 
         if(body.trim().toLowerCase().equals("yes") || body.trim().toLowerCase().equals("yes.")) {
             log.info("Confirming subscription");
 
             Optional<Contact> contact = contactsRepository.findByPhoneNumber(fromNumberSanitized);
             if (!contact.isPresent()) {
-                return returnResponse(Constants.generalMessage);
+                return returnResponse(fromNumberSanitized, messageSid, Constants.generalMessage);
             } else {
                 com.sen4ik.vfb.entities.Contact currentContact = contact.get();
                 if(currentContact.getSubscriptionConfirmed() == 0){
                     currentContact.setSubscriptionConfirmed((byte) 1);
                     contactsRepository.save(currentContact);
-                    return returnResponse("Thank you for confirming subscription to VerseFromBible.com! You will now receive bible verses daily.");
+                    return returnResponse(fromNumberSanitized, messageSid,"Thank you for confirming subscription to VerseFromBible.com! You will now receive bible verses daily.");
                 }
                 else if(currentContact.getSubscriptionConfirmed() == 1){
-                    return returnResponse("You have confirmed your VerseFromBible.com subscription already. If you are having issues, contact us at VerseFromBible.com.");
+                    return returnResponse(fromNumberSanitized, messageSid,"You have confirmed your VerseFromBible.com subscription already. If you are having issues, contact us at VerseFromBible.com.");
                 }
                 else{
                     String msg = "Contact " + fromNumberSanitized + " messaged \"" + body + "\" but subscription is not 1 or 0.";
@@ -116,7 +124,7 @@ public class TwilioService {
         }
         else if(body.trim().toLowerCase().equals("start") || body.trim().toLowerCase().equals("start.")){
             log.info("Start Subscription");
-            return returnResponse("Hi. It looks like you are interested in subscribing for daily Bible verses. Please use Sign Up form on www.VerseFromBible.com.");
+            return returnResponse(fromNumberSanitized, messageSid, "Hi. It looks like you are interested in subscribing for daily Bible verses. Please use Sign Up form on www.VerseFromBible.com.");
         }
         else if(Arrays.asList("STOP", "stop", "Stop").contains(body.trim())){
             log.info("Stop/Remove received");
@@ -126,28 +134,36 @@ public class TwilioService {
                 Contact currentContact = contact.get();
                 contactsRepository.delete(currentContact);
                 log.info("Deleted " + fromNumberMasked);
+
+                actionsLogService.log(currentContact.getId(), null, null, null, null, ActionsLogService.Actions.deleted.value, null);
             }
         }
         else{
-            return returnResponse(Constants.generalMessage);
+            return returnResponse(fromNumberSanitized, messageSid, Constants.generalMessage);
         }
 
-        return returnEmptyResponse();
+        return returnEmptyResponse(fromNumberSanitized, messageSid);
     }
 
-    private ResponseEntity<String> returnResponse(String messageText){
+    private ResponseEntity<String> returnResponse(String to, String messageSid, String messageText){
         com.twilio.twiml.messaging.Message message = new com.twilio.twiml.messaging.Message.Builder(messageText).build();
         // MessagingResponse response = new MessagingResponse.Builder().message(message).message(message2).build();
         MessagingResponse response = new MessagingResponse.Builder().message(message).build();
         String responseXml = response.toXml();
         log.info(responseXml);
+
+        actionsLogService.messageSent(to, twilioPhoneNumber, messageText, "xml=" + responseXml + "; messageSid=" + messageSid);
+
         return ResponseEntity.status(HttpStatus.OK).body(responseXml);
     }
 
-    private ResponseEntity<String> returnEmptyResponse(){
+    private ResponseEntity<String> returnEmptyResponse(String to, String messageSid){
         MessagingResponse response = new MessagingResponse.Builder().build();
         String responseXml = response.toXml();
         log.info(responseXml);
+
+        actionsLogService.messageSent(to, twilioPhoneNumber, null, "xml=" + responseXml + "; messageSid=" + messageSid);
+
         return ResponseEntity.status(HttpStatus.OK).body(responseXml);
     }
 }

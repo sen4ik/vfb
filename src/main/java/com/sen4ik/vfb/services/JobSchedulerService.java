@@ -30,14 +30,8 @@ public class JobSchedulerService {
     @Autowired
     private ContactsRepository contactsRepository;
 
-//    @Value("${telerivet.enabled}")
-//    private Boolean telerivetEnabled;
-
     @Value("${twilio.enabled}")
     private Boolean twilioEnabled;
-
-//    @Autowired
-//    private TelerivetService telerivetService;
 
     @Autowired
     private TwilioService twilioService;
@@ -103,12 +97,6 @@ public class JobSchedulerService {
 
                     if(twilioEnabled && !verseToSend.isEmpty() && verseToSend != null){
                         twilioService.sendMessageToGroup(phoneNumbers, verseToSend + " " + verseLocation);
-//                        try {
-//                            telerivetService.sendMessageToGroup(, );
-//                        } catch (IOException e) {
-//                            e.printStackTrace();
-//                            // TODO:
-//                        }
                     }
                     else {
                         log.warn("Twilio is disabled!");

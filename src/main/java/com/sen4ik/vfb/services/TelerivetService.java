@@ -69,10 +69,7 @@ public class TelerivetService {
         log.info("message: " + message);
         Broadcast broadcast = project.sendBroadcast(Util.options(
                 "content", message,
-                "to_numbers", toNumbers // new Object[] {"+14155550123", "+14255550234", "+16505550345"}
-                //"status_url", "https://example.com/sms_status.php",
-                //"status_secret", "secret",
-                //"is_template", true
+                "to_numbers", toNumbers
         ));
 
         return broadcast.getId();
@@ -161,15 +158,6 @@ public class TelerivetService {
                 // We will query telerivet contacts and delete the ones that are blocked from our DB.
                 log.info("Stop/Remove received.");
                 processBlockedTelerivetContacts();
-                /*Optional<Contact> contact = contactsRepository.findByPhoneNumber(fromNumberSanitized);
-                if (!contact.isPresent()){
-                    return sendMessageInResponse(generalMessage);
-                }
-                else{
-                    Contact currentContact = contact.get();
-                    contactsRepository.delete(currentContact);
-                    return sendMessageInResponse("You have been completely unsubscribed from VerseFromBible.com");
-                }*/
             }
             else{
                 log.info("Unexpected message content"); // tested
