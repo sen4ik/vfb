@@ -139,12 +139,15 @@ public class TwilioService {
         com.twilio.twiml.messaging.Message message = new com.twilio.twiml.messaging.Message.Builder(messageText).build();
         // MessagingResponse response = new MessagingResponse.Builder().message(message).message(message2).build();
         MessagingResponse response = new MessagingResponse.Builder().message(message).build();
-        log.info(response.toXml());
-        return ResponseEntity.status(HttpStatus.OK).body(response.toXml());
+        String responseXml = response.toXml();
+        log.info(responseXml);
+        return ResponseEntity.status(HttpStatus.OK).body(responseXml);
     }
 
     private ResponseEntity<String> returnEmptyResponse(){
         MessagingResponse response = new MessagingResponse.Builder().build();
-        return ResponseEntity.status(HttpStatus.OK).body(response.toXml());
+        String responseXml = response.toXml();
+        log.info(responseXml);
+        return ResponseEntity.status(HttpStatus.OK).body(responseXml);
     }
 }
