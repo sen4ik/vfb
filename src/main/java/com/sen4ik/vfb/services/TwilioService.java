@@ -121,6 +121,7 @@ public class TwilioService {
         else if(Arrays.asList("STOP", "stop", "Stop").contains(body.trim())){
             log.info("Stop/Remove received");
             processBlockedTwilioContacts();
+            return ResponseEntity.status(HttpStatus.OK).body(buildResponse(""));
         }
 
         return returnResponse(Constants.generalMessage);
