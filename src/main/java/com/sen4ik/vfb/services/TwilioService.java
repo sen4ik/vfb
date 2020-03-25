@@ -79,7 +79,7 @@ public class TwilioService {
     }
 
     // https://www.twilio.com/docs/sms/twiml
-    public ResponseEntity<String> twilioHook(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
+    public ResponseEntity<String> twilioHook(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         log.info("CALLED: twilioHook()");
 
         // String signatureHeader = httpServletRequest.getHeader("X-Twilio-Signature");
@@ -121,19 +121,17 @@ public class TwilioService {
         else if(Arrays.asList("STOP", "stop", "Stop").contains(body.trim())){
             log.info("Stop/Remove received");
 
-            // TODO: delete contact from DB
+            Optional<Contact> contact = contactsRepository.findByPhoneNumber(fromNumberSanitized);
+            if (contact.isPresent()){
+                Contact currentContact = contact.get();
+                contactsRepository.delete(currentContact);
+            }
         }
         else{
             return returnResponse(Constants.generalMessage);
         }
 
-        throw new Exception("");
-    }
-
-    private void processBlockedTwilioContacts() {
-        log.info("CALLED: processBlockedTwilioContacts()");
-
-
+        return returnEmptyResponse();
     }
 
     private ResponseEntity<String> returnResponse(String messageText){
@@ -147,5 +145,10 @@ public class TwilioService {
         MessagingResponse response = new MessagingResponse.Builder().message(message).build();
         log.info(response.toXml());
         return response.toXml();
+    }
+
+    private ResponseEntity<String> returnEmptyResponse(){
+        MessagingResponse response = new MessagingResponse.Builder().build();
+        return ResponseEntity.status(HttpStatus.OK).body(response.toXml());
     }
 }
