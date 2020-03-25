@@ -36,6 +36,9 @@ public class TwilioService {
     @Value("${twilio.phone-number}")
     private String twilioPhoneNumber;
 
+    @Value("${my.phone}")
+    private String myPhoneNumber;
+
     @Autowired
     private ContactsService contactsService;
 
@@ -44,9 +47,6 @@ public class TwilioService {
 
     @Autowired
     private ActionsLogService actionsLogService;
-
-    @Value("${my.phone}")
-    private String myPhoneNumber;
 
     @PostConstruct
     private void init(){

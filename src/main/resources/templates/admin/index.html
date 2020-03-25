@@ -300,6 +300,42 @@
         </div>
     </section>
 
+    <section id="view_log" class="bg-light">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 mx-auto">
+                    <h2>Log</h2>
+                    <table id="log_table" class="table table-striped table-bordered" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>To</th>
+                                <th>From</th>
+                                <th>Action</th>
+                                <th>Body</th>
+                                <th>User ID</th>
+                                <th>Verse ID</th>
+                                <th>Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="al : ${actionlogs}">
+                                <td th:text="${al.timestamp}"></td>
+                                <td th:text="${al.to}"></td>
+                                <td th:text="${al.from}"></td>
+                                <td th:text="${al.action}"></td>
+                                <td th:text="${al.messageBody}"></td>
+                                <td th:text="${al.userId}"></td>
+                                <td th:text="${al.verseId}"></td>
+                                <td th:text="${al.notes}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <div th:replace="fragments/footer :: footer"></div>
 
     <div th:replace="fragments/bottom_page_scripts :: bottom_page_scripts"></div>

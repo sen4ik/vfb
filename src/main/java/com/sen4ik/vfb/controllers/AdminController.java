@@ -1,8 +1,10 @@
 package com.sen4ik.vfb.controllers;
 
+import com.sen4ik.vfb.entities.ActionLog;
 import com.sen4ik.vfb.entities.Contact;
 import com.sen4ik.vfb.entities.Verse;
 import com.sen4ik.vfb.enums.Views;
+import com.sen4ik.vfb.repositories.ActionLogRepository;
 import com.sen4ik.vfb.repositories.ContactsRepository;
 import com.sen4ik.vfb.repositories.VersesRepository;
 import com.sen4ik.vfb.services.BibleApiService;
@@ -36,6 +38,9 @@ public class AdminController {
 
     @Autowired
     private BibleApiService bibleApiService;
+
+    @Autowired
+    private ActionLogRepository actionLogRepository;
 
     @GetMapping("/admin/index")
     public String admin() {
@@ -123,6 +128,11 @@ public class AdminController {
     @ModelAttribute("contacts")
     private List<Contact> getContacts(){
         return contactsRepository.findAll();
+    }
+
+    @ModelAttribute("actionlogs")
+    private List<ActionLog> getActionLogs(){
+        return actionLogRepository.findAll();
     }
 
 }
