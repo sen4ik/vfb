@@ -1,9 +1,8 @@
 package com.sen4ik.vfb;
 
-import com.sen4ik.vfb.services.BibleApiService;
-import com.sen4ik.vfb.services.JobSchedulerService;
-import com.sen4ik.vfb.services.TelerivetService;
-import com.sen4ik.vfb.services.TwilioService;
+import com.sen4ik.vfb.entities.ActionLog;
+import com.sen4ik.vfb.repositories.ActionLogRepository;
+import com.sen4ik.vfb.services.*;
 import com.telerivet.Contact;
 import com.twilio.type.PhoneNumber;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +32,12 @@ public class TempTests {
 
     @Autowired
     private TwilioService twilioService;
+
+    @Autowired
+    private ActionLogRepository actionLogRepository;
+
+    @Autowired
+    private ActionsLogService actionsLogService;
 
     @Value("${my.phone}")
     private String myPhoneNumber;
@@ -85,6 +90,26 @@ public class TempTests {
     @Disabled
     public void www() {
         twilioService.sendSingleMessage(myPhoneNumber, "This is test");
+    }
+
+    @Test
+    @Disabled
+    public void wwww() {
+        ActionLog al = new ActionLog();
+        al.setTo("to");
+        al.setFrom("from");
+        al.setMessageBody("messageBody");
+        al.setNotes("notes");
+        al.setAction("message sent");
+        al.setVerseId(1);
+        al.setUserId(1);
+        actionLogRepository.save(al);
+    }
+
+    @Test
+    @Disabled
+    public void wwwww() {
+        actionsLogService.messageSent("9168683319", "1112223333", "test", "sid=asd");
     }
 
 }

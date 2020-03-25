@@ -18,42 +18,42 @@ import java.sql.Timestamp;
 public class ActionLog {
 
     @Id
-    @Column(name = "id")
+    @Column(name = "log_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Basic
-    @Column(name = "user_id")
+    @Column(name = "log_user_id")
     private Integer userId;
 
     @Basic
-    @Column(name = "verse_id")
+    @Column(name = "log_verse_id")
     private Integer verseId;
 
     @Basic
-    @Column(name = "message_body")
+    @Column(name = "log_message_body")
     private String messageBody;
 
     @Basic
-    @Column(name = "to")
+    @Column(name = "log_to")
     private String to;
 
     @Basic
-    @Column(name = "from")
+    @Column(name = "log_from")
     private String from;
 
     @Basic
-    @Column(name = "timestamp")
+    @Column(name = "log_timestamp")
     @CreationTimestamp
     @ColumnDefault("CURRENT_TIMESTAMP")
     private Timestamp timestamp;
 
     @Basic
-    @Column(name = "action")
+    @Column(name = "log_action")
     private String action;
 
     @Basic
-    @Column(name = "notes")
+    @Column(name = "log_notes")
     private String notes;
 
 }
