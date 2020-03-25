@@ -158,7 +158,7 @@ public class HomeController {
             return new RedirectView(Views.home.value);
         }
 
-        String message = "Please confirm you want to unsubscribe by replying with the word STOP.";
+        String message = "Please confirm you want to unsubscribe by replying with the word STOP";
         if(twilioEnabled){
             twilioService.sendSingleMessage("+1" + contact.get().getPhoneNumber(), message);
         }

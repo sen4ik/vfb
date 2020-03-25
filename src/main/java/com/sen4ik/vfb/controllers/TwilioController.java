@@ -29,7 +29,7 @@ public class TwilioController {
         )
     @Async
     public @ResponseBody
-    ResponseEntity<String> twilioHook(HttpServletRequest request, HttpServletResponse response){
+    ResponseEntity<String> twilioHook(HttpServletRequest request, HttpServletResponse response) throws Exception {
         return twilioService.twilioHook(request, response);
     }
 

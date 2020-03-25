@@ -79,7 +79,7 @@ public class TwilioService {
     }
 
     // https://www.twilio.com/docs/sms/twiml
-    public ResponseEntity<String> twilioHook(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ResponseEntity<String> twilioHook(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
         log.info("CALLED: twilioHook()");
 
         // String signatureHeader = httpServletRequest.getHeader("X-Twilio-Signature");
@@ -120,11 +120,14 @@ public class TwilioService {
         }
         else if(Arrays.asList("STOP", "stop", "Stop").contains(body.trim())){
             log.info("Stop/Remove received");
-            processBlockedTwilioContacts();
-            return ResponseEntity.status(HttpStatus.OK).body(buildResponse(""));
+
+            // TODO: delete contact from DB
+        }
+        else{
+            return returnResponse(Constants.generalMessage);
         }
 
-        return returnResponse(Constants.generalMessage);
+        throw new Exception("");
     }
 
     private void processBlockedTwilioContacts() {
