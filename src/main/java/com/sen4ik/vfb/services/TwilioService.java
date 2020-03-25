@@ -125,6 +125,7 @@ public class TwilioService {
             if (contact.isPresent()){
                 Contact currentContact = contact.get();
                 contactsRepository.delete(currentContact);
+                log.info("Deleted " + fromNumberMasked);
             }
         }
         else{
@@ -135,16 +136,11 @@ public class TwilioService {
     }
 
     private ResponseEntity<String> returnResponse(String messageText){
-        return ResponseEntity.status(HttpStatus.OK).body(buildResponse(messageText));
-    }
-
-    private String buildResponse(String messageText){
         com.twilio.twiml.messaging.Message message = new com.twilio.twiml.messaging.Message.Builder(messageText).build();
-        // com.twilio.twiml.messaging.Message message2 = new com.twilio.twiml.messaging.Message.Builder("Hi there 2").build();
         // MessagingResponse response = new MessagingResponse.Builder().message(message).message(message2).build();
         MessagingResponse response = new MessagingResponse.Builder().message(message).build();
         log.info(response.toXml());
-        return response.toXml();
+        return ResponseEntity.status(HttpStatus.OK).body(response.toXml());
     }
 
     private ResponseEntity<String> returnEmptyResponse(){
