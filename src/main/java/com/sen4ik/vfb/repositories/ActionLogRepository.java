@@ -11,6 +11,6 @@ public interface ActionLogRepository extends JpaRepository<ActionLog, Integer> {
     Optional<ActionLog> findById(Integer id);
     Optional<ActionLog> findByUserId(Integer userId);
     Optional<ActionLog> findByVerseId(Integer verseId);
-    Optional<ActionLog> findByPhoneNumberSentTo(String phoneNumberSentTo);
-    Optional<ActionLog> findByPhoneNumberSentFrom(String phoneNumberSentFrom);
+    Optional<ActionLog> findByTo(String to);
+    Optional<ActionLog> findByFrom(String from);
 }
