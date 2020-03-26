@@ -1,5 +1,6 @@
 package com.sen4ik.vfb.configs;
 
+import com.sen4ik.vfb.constants.Views;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -61,7 +62,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
 		http
 			.authorizeRequests()
-				.antMatchers("/", "/index", "/unsubscribe", "/contact_me", "/register", "/confirm", "/error", "/accessdenied", "/js/**", "/bootstrap-datepicker/**", "/vendor/**", "/css/**", "/img/**").permitAll()
+				.antMatchers("/", "/index", "/unsubscribe", "/contact_me", "/register", "/confirm", "/error", "/" + Views.accessDenied, "/js/**", "/bootstrap-datepicker/**", "/vendor/**", "/css/**", "/img/**").permitAll()
 				.anyRequest().fullyAuthenticated()
 				.and()
 				.formLogin()

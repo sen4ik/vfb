@@ -1,5 +1,6 @@
 package com.sen4ik.vfb.configs;
 
+import com.sen4ik.vfb.constants.Views;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
@@ -28,7 +29,7 @@ public class LoggingAccessDeniedHandler implements AccessDeniedHandler {
                     + request.getRequestURI());
         }
 
-        response.sendRedirect(request.getContextPath() + "/accessdenied");
+        response.sendRedirect(request.getContextPath() + "/" + Views.accessDenied);
 
     }
 }

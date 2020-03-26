@@ -11,6 +11,6 @@ public class Views {
     public static final String admin = "admin/index";
     public static final String unsubscribe = "unsubscribe";
     public static final String addVerse = "add_verse";
-    public static final String accessDenied = "accessdenied";
+    public static final String accessDenied = "access_denied";
 
 }
