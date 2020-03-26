@@ -2,6 +2,7 @@ package com.sen4ik.vfb.controllers;
 
 import com.sen4ik.vfb.constants.Views;
 import com.sen4ik.vfb.entities.User;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -10,6 +11,7 @@ import org.springframework.web.servlet.ModelAndView;
 import java.security.Principal;
 
 @Controller
+@Slf4j
 public class LoginController {
 
     @GetMapping("/" + Views.login)
@@ -20,9 +22,11 @@ public class LoginController {
         return new ModelAndView(Views.login);
     }
 
-    @GetMapping("/" + Views.accessDenied)
-    public String accessDenied() {
-        return "/" + Views.accessDenied;
+    @GetMapping("/access_denied")
+    public ModelAndView accessDenied(){
+        log.info("CALLED: accessDenied()");
+        return new ModelAndView(Views.accessDenied);
+        // return "/" + Views.accessDenied;
     }
 
     @ModelAttribute(value = "user")
