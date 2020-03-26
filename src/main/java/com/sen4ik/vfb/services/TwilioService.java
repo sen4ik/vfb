@@ -1,6 +1,6 @@
 package com.sen4ik.vfb.services;
 
-import com.sen4ik.vfb.base.Constants;
+import com.sen4ik.vfb.constants.Constants;
 import com.sen4ik.vfb.entities.Contact;
 import com.sen4ik.vfb.repositories.ContactsRepository;
 import com.twilio.Twilio;

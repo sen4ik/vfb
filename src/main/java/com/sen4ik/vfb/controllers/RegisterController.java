@@ -3,9 +3,9 @@ package com.sen4ik.vfb.controllers;
 import com.nulabinc.zxcvbn.Feedback;
 import com.nulabinc.zxcvbn.Strength;
 import com.nulabinc.zxcvbn.Zxcvbn;
+import com.sen4ik.vfb.constants.Views;
 import com.sen4ik.vfb.entities.Role;
 import com.sen4ik.vfb.entities.User;
-import com.sen4ik.vfb.enums.Views;
 import com.sen4ik.vfb.services.EmailServiceImpl;
 import com.sen4ik.vfb.services.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -46,17 +46,17 @@ public class RegisterController {
     @Value("${registration.enabled}")
     private Boolean registrationEnabled;
 
-    @RequestMapping(value="/register", method = RequestMethod.GET)
+    @RequestMapping(value="/" + Views.register, method = RequestMethod.GET)
     public ModelAndView showRegistrationPage(ModelAndView modelAndView, User user){
 
         if(!registrationEnabled) return checkIfRegistrationIsEnabled(modelAndView);
 
         modelAndView.addObject("user", user);
-        modelAndView.setViewName("register");
+        modelAndView.setViewName(Views.register);
         return modelAndView;
     }
 
-    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    @RequestMapping(value = "/" + Views.register, method = RequestMethod.POST)
     public ModelAndView processRegistrationForm(ModelAndView modelAndView, @Valid User user, BindingResult bindingResult, HttpServletRequest request) {
 
         if(!registrationEnabled) return checkIfRegistrationIsEnabled(modelAndView);
@@ -67,12 +67,12 @@ public class RegisterController {
 
         if (userExists != null) {
             modelAndView.addObject("alreadyRegisteredMessage", "Oops!  There is already a user registered with the email provided.");
-            modelAndView.setViewName(Views.register.value);
+            modelAndView.setViewName(Views.register);
             bindingResult.reject("email");
         }
 
         if (bindingResult.hasErrors()) {
-            modelAndView.setViewName(Views.register.value);
+            modelAndView.setViewName(Views.register);
         }
         else { // new user so we create user and send confirmation e-mail
 
@@ -87,7 +87,7 @@ public class RegisterController {
 
             // TODO:
             String appUrl = request.getScheme() + "://" + request.getServerName();
-            log.info(appUrl);
+            // log.info(appUrl);
 
             // TODO: register noreply email and set send from
             SimpleMailMessage registrationEmail = new SimpleMailMessage();
@@ -100,13 +100,13 @@ public class RegisterController {
             emailService.sendEmail(registrationEmail);
 
             modelAndView.addObject("confirmationMessage", "A confirmation e-mail has been sent to " + user.getEmail());
-            modelAndView.setViewName(Views.register.value);
+            modelAndView.setViewName(Views.register);
         }
 
         return modelAndView;
     }
 
-    @RequestMapping(value="/confirm", method = RequestMethod.GET)
+    @RequestMapping(value="/" + Views.confirm, method = RequestMethod.GET)
     public ModelAndView confirmRegistration(ModelAndView modelAndView, @RequestParam("token") String token) {
 
         if(!registrationEnabled) return checkIfRegistrationIsEnabled(modelAndView);
@@ -119,17 +119,17 @@ public class RegisterController {
             modelAndView.addObject("confirmationToken", user.getConfirmationToken());
         }
 
-        modelAndView.setViewName(Views.confirm.value);
+        modelAndView.setViewName(Views.confirm);
         return modelAndView;
     }
 
     // Process confirmation link
-    @RequestMapping(value="/confirm", method = RequestMethod.POST)
+    @RequestMapping(value="/" + Views.confirm, method = RequestMethod.POST)
     public ModelAndView processRegistration(ModelAndView modelAndView, BindingResult bindingResult, @RequestParam Map<String, String> requestParams, RedirectAttributes redir) {
 
         if(!registrationEnabled) return checkIfRegistrationIsEnabled(modelAndView);
 
-        modelAndView.setViewName(Views.confirm.value);
+        modelAndView.setViewName(Views.confirm);
 
         String password = requestParams.get("password");
         String tokenStr = requestParams.get("token");
@@ -164,14 +164,14 @@ public class RegisterController {
 
         modelAndView.addObject("successMessage", "Your password has been set!");
         modelAndView.addObject("user", user);
-        modelAndView.setViewName(Views.login.value);
+        modelAndView.setViewName(Views.login);
         return modelAndView;
     }
 
     private ModelAndView checkIfRegistrationIsEnabled(ModelAndView modelAndView){
         modelAndView.addObject("additionalDetails", "Administrator disabled registration. " +
                 "If you have any concerns - please use contact form on a website to contact administrator.");
-        modelAndView.setViewName("error");
+        modelAndView.setViewName(Views.error);
         return modelAndView;
     }
 }

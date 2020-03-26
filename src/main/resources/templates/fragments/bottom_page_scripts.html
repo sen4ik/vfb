@@ -12,6 +12,7 @@
     <script th:src="@{/vendor/jquery-easing/jquery.easing.min.js}"></script>
     <script th:src="@{/js/scrolling-nav.js}"></script>
     <script th:src="@{/bootstrap-datepicker/js/bootstrap-datepicker.min.js}"></script>
+    <script src="https://www.google.com/recaptcha/api.js?onload=CaptchaCallback&render=explicit" async defer></script>
 
     <script th:inline="javascript">
         /*<![CDATA[*/
@@ -48,8 +49,12 @@
 
         (function($) {
             // $('#send_time>option:eq(3)').prop('selected', true);
-            $("#send_time").val('8.0');
-            $("#timezone").val('pacific');
+            if($('#send_time').length){
+                $("#send_time").val('8.0');
+            }
+            if($('#timezone').length){
+                $("#timezone").val('pacific');
+            }
         })(jQuery);
 
         $(document).ready(function() {
@@ -67,6 +72,79 @@
         $(".auto_fade").fadeTo(4000, 500).slideUp(500, function(){
             $(".auto_fade").alert('close');
         });
+
+        let reCaptchaExpiredMsg = "reCaptcha has expired. Please solve a new reCaptcha";
+
+        function signUpFormOnReCaptchaSuccess(response) {
+            $("#signupformCaptchaError").html("").hide();
+        };
+
+        function signUpFormOnReCaptchaExpired(response) {
+            $("#signupformCaptchaError").html(reCaptchaExpiredMsg).show();
+            grecaptcha.reset();
+        };
+
+        function unsubscribeFormOnReCaptchaSuccess() {
+            $("#unsubscribeformCaptchaError").html("").hide();
+        };
+
+        function unsubscribeFormOnReCaptchaExpired() {
+            $("#unsubscribeformCaptchaError").html(reCaptchaExpiredMsg).show();
+            grecaptcha.reset();
+        };
+
+        function contactMeFormOnReCaptchaSuccess() {
+            $("#contact_me_formCaptchaError").html("").hide();
+        };
+
+        function contactMeFormOnReCaptchaExpired() {
+            $("#contact_me_formCaptchaError").html(reCaptchaExpiredMsg).show();
+            grecaptcha.reset();
+        };
+
+        if($("#signupform").length) {
+            addEventToForm("signupform");
+        }
+        if($("#unsubscribeform").length) {
+            addEventToForm("unsubscribeform");
+        }
+        if($("#contact_me_form").length) {
+            addEventToForm("contact_me_form");
+        }
+
+        function addEventToForm(formId){
+            document.getElementById(formId).addEventListener("submit", function (evt) {
+                let response = grecaptcha.getResponse();
+                if (response.length == 0) {
+                    $("#" + formId + "CaptchaError").show().html("Please verify that you are not a robot.");
+                    evt.preventDefault();
+                    return false;
+                }
+                // captcha verified
+                $("#" + formId + "CaptchaError").html("").hide();
+            });
+        }
+
+        // let reCaptchaSiteKey = '6Lf6C-MUAAAAAK1oNdHTHqnZAGd-LAgIq7TDubwz';
+        let reCaptchaSiteKey = /*[[${reCaptchaSiteKey}]]*/ 'default';
+
+        function CaptchaCallback() {
+            grecaptcha.render('RecaptchaField1', {
+                'sitekey': reCaptchaSiteKey,
+                'callback': 'signUpFormOnReCaptchaSuccess',
+                'expired-callback': 'signUpFormOnReCaptchaExpired'
+            });
+            grecaptcha.render('RecaptchaField2', {
+                'sitekey': reCaptchaSiteKey,
+                'callback': 'unsubscribeFormOnReCaptchaSuccess',
+                'expired-callback': 'unsubscribeFormOnReCaptchaExpired'
+            });
+            grecaptcha.render('RecaptchaField3', {
+                'sitekey': reCaptchaSiteKey,
+                'callback': 'contactMeFormOnReCaptchaSuccess',
+                'expired-callback': 'contactMeFormOnReCaptchaExpired'
+            });
+        };
 
         /*]]>*/
     </script>

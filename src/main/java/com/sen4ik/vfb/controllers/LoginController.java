@@ -1,5 +1,6 @@
 package com.sen4ik.vfb.controllers;
 
+import com.sen4ik.vfb.constants.Views;
 import com.sen4ik.vfb.entities.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,17 +12,17 @@ import java.security.Principal;
 @Controller
 public class LoginController {
 
-    @GetMapping("/login")
+    @GetMapping("/" + Views.login)
     public ModelAndView login(Principal principal) {
         if (principal != null) {
-            return new ModelAndView("redirect:admin/index");
+            return new ModelAndView("redirect:" + Views.admin);
         }
-        return new ModelAndView("login");
+        return new ModelAndView(Views.login);
     }
 
-    @GetMapping("/access_denied")
+    @GetMapping("/" + Views.accessDenied)
     public String accessDenied() {
-        return "/access_denied";
+        return "/" + Views.accessDenied;
     }
 
     @ModelAttribute(value = "user")

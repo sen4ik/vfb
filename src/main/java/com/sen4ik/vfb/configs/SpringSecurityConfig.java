@@ -49,9 +49,11 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 
+		/*
 		http
 		    .csrf().ignoringAntMatchers("/telerivet/**").and()
 			.authorizeRequests().antMatchers(HttpMethod.POST, "/telerivet/**").permitAll();
+		*/
 
 		http
 			.csrf().ignoringAntMatchers("/twilio/**").and()

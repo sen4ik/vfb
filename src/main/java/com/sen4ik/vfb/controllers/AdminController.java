@@ -1,9 +1,9 @@
 package com.sen4ik.vfb.controllers;
 
+import com.sen4ik.vfb.constants.Views;
 import com.sen4ik.vfb.entities.ActionLog;
 import com.sen4ik.vfb.entities.Contact;
 import com.sen4ik.vfb.entities.Verse;
-import com.sen4ik.vfb.enums.Views;
 import com.sen4ik.vfb.repositories.ActionLogRepository;
 import com.sen4ik.vfb.repositories.ContactsRepository;
 import com.sen4ik.vfb.repositories.VersesRepository;
@@ -42,9 +42,9 @@ public class AdminController {
     @Autowired
     private ActionLogRepository actionLogRepository;
 
-    @GetMapping("/admin/index")
+    @GetMapping("/" + Views.admin)
     public String admin() {
-        return Views.admin.value;
+        return Views.admin;
     }
 
     @InitBinder
@@ -53,12 +53,12 @@ public class AdminController {
                 new CustomDateEditor(new SimpleDateFormat("MM/dd/yyyy"), true, 10));
     }
 
-    @PostMapping("/add_verse")
+    @PostMapping("/" + Views.addVerse)
     public RedirectView addContact(@Valid Verse verse, BindingResult result, RedirectAttributes redirectAttributes) {
 
         if(result.hasErrors()) {
             log.error(result.getAllErrors().toString());
-            return new RedirectView(Views.error.value);
+            return new RedirectView(Views.error);
         }
 
         Integer verseId = verse.getId();
@@ -75,7 +75,7 @@ public class AdminController {
             redirectAttributes.addFlashAttribute("verseActionSuccessMessage", "Verse was edited successfully!");
         }
 
-        return new RedirectView(Views.admin.value);
+        return new RedirectView(Views.admin);
     }
 
     @GetMapping(value = "/admin/verse/{id}/edit")
@@ -85,7 +85,7 @@ public class AdminController {
         // model.addAttribute("verse", verse.get());
         redirectAttributes.addFlashAttribute("verse", verse.get());
 
-        RedirectView redirect = new RedirectView("/" + Views.admin.value);
+        RedirectView redirect = new RedirectView("/" + Views.admin);
         redirect.setExposeModelAttributes(false);
         return redirect;
     }
@@ -96,7 +96,7 @@ public class AdminController {
                                     @RequestParam("verse_number") Integer verseNumber, RedirectAttributes redirectAttributes) throws IOException {
         Verse verse = bibleApiService.getBibleVerse(bookName, chapterNumber, verseNumber);
         redirectAttributes.addFlashAttribute("verse", verse);
-        RedirectView redirect = new RedirectView("/" + Views.admin.value);
+        RedirectView redirect = new RedirectView("/" + Views.admin);
         redirect.setExposeModelAttributes(false);
         return redirect;
     }
@@ -110,7 +110,7 @@ public class AdminController {
         redirectAttributes.addFlashAttribute("sectionId", "view_verses");
         redirectAttributes.addFlashAttribute("verseActionSuccessMessage", "Verse was deleted!");
 
-        RedirectView redirect = new RedirectView("/" + Views.admin.value);
+        RedirectView redirect = new RedirectView("/" + Views.admin);
         redirect.setExposeModelAttributes(false);
         return redirect;
     }

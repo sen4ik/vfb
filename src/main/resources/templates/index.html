@@ -117,7 +117,7 @@
                                     <select autocomplete="off" th:field="*{selectedTimeZone}" class="form-control" id="timezone">
                                         <option th:value="pacific" th:text="'Pacific Time'"></option>
                                         <option th:value="mountain" th:text="'Mountain Time'"></option>
-                                        <option th:value="central" th:text="'Central Time'">	</option>
+                                        <option th:value="central" th:text="'Central Time'"></option>
                                         <option th:value="eastern" th:text="'Eastern Time'"></option>
                                         <option th:value="alaska" th:text="'Alaska Time'"></option>
                                         <option th:value="hawaii" th:text="'Hawaii Time'"></option>
@@ -125,6 +125,16 @@
                                     <span th:if="${#fields.hasErrors('selectedTimeZone')}" th:errors="*{selectedTimeZone}"></span>
                                 </div>
                             </div>
+                        </div>
+<!--                        <div class="form-group required">-->
+<!--                            <label for="gcptch" class="control-label">Are you a robot?</label>-->
+<!--                            <div id="gcptch" class="g-recaptcha" th:attr="data-sitekey=${@captchaService.getReCaptchaSite()}" data-callback="onReCaptchaSuccess" data-expired-callback="onReCaptchaExpired"></div>-->
+<!--                            <div id="signupformCaptchaError" class="alert alert-danger col-lg-6 mt-2" style="display:none"></div>-->
+<!--                        </div>-->
+                        <div class="form-group required">
+                            <label for="RecaptchaField1" class="control-label">Are you a robot?</label>
+                            <div id="RecaptchaField1"></div>
+                            <div id="signupformCaptchaError" class="alert alert-danger col-lg-6 mt-2" style="display:none"></div>
                         </div>
                         <div class="form-group">
                             <button type="submit" id="signup_submit" form="signupform" class="btn btn-primary">Sign Up</button>
@@ -161,6 +171,11 @@
                         <div class="form-group required">
                             <label for="unsubscribe_phone_number" class="control-label">Phone Number</label>
                             <input type="tel" pattern="(?:\(\d{3}\)|\d{3})[- ]?\d{3}[- ]?\d{4}" class="form-control" id="unsubscribe_phone_number" name="unsubscribe_phone_number" maxlength="20" placeholder="XXX-XXX-XXXX" required>
+                        </div>
+                        <div class="form-group required">
+                            <label for="RecaptchaField2" class="control-label">Are you a robot?</label>
+                            <div id="RecaptchaField2"></div>
+                            <div id="unsubscribeformCaptchaError" class="alert alert-danger col-lg-6 mt-2" style="display:none"></div>
                         </div>
                         <div class="form-group">
                             <button type="submit" id="unsubscribe_submit" form="unsubscribeform" class="btn btn-primary">Unsubscribe</button>
@@ -218,6 +233,11 @@
                             <div class="invalid-feedback">
                                 Please type in your message.
                             </div>
+                        </div>
+                        <div class="form-group required">
+                            <label for="RecaptchaField3" class="control-label">Are you a robot?</label>
+                            <div id="RecaptchaField3"></div>
+                            <div id="contact_me_formCaptchaError" class="alert alert-danger col-lg-6 mt-2" style="display:none"></div>
                         </div>
                         <div class="form-group">
                             <button type="submit" id="cm_submit" form="contact_me_form" class="btn btn-primary">Send Message</button>

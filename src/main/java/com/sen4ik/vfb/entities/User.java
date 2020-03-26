@@ -1,6 +1,6 @@
 package com.sen4ik.vfb.entities;
 
-import com.sen4ik.vfb.base.Constants;
+import com.sen4ik.vfb.constants.Constants;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
