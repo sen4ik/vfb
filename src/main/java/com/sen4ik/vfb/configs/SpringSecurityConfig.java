@@ -61,7 +61,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
 		http
 			.authorizeRequests()
-				.antMatchers("/", "/index", "/unsubscribe", "/contact_me", "/register", "/confirm", "/error", "/access_denied", "/js/**", "/bootstrap-datepicker/**", "/vendor/**", "/css/**", "/img/**").permitAll()
+				.antMatchers("/", "/index", "/unsubscribe", "/contact_me", "/register", "/confirm", "/error", "/accessdenied", "/js/**", "/bootstrap-datepicker/**", "/vendor/**", "/css/**", "/img/**").permitAll()
 				.anyRequest().fullyAuthenticated()
 				.and()
 				.formLogin()

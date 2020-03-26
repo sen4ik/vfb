@@ -22,7 +22,7 @@ public class LoginController {
         return new ModelAndView(Views.login);
     }
 
-    @GetMapping("/access_denied")
+    @GetMapping("/accessdenied")
     public ModelAndView accessDenied(){
         log.info("CALLED: accessDenied()");
         return new ModelAndView(Views.accessDenied);
