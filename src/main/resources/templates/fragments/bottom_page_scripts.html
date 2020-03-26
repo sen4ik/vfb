@@ -41,12 +41,6 @@
             })(jQuery);
         }
 
-        function clearHistoryToPreventFormResubmission(){
-            $(document).ready(function(){
-                window.history.replaceState('', '', window.location.href)
-            });
-        }
-
         (function($) {
             // $('#send_time>option:eq(3)').prop('selected', true);
             if($('#send_time').length){
@@ -73,11 +67,31 @@
             $(".auto_fade").alert('close');
         });
 
-        let reCaptchaExpiredMsg = "reCaptcha has expired. Please solve a new reCaptcha";
+        // ========================================== reCaptcha ==========================================
 
+        let reCaptchaExpiredMsg = "reCaptcha has expired. Please solve a new reCaptcha";
         let signUpFormId = "signupform";
         let contactMeFormId = "contact_me_form";
         let unsubscribeFormId = "unsubscribeform";
+        let reCaptchaSiteKey = /*[[${reCaptchaSiteKey}]]*/ 'default'; // comes from the controller
+
+        function CaptchaCallback() {
+            grecaptcha.render('RecaptchaField1', {
+                'sitekey': reCaptchaSiteKey,
+                'callback': 'signUpFormOnReCaptchaSuccess',
+                'expired-callback': 'signUpFormOnReCaptchaExpired'
+            });
+            grecaptcha.render('RecaptchaField2', {
+                'sitekey': reCaptchaSiteKey,
+                'callback': 'unsubscribeFormOnReCaptchaSuccess',
+                'expired-callback': 'unsubscribeFormOnReCaptchaExpired'
+            });
+            grecaptcha.render('RecaptchaField3', {
+                'sitekey': reCaptchaSiteKey,
+                'callback': 'contactMeFormOnReCaptchaSuccess',
+                'expired-callback': 'contactMeFormOnReCaptchaExpired'
+            });
+        };
 
         function signUpFormOnReCaptchaSuccess(response) {
             $("#" + signUpFormId + "CaptchaError").html("").hide();
@@ -143,27 +157,6 @@
 
             });
         }
-
-        // let reCaptchaSiteKey = '6Lf6C-MUAAAAAK1oNdHTHqnZAGd-LAgIq7TDubwz';
-        let reCaptchaSiteKey = /*[[${reCaptchaSiteKey}]]*/ 'default';
-
-        function CaptchaCallback() {
-            grecaptcha.render('RecaptchaField1', {
-                'sitekey': reCaptchaSiteKey,
-                'callback': 'signUpFormOnReCaptchaSuccess',
-                'expired-callback': 'signUpFormOnReCaptchaExpired'
-            });
-            grecaptcha.render('RecaptchaField2', {
-                'sitekey': reCaptchaSiteKey,
-                'callback': 'unsubscribeFormOnReCaptchaSuccess',
-                'expired-callback': 'unsubscribeFormOnReCaptchaExpired'
-            });
-            grecaptcha.render('RecaptchaField3', {
-                'sitekey': reCaptchaSiteKey,
-                'callback': 'contactMeFormOnReCaptchaSuccess',
-                'expired-callback': 'contactMeFormOnReCaptchaExpired'
-            });
-        };
 
         /*]]>*/
     </script>
