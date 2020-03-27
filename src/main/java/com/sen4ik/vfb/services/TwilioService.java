@@ -72,6 +72,7 @@ public class TwilioService {
         }
         catch (ApiException e) {
             if (e.getCode().equals(21610)) {
+                // https://www.twilio.com/docs/api/errors
                 log.warn("Attempt to send to unsubscribed recipient!");
             }
             log.warn("Error on sending SMS: {}", e.getMessage());
