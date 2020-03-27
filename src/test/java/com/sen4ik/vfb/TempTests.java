@@ -44,28 +44,8 @@ public class TempTests {
 
     @Test
     @Disabled
-    public void t() {
-        jobSchedulerService.sendVersesForCurrentHour();
-    }
-
-    @Test
-    @Disabled
     public void tt() {
         jobSchedulerService.checkIfVerseForTomorrowExists();
-    }
-
-    @Test
-    @Disabled
-    public void ttt() {
-        String phoneNumber = "+19168683391";
-        phoneNumber = phoneNumber.substring(2, phoneNumber.length());
-        log.info(phoneNumber);
-    }
-
-    @Test
-    @Disabled
-    public void tttt() {
-        telerivetService.getBlockedContacts();
     }
 
     @Test
@@ -94,20 +74,6 @@ public class TempTests {
 
     @Test
     @Disabled
-    public void wwww() {
-        ActionLog al = new ActionLog();
-        al.setTo("to");
-        al.setFrom("from");
-        al.setMessageBody("messageBody");
-        al.setNotes("notes");
-        al.setAction("message sent");
-        al.setVerseId(1);
-        al.setUserId(1);
-        actionLogRepository.save(al);
-    }
-
-    @Test
-    @Disabled
     public void wwwww() {
         actionsLogService.messageSent("9168683319", "1112223333", "test", "sid=asd");
     }
@@ -115,7 +81,7 @@ public class TempTests {
     @Test
     @Disabled
     public void o() {
-        twilioService.deleteContactsWhoSentStopMessageToTwilioPhoneNumber();
+        twilioService.isPhoneNumberValid("+14084574516");
     }
 
 }

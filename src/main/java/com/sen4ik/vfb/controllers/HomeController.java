@@ -12,6 +12,7 @@ import com.sen4ik.vfb.services.CaptchaService;
 import com.sen4ik.vfb.services.ContactsService;
 import com.sen4ik.vfb.services.EmailServiceImpl;
 import com.sen4ik.vfb.services.TwilioService;
+import com.twilio.exception.ApiException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -60,6 +61,9 @@ public class HomeController {
     @Value("${twilio.enabled}")
     private Boolean twilioEnabled;
 
+    @Value("${twilio.phone-number}")
+    private String twilioPhoneNumber;
+
     @GetMapping("/")
     public String main() {
         return "redirect:/" + Views.index;
@@ -85,6 +89,12 @@ public class HomeController {
 
             String phoneNumber = contact.getPhoneNumber();
             String sanitizedPhone = contactsService.sanitizePhoneNumber(phoneNumber);
+
+            if(!twilioService.isPhoneNumberValid("+1" + sanitizedPhone)){
+                redirectAttributes.addFlashAttribute("addContactErrorMessage", phoneNumber +
+                        " is not a valid mobile phone number! Please provide valid US or Canada phone number.");
+                return new RedirectView(Views.index);
+            }
 
             Optional<Contact> existingContact = contactsRepository.findByPhoneNumber(sanitizedPhone);
             if (existingContact.isPresent()){
@@ -139,7 +149,8 @@ public class HomeController {
                 twilioService.sendSingleMessage("+1" + sanitizedPhone, message);
             }
 
-            redirectAttributes.addFlashAttribute("addContactSuccessMessage", "You have been subscribed! We will text you to " + phoneNumber + " for confirmation.");
+            redirectAttributes.addFlashAttribute("addContactSuccessMessage",
+                    "You have been subscribed!</br>We will text you to " + phoneNumber + " for confirmation.");
         }
         else{
             log.info("reCaptcha failed");

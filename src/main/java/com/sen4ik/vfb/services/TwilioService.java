@@ -57,7 +57,24 @@ public class TwilioService {
 
     List<String> stopWords = Arrays.asList("stop", "stop.", "stopall", "stopall.", "cancel", "cancel.", "unsubscribe", "unsubscribe.", "end", "end.", "quit", "quit.");
 
-    public void sendSingleMessage(String to, String messageText) {
+    public boolean isPhoneNumberValid(String to){
+        boolean valid = true;
+
+        try{
+            com.twilio.rest.lookups.v1.PhoneNumber phoneNumber = com.twilio.rest.lookups.v1.PhoneNumber.fetcher(
+                    new com.twilio.type.PhoneNumber(to)).setCountryCode("US").fetch();
+
+            phoneNumber = com.twilio.rest.lookups.v1.PhoneNumber.fetcher(
+                    new com.twilio.type.PhoneNumber(to)).setCountryCode("CA").fetch();
+        }
+        catch(ApiException a){
+            valid = false;
+        }
+
+        return valid;
+    }
+
+    public void sendSingleMessage(String to, String messageText) throws ApiException {
         log.info("CALLED: sendSingleMessage()");
         log.info("To: " + contactsService.maskPhoneNumber(to));
         log.info("Message Text: " + messageText);
@@ -71,11 +88,16 @@ public class TwilioService {
             actionsLogService.messageSent(to, twilioPhoneNumber, messageText, "sid=" + message.getSid());
         }
         catch (ApiException e) {
-            if (e.getCode().equals(21610)) {
-                // https://www.twilio.com/docs/api/errors
-                log.warn("Attempt to send to unsubscribed recipient!");
+            /*
+            if (e.getCode().equals(21614) || e.getCode().equals(21211)) {
+                log.error(to + " is not a valid mobile number!</br>Please provide valid mobile number.");
             }
-            log.warn("Error on sending SMS: {}", e.getMessage());
+            else if(e.getCode().equals(21610)){
+                log.error("Attempt to send to unsubscribed recipient!");
+            }
+            */
+            log.error("Error on sending SMS: {}", e.getMessage());
+            throw e;
         }
     }
 
