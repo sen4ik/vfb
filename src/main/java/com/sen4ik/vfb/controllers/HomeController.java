@@ -61,9 +61,6 @@ public class HomeController {
     @Value("${twilio.enabled}")
     private Boolean twilioEnabled;
 
-    @Value("${twilio.phone-number}")
-    private String twilioPhoneNumber;
-
     @GetMapping("/")
     public String main() {
         return "redirect:/" + Views.index;
@@ -103,7 +100,7 @@ public class HomeController {
                 if(existingContact.get().getSubscriptionConfirmed() == 1){
                     redirectAttributes.addFlashAttribute("addContactErrorMessage", "It looks like " +
                             "phone number " + phoneNumber + " is already in our subscription list!</br>If you are " +
-                            "having any issues with our services, please contact us using form below.");
+                            "having any issues with our services, please contact us using the form below.");
                     return new RedirectView(Views.index);
                 }
 
@@ -112,7 +109,7 @@ public class HomeController {
                     redirectAttributes.addFlashAttribute("addContactErrorMessage", "Phone number "
                             + phoneNumber + " is already in our subscription list but subscription was never " +
                             "confirmed. We have resent confirmation SMS.</br>If you are " +
-                            "having other issues with our services, please contact us using form below.");
+                            "having other issues with our services, please contact us using the form below.");
                     return new RedirectView(Views.index);
                 }
 
@@ -144,7 +141,7 @@ public class HomeController {
             contact.setPhoneNumber(sanitizedPhone);
             contactsRepository.save(contact);
 
-            String message = "It looks like you have subscribed to VerseFromBible.com. If that is correct, please reply YES.";
+            String message = "It looks like you have subscribed to VerseFromBible.com. If that is correct, reply YES.";
             if(twilioEnabled){
                 twilioService.sendSingleMessage("+1" + sanitizedPhone, message);
             }
@@ -174,12 +171,12 @@ public class HomeController {
             Optional<Contact> contact = contactsRepository.findByPhoneNumber(sanitizedUnsubscribePhoneNumber);
             if (!contact.isPresent()){
                 redirectAttributes.addFlashAttribute("unsubscribeErrorMessage", "We don't have " +
-                        "phone number " + unsubscribePhoneNumber + " in our subscription list!</br>If you are having other issues " +
-                        "with our services, please contact us using form below.");
+                        "phone number " + unsubscribePhoneNumber + " in our subscription list!</br>If you are having issues " +
+                        "with our services, please contact us using the form below.");
                 return new RedirectView(Views.index);
             }
 
-            String message = "We have received request to unsubscribe this number from www.verseformbible.com. Please confirm you want to unsubscribe by replying with the word STOP";
+            String message = "We have received a request to unsubscribe this number from www.verseformbible.com. Please confirm you want to unsubscribe by replying with the word STOP";
             if(twilioEnabled){
                 twilioService.sendSingleMessage("+1" + contact.get().getPhoneNumber(), message);
             }

@@ -10,6 +10,7 @@ import com.sen4ik.vfb.repositories.VersesRepository;
 import com.sen4ik.vfb.services.BibleApiService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -41,6 +42,9 @@ public class AdminController {
 
     @Autowired
     private ActionLogRepository actionLogRepository;
+
+    @Value("${twilio.phone-number}")
+    private String twilioPhoneNumber;
 
     @GetMapping("/" + Views.admin)
     public String admin() {
@@ -133,6 +137,11 @@ public class AdminController {
     @ModelAttribute("actionlogs")
     private List<ActionLog> getActionLogs(){
         return actionLogRepository.findAll();
+    }
+
+    @ModelAttribute("twilioPhoneNumber")
+    private String getTwilioPhoneNumber(){
+        return twilioPhoneNumber;
     }
 
 }
