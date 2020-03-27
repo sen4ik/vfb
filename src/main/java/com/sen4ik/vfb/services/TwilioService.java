@@ -1,13 +1,17 @@
 package com.sen4ik.vfb.services;
 
+import com.google.common.collect.Range;
 import com.sen4ik.vfb.constants.Constants;
 import com.sen4ik.vfb.entities.Contact;
 import com.sen4ik.vfb.repositories.ContactsRepository;
 import com.twilio.Twilio;
+import com.twilio.base.ResourceSet;
+import com.twilio.exception.ApiException;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.twiml.MessagingResponse;
 import com.twilio.type.PhoneNumber;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -18,9 +22,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Component
@@ -53,19 +55,27 @@ public class TwilioService {
         Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
     }
 
+    List<String> stopWords = Arrays.asList("stop", "stop.", "stopall", "stopall.", "cancel", "cancel.", "unsubscribe", "unsubscribe.", "end", "end.", "quit", "quit.");
+
     public void sendSingleMessage(String to, String messageText) {
         log.info("CALLED: sendSingleMessage()");
         log.info("To: " + contactsService.maskPhoneNumber(to));
         log.info("Message Text: " + messageText);
 
-        Message message = Message
-                .creator(new PhoneNumber(to),
-                        new PhoneNumber(twilioPhoneNumber),
-                        messageText)
-                .create();
-        log.debug(message.getSid());
+        try {
+            Message message = Message
+                    .creator(new PhoneNumber(to), new PhoneNumber(twilioPhoneNumber), messageText)
+                    .create();
+            log.debug(message.getSid());
 
-        actionsLogService.messageSent(to, twilioPhoneNumber, messageText, "sid=" + message.getSid());
+            actionsLogService.messageSent(to, twilioPhoneNumber, messageText, "sid=" + message.getSid());
+        }
+        catch (ApiException e) {
+            if (e.getCode().equals(21610)) {
+                log.warn("Attempt to send to unsubscribed recipient!");
+            }
+            log.warn("Error on sending SMS: {}", e.getMessage());
+        }
     }
 
     public void sendMessageToGroup(List<PhoneNumber> toNumbers, String messageText) {
@@ -74,14 +84,12 @@ public class TwilioService {
         log.info("Message Text: " + messageText);
 
         for(PhoneNumber pn : toNumbers){
-            Message message = Message
-                    .creator(pn,
-                            new PhoneNumber(twilioPhoneNumber),
-                            messageText)
-                    .create();
-            log.debug(message.getSid());
-
-            actionsLogService.messageSent(pn.toString(), twilioPhoneNumber, messageText, "sid=" + message.getSid());
+            sendSingleMessage(pn.toString(), messageText);
+//            Message message = Message
+//                    .creator(pn, new PhoneNumber(twilioPhoneNumber), messageText)
+//                    .create();
+//            log.debug(message.getSid());
+//            actionsLogService.messageSent(pn.toString(), twilioPhoneNumber, messageText, "sid=" + message.getSid());
         }
     }
 
@@ -94,12 +102,13 @@ public class TwilioService {
         String messageSid = httpServletRequest.getParameter("MessageSid");
         String fromNumberSanitized = contactsService.sanitizePhoneNumber(from);
         String fromNumberMasked = contactsService.maskPhoneNumber(fromNumberSanitized);
+        String bodyLowerCase = body.trim().toLowerCase();
         log.info("From: " + fromNumberMasked);
         log.info("Body: " + body);
 
         actionsLogService.log(null, null, body, twilioPhoneNumber, fromNumberSanitized, ActionsLogService.Actions.received.value, "messageSid=" + messageSid);
 
-        if(body.trim().toLowerCase().equals("yes") || body.trim().toLowerCase().equals("yes.")) {
+        if(bodyLowerCase.equals("yes") || bodyLowerCase.equals("yes.")) {
             log.info("Confirming subscription");
 
             Optional<Contact> contact = contactsRepository.findByPhoneNumber(fromNumberSanitized);
@@ -122,12 +131,12 @@ public class TwilioService {
                 }
             }
         }
-        else if(body.trim().toLowerCase().equals("start") || body.trim().toLowerCase().equals("start.")){
+        else if(bodyLowerCase.equals("start") || bodyLowerCase.equals("start.")){
             log.info("Start Subscription");
             return returnResponse(fromNumberSanitized, messageSid, "Hi. It looks like you are interested in subscribing for daily Bible verses. Please use Sign Up form on www.VerseFromBible.com.");
         }
-        else if(Arrays.asList("STOP", "stop", "Stop").contains(body.trim())){
-            log.info("Stop/Remove received");
+        else if(stopWords.contains(bodyLowerCase)){
+            log.info("Stop received");
 
             Optional<Contact> contact = contactsRepository.findByPhoneNumber(fromNumberSanitized);
             if (contact.isPresent()){
@@ -165,5 +174,33 @@ public class TwilioService {
         actionsLogService.messageSent(to, twilioPhoneNumber, null, "xml=" + responseXml + "; messageSid=" + messageSid);
 
         return ResponseEntity.status(HttpStatus.OK).body(responseXml);
+    }
+
+    public void deleteContactsWhoSentStopMessageToTwilioPhoneNumber(){
+        // Here is the issue: if someone stopped but later subscribed, we will remove such contact from db, which is not good.
+        // How do we properly find out blocked numbers?
+        ResourceSet<Message> messages = Message.reader()
+                .setDateSent(Range.greaterThan(new DateTime().minusDays(1)))
+                .setTo(twilioPhoneNumber)
+                .read();
+
+        for(Message record : messages) {
+            String body = record.getBody();
+            String bodyLowerCase = body.trim().toLowerCase();
+            PhoneNumber from = record.getFrom();
+            String fromSanitized = contactsService.sanitizePhoneNumber(from.toString());
+
+            if(stopWords.contains(bodyLowerCase)){
+                System.out.println("***");
+                System.out.println(record.getDateSent());
+                System.out.println(fromSanitized);
+                System.out.println("body: " + body);
+                // System.out.println("getAccountSid: " + record.getAccountSid());
+                System.out.println("getSid: " + record.getSid());
+                System.out.println("getStatus: " + record.getStatus());
+                System.out.println("\n");
+            }
+
+        }
     }
 }

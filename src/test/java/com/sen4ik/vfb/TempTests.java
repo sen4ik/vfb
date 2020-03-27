@@ -112,4 +112,10 @@ public class TempTests {
         actionsLogService.messageSent("9168683319", "1112223333", "test", "sid=asd");
     }
 
+    @Test
+    @Disabled
+    public void o() {
+        twilioService.deleteContactsWhoSentStopMessageToTwilioPhoneNumber();
+    }
+
 }
