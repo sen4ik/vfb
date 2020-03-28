@@ -309,25 +309,20 @@
                         <thead>
                             <tr>
                                 <th>Time</th>
-                                <th>To</th>
                                 <th>From</th>
+                                <th>To</th>
                                 <th>Action</th>
                                 <th>Body</th>
-<!--                                <th>User ID</th>-->
-<!--                                <th>Verse ID</th>-->
                                 <th>Notes</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr th:each="al : ${actionlogs}">
                                 <td th:text="${al.timestamp}"></td>
-<!--                                <td th:text="${al.to}"></td>-->
-                                <td th:text="${al.to}" th:class="${al.to != null && twilioPhoneNumber.contains(al.to)} ? twilioPhoneClass : ''"></td>
                                 <td th:text="${al.from}" th:class="${al.from != null && twilioPhoneNumber.contains(al.from)} ? twilioPhoneClass : ''"></td>
+                                <td th:text="${al.to}" th:class="${al.to != null && twilioPhoneNumber.contains(al.to)} ? twilioPhoneClass : ''"></td>
                                 <td th:text="${al.action}"></td>
                                 <td th:text="${al.messageBody}"></td>
-<!--                                <td th:text="${al.userId}"></td>-->
-<!--                                <td th:text="${al.verseId}"></td>-->
                                 <td th:text="${al.notes}"></td>
                             </tr>
                         </tbody>
