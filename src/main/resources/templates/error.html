@@ -4,6 +4,8 @@
     <title>Error</title>
     <link th:href="@{/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
     <link th:href="@{/css/main.css}" rel="stylesheet">
+    <script th:replace="fragments/google_analytics :: gscript"></script>
+    <script th:replace="fragments/google_analytics :: gscriptInl"></script>
 </head>
 <body>
     <div class="container">
@@ -23,6 +25,9 @@
             </div>
         </div>
     </div>
-    <div th:replace="fragments/bottom_page_scripts :: bottom_page_scripts"></div>
+
+    <script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+    <script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
 </body>
 </html>
