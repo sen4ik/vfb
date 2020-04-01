@@ -220,7 +220,7 @@ public class HomeController {
                 return new RedirectView(Views.index);
             }
             catch (Exception e){
-                redirectAttributes.addFlashAttribute("contactMeErrorMessage", "Something failed. We apologize for the inconvenience.</br>Please email us at info@sen4ik.info.");
+                redirectAttributes.addFlashAttribute("contactMeErrorMessage", "Something failed. We apologize for the inconvenience.</br>Please email us at support@versefrombible.com.");
             }
         }
         else{
