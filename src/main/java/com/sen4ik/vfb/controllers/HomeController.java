@@ -14,21 +14,22 @@ import com.sen4ik.vfb.services.EmailServiceImpl;
 import com.sen4ik.vfb.services.TwilioService;
 import com.twilio.exception.ApiException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Date;
 import java.util.Optional;
 
@@ -228,6 +229,31 @@ public class HomeController {
         }
 
         return new RedirectView(Views.index);
+    }
+
+    /*
+    @RequestMapping(value={"/robots.txt", "/robot.txt"})
+    @ResponseBody
+    public String getRobotsTxt() {
+        return "User-agent: *\n" +
+                "Disallow: /login\n";
+    }*/
+
+    @RequestMapping(value = {"/robots", "/robot", "/robot.txt", "/robots.txt"})
+    public void robot(HttpServletResponse response) throws IOException {
+        InputStream resourceAsStream = null;
+        try {
+            ClassLoader classLoader = getClass().getClassLoader();
+            resourceAsStream = classLoader.getResourceAsStream("robots.txt");
+            response.addHeader("Content-disposition", "filename=robots.txt");
+            response.setContentType("text/plain");
+            IOUtils.copy(resourceAsStream, response.getOutputStream());
+            response.flushBuffer();
+        } catch (Exception e) {
+            log.error("Problem with displaying robot.txt", e);
+        } finally {
+            resourceAsStream.close();
+        }
     }
 
     @ModelAttribute("reCaptchaSiteKey")
