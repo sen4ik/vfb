@@ -12,7 +12,6 @@ import com.sen4ik.vfb.services.CaptchaService;
 import com.sen4ik.vfb.services.ContactsService;
 import com.sen4ik.vfb.services.EmailServiceImpl;
 import com.sen4ik.vfb.services.TwilioService;
-import com.twilio.exception.ApiException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;

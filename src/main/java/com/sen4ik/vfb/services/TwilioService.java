@@ -41,6 +41,9 @@ public class TwilioService {
     @Value("${my.phone}")
     private String myPhoneNumber;
 
+    @Value("${test.env.prefix}")
+    private String testEnvPrefix;
+
     @Autowired
     private ContactsService contactsService;
 
@@ -78,6 +81,11 @@ public class TwilioService {
         log.info("CALLED: sendSingleMessage()");
         log.info("To: " + contactsService.maskPhoneNumber(to));
         log.info("Message Text: " + messageText);
+
+        if(testEnvPrefix != null && !testEnvPrefix.isEmpty()){
+            log.info("testEnvPrefix: " + testEnvPrefix);
+            messageText = testEnvPrefix + " " + messageText;
+        }
 
         try {
             Message message = Message

@@ -1,10 +1,8 @@
 package com.sen4ik.vfb;
 
-import com.sen4ik.vfb.entities.ActionLog;
 import com.sen4ik.vfb.repositories.ActionLogRepository;
 import com.sen4ik.vfb.services.*;
 import com.telerivet.Contact;
-import com.twilio.type.PhoneNumber;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;

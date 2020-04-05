@@ -45,6 +45,7 @@ deploy:
       sed -i "/recaptcha.validation.key-site=/c\recaptcha.validation.key-site=${RECAPTCHA_SITE_KEY_V2}" src/main/resources/application.properties && \
       sed -i "/recaptcha.validation.secret-key=/c\recaptcha.validation.secret-key=${RECAPTCHA_SECRET_V2}" src/main/resources/application.properties && \
       sed -i "/recaptcha.testing.enabled=/c\recaptcha.testing.enabled=false" src/main/resources/application.properties && \
+      sed -i "/test.env.prefix=/c\test.env.prefix=" src/main/resources/application.properties && \
       mvn clean package -DskipTests=true && \
       cp target/vfb.war /opt/vfb/current/ && \
       sudo systemctl start vfb && \
