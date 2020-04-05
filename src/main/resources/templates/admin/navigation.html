@@ -25,7 +25,7 @@
                 <li class="nav-item" sec:authorize="isAuthenticated()">
                     <form method="post" th:action="@{/logout}">
                         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                        <button type="submit" class="btn nav-link" style="margin-top: -1px;">Log out</button>
+                        <button type="submit" class="btn nav-link" style="margin-top: -1px;">Logout</button>
                     </form>
                 </li>
             </ul>

@@ -256,6 +256,18 @@ public class HomeController {
         }
     }
 
+    @GetMapping("/privacy_policy")
+    public ModelAndView privacyPolicy(){
+        log.info("CALLED: privacyPolicy()");
+        return new ModelAndView("privacy_policy");
+    }
+
+    @GetMapping("/terms_of_use")
+    public ModelAndView termsOfUse(){
+        log.info("CALLED: termsOfUse()");
+        return new ModelAndView("terms_of_use");
+    }
+
     @ModelAttribute("reCaptchaSiteKey")
     private String getReCaptchaSiteKey(){
         return captchaService.getReCaptchaSite();
