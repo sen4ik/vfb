@@ -1,2 +1,6 @@
+-- Below was the issue:
+-- ALTER TABLE verse_from_bible.action_log CHARACTER SET = utf8 COLLATE = utf8_general_ci;
+
+-- Fix:
 ALTER TABLE verse_from_bible.action_log CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 ALTER TABLE verse_from_bible.action_log CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

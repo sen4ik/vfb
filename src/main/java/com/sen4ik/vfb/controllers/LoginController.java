@@ -22,11 +22,12 @@ public class LoginController {
         return new ModelAndView(Views.login);
     }
 
+    // BUG: access_denied page is inaccessible
     @GetMapping("/" + Views.accessDenied)
-    public ModelAndView accessDenied(){
+    public String accessDenied(){
         log.info("CALLED: accessDenied()");
-        return new ModelAndView(Views.accessDenied);
-        // return "/" + Views.accessDenied;
+//        return new ModelAndView(Views.accessDenied);
+        return "/" + Views.accessDenied;
     }
 
     @ModelAttribute(value = "user")

@@ -87,11 +87,12 @@ public class HomeController {
             String phoneNumber = contact.getPhoneNumber();
             String sanitizedPhone = contactsService.sanitizePhoneNumber(phoneNumber);
 
-            if(!twilioService.isPhoneNumberValid("+1" + sanitizedPhone)){
-                redirectAttributes.addFlashAttribute("addContactErrorMessage", phoneNumber +
-                        " is not a valid mobile phone number!</br>Please provide valid US or Canada phone number.");
-                return new RedirectView(Views.index);
-            }
+            // BUG: users can submit invalid numbers
+//            if(!twilioService.isPhoneNumberValid("+1" + sanitizedPhone)){
+//                redirectAttributes.addFlashAttribute("addContactErrorMessage", phoneNumber +
+//                        " is not a valid mobile phone number!</br>Please provide valid US or Canada phone number.");
+//                return new RedirectView(Views.index);
+//            }
 
             Optional<Contact> existingContact = contactsRepository.findByPhoneNumber(sanitizedPhone);
             if (existingContact.isPresent()){
@@ -162,8 +163,9 @@ public class HomeController {
 
         redirectAttributes.addFlashAttribute("sectionId", "unsubscribe");
 
-        ValidationResult validationResult = recaptchaValidator.validate(request);
-        if (validationResult.isSuccess()) {
+        // BUG: We are not validating recaptcha on unsubscribe
+//        ValidationResult validationResult = recaptchaValidator.validate(request);
+//        if (validationResult.isSuccess()) {
             log.info("reCaptcha success");
 
             String sanitizedUnsubscribePhoneNumber = contactsService.sanitizePhoneNumber(unsubscribePhoneNumber);
@@ -182,11 +184,11 @@ public class HomeController {
             }
 
             redirectAttributes.addFlashAttribute("unsubscribeSuccessMessage", "We sent you a message to " + unsubscribePhoneNumber + ". Please confirm unsubscription from your phone!");
-        }
-        else{
-            log.info("reCaptcha failed");
-            redirectAttributes.addFlashAttribute("unsubscribeErrorMessage", Constants.reCaptchaFailedMessage);
-        }
+//        }
+//        else{
+//            log.info("reCaptcha failed");
+//            redirectAttributes.addFlashAttribute("unsubscribeErrorMessage", Constants.reCaptchaFailedMessage);
+//        }
 
         return new RedirectView(Views.index);
     }

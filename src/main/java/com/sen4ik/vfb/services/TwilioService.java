@@ -182,7 +182,9 @@ public class TwilioService {
             return returnResponse(fromNumberSanitized, messageSid, Constants.generalMessage);
         }
 
-        return returnEmptyResponse(fromNumberSanitized, messageSid);
+        // BUG:
+        return returnResponse(fromNumberSanitized, messageSid, Constants.generalMessage);
+        // return returnEmptyResponse(fromNumberSanitized, messageSid);
     }
 
     private ResponseEntity<String> returnResponse(String to, String messageSid, String messageText){

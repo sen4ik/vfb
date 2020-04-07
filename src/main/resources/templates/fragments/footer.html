@@ -9,7 +9,8 @@
         <div class="container">
             <p class="m-0 text-center text-white">
                 <a href="/">VerseFromBible.com</a> &copy;
-                <script>document.write(new Date().getFullYear())</script> |
+<!--                BUG: footer shows previous year -->
+                <script>document.write((new Date().getFullYear()) - 1)</script> |
                 <a href="/privacy_policy">Privacy Policy</a> |
                 <a href="/terms_of_use">Terms Of Use</a>
             </p>

@@ -78,7 +78,8 @@
                     <form autocomplete="off" action="#" th:action="@{/index}" th:object="${contact}" id="signupform" name="signupform" class="needs-validation" method="post">
                         <div class="form-group required">
                             <label for="contact_name" class="control-label">Name</label>
-                            <input th:field="*{name}" type="text" class="form-control" id="contact_name" maxlength="40" placeholder="Name" required>
+<!--                            BUG: maxlength is longer than DB -->
+                            <input th:field="*{name}" type="text" class="form-control" id="contact_name" maxlength="60" placeholder="Name" required>
                             <div class="invalid-feedback">
                                 Please provide a name.
                             </div>
