@@ -99,7 +99,12 @@ public class AdminController {
                                     @RequestParam("chapter_number") Integer chapterNumber,
                                     @RequestParam("verse_number") Integer verseNumber, RedirectAttributes redirectAttributes) throws IOException {
         Verse verse = bibleApiService.getBibleVerse(bookName, chapterNumber, verseNumber);
-        redirectAttributes.addFlashAttribute("verse", verse);
+        if(verse != null){
+            redirectAttributes.addFlashAttribute("verse", verse);
+        }
+        else{
+            redirectAttributes.addFlashAttribute("addVerseErrorMessage", "Error occurred while doing lookup.");
+        }
         RedirectView redirect = new RedirectView("/" + Views.admin);
         redirect.setExposeModelAttributes(false);
         return redirect;

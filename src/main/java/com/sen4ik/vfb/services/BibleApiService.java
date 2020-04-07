@@ -47,8 +47,11 @@ public class BibleApiService {
         OkHttpClient client = new OkHttpClient();
 
         for (Map.Entry<String, String> entry : bibles.entrySet()) {
+
+            String currentBookName = bookName;
             String currentBibleId = entry.getValue();
             String currentBibleAbr = entry.getKey();
+            log.info("Working on following translation: " + currentBibleAbr);
 
             // get book ID
             Request booksRequest = new Request.Builder()
@@ -59,14 +62,29 @@ public class BibleApiService {
             Call call = client.newCall(booksRequest);
             Response response = call.execute();
             String booksJson = response.body().string();
+            // log.info("booksJson: " + booksJson);
+
             String bookNameField = "name";
-            if(currentBibleId.equals(nivId)) bookNameField = "nameLong";
-            net.minidev.json.JSONArray bookArr = JsonPath.parse(booksJson).read("$.data[?(@." + bookNameField + " == '" + bookName + "')].id");
+            if(currentBibleId.equals(nivId)){
+                // use nameLong field for lookup
+                bookNameField = "nameLong";
+            }
+
+            if(currentBibleId.equals(nivId) || currentBibleId.equals(kjvId)){
+                // in NIV and KJV it is Psalms
+                if(currentBookName.equals("Psalm")){
+                    currentBookName = "Psalms";
+                }
+            }
+
+            net.minidev.json.JSONArray bookArr = JsonPath.parse(booksJson).read("$.data[?(@." + bookNameField + " == '" + currentBookName + "')].id");
             String bookId = bookArr.get(0).toString();
+
             if(currentBibleId.equals(esvId)){
-                net.minidev.json.JSONArray abbrObj = JsonPath.parse(booksJson).read("$.data[?(@." + bookNameField + " == '" + bookName + "')].abbreviation");
+                net.minidev.json.JSONArray abbrObj = JsonPath.parse(booksJson).read("$.data[?(@." + bookNameField + " == '" + currentBookName + "')].abbreviation");
                 verseResultObj.setEnVerseLocation(abbrObj.get(0).toString() + " " + chapterNumber + ":" + verseNumber);
             }
+
             response.close();
 
             // get chapter ID
@@ -91,10 +109,19 @@ public class BibleApiService {
                     .header("api-key", apiKey)
                     .build();
 
-            String verseJson = client.newCall(verseRequest).execute().body().string();
+            Response verseResponse = client.newCall(verseRequest).execute();
+            int statusCode = verseResponse.code();
+            String verseJson = verseResponse.body().string();
+            if(statusCode != 200){
+                log.error("api.bible returned " + statusCode + " while doing verse lookup.\nResponse Body: " + verseJson);
+                return null;
+            }
 
             String verse = JsonPath.parse(verseJson).read("$.data.content");
-            verse = verse.replaceAll("\n", "").replaceAll("\r", "").trim();
+            verse = verse
+                    .replaceAll("\n", "")
+                    .replaceAll("\r", "").trim()
+                    .replaceAll("\\s+", " ");
 
             // responseObj.put(currentBibleAbr, verseStr);
 
