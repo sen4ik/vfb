@@ -283,7 +283,7 @@
                             <th>TZ</th>
                             <th>Send Time Pacific</th>
                             <th>Subscription Confirmed</th>
-<!--                            <th>Actions</th>-->
+                            <th>Actions</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -296,9 +296,9 @@
                                 <td th:text="${c.selectedTimeZone}"></td>
                                 <td th:text="${c.selectedSendTimePacific}"></td>
                                 <td th:text="${c.subscriptionConfirmed}"></td>
-<!--                                <td>-->
-<!--                                    <a href="">Edit</a>-->
-<!--                                </td>-->
+                                <td>
+                                    <a th:href="@{/admin/contact/} + ${c.id} + @{/resendConfirmation}" th:if="${c.subscriptionConfirmed == 0}">Request Confirmation</a>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
