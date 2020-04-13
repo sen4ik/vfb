@@ -64,10 +64,10 @@ public class TwilioService {
         boolean valid = true;
 
         try{
-            com.twilio.rest.lookups.v1.PhoneNumber phoneNumber = com.twilio.rest.lookups.v1.PhoneNumber.fetcher(
+            com.twilio.rest.lookups.v1.PhoneNumber.fetcher(
                     new com.twilio.type.PhoneNumber(to)).setCountryCode("US").fetch();
 
-            phoneNumber = com.twilio.rest.lookups.v1.PhoneNumber.fetcher(
+            com.twilio.rest.lookups.v1.PhoneNumber.fetcher(
                     new com.twilio.type.PhoneNumber(to)).setCountryCode("CA").fetch();
         }
         catch(ApiException a){

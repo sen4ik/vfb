@@ -1,5 +1,6 @@
 package com.sen4ik.vfb.controllers;
 
+import com.sen4ik.vfb.constants.Constants;
 import com.sen4ik.vfb.constants.Views;
 import com.sen4ik.vfb.entities.ActionLog;
 import com.sen4ik.vfb.entities.Contact;
@@ -22,7 +23,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -50,6 +50,9 @@ public class AdminController {
 
     @Autowired
     private TwilioService twilioService;
+
+    @Value("${twilio.enabled}")
+    private Boolean twilioEnabled;
 
     @GetMapping("/" + Views.admin)
     public String admin() {
@@ -143,6 +146,28 @@ public class AdminController {
         return redirect;
     }
 
+    @GetMapping("/admin/contact/{id}/resendConfirmation")
+    public RedirectView resendConfirmation(@PathVariable("id") Integer id,
+                                    RedirectAttributes redirectAttributes) {
+
+        redirectAttributes.addFlashAttribute("sectionId", "view_contacts");
+
+        Optional<Contact> optionalContact = contactsRepository.findById(id);
+        if (!optionalContact.isPresent()){
+            redirectAttributes.addFlashAttribute("contactActionErrorMessage", "No contact found with ID " + id + ".");
+        }
+        else{
+            if(twilioEnabled){
+                twilioService.sendSingleMessage(optionalContact.get().getPhoneNumber(), Constants.confirmSubscriptionMessage);
+                redirectAttributes.addFlashAttribute("contactActionSuccessMessage", "Confirmation message resent.");
+            }
+        }
+
+        RedirectView redirect = new RedirectView("/" + Views.admin);
+        redirect.setExposeModelAttributes(false);
+        return redirect;
+    }
+
     @GetMapping("/admin/contact/{id}/resendVerse")
     public RedirectView resendVerse(@PathVariable("id") Integer id,
                                       RedirectAttributes redirectAttributes) {
@@ -176,7 +201,9 @@ public class AdminController {
                 }
 
                 if(verseToSend != null){
-                    twilioService.sendSingleMessage(optionalContact.get().getPhoneNumber(), verseToSend);
+                    if(twilioEnabled) {
+                        twilioService.sendSingleMessage(optionalContact.get().getPhoneNumber(), verseToSend);
+                    }
                     redirectAttributes.addFlashAttribute("contactActionSuccessMessage", "Verse resend successful.");
                 }
                 else{

@@ -141,9 +141,8 @@ public class HomeController {
             contact.setPhoneNumber(sanitizedPhone);
             contactsRepository.save(contact);
 
-            String message = "It looks like you have subscribed to VerseFromBible.com. If that is correct, reply YES.";
             if(twilioEnabled){
-                twilioService.sendSingleMessage("+1" + sanitizedPhone, message);
+                twilioService.sendSingleMessage("+1" + sanitizedPhone, Constants.confirmSubscriptionMessage);
             }
 
             redirectAttributes.addFlashAttribute("addContactSuccessMessage",
