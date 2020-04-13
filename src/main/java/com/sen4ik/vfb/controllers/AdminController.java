@@ -8,6 +8,7 @@ import com.sen4ik.vfb.repositories.ActionLogRepository;
 import com.sen4ik.vfb.repositories.ContactsRepository;
 import com.sen4ik.vfb.repositories.VersesRepository;
 import com.sen4ik.vfb.services.BibleApiService;
+import com.sen4ik.vfb.services.TwilioService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +22,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -45,6 +47,9 @@ public class AdminController {
 
     @Value("${twilio.phone-number}")
     private String twilioPhoneNumber;
+
+    @Autowired
+    private TwilioService twilioService;
 
     @GetMapping("/" + Views.admin)
     public String admin() {
@@ -118,6 +123,68 @@ public class AdminController {
 
         redirectAttributes.addFlashAttribute("sectionId", "view_verses");
         redirectAttributes.addFlashAttribute("verseActionSuccessMessage", "Verse was deleted!");
+
+        RedirectView redirect = new RedirectView("/" + Views.admin);
+        redirect.setExposeModelAttributes(false);
+        return redirect;
+    }
+
+    @GetMapping("/admin/contact/{id}/delete")
+    public RedirectView deleteContact(@PathVariable("id") Integer id,
+                                    RedirectAttributes redirectAttributes) {
+
+        contactsRepository.deleteById(id);
+
+        redirectAttributes.addFlashAttribute("sectionId", "view_contacts");
+        redirectAttributes.addFlashAttribute("verseActionSuccessMessage", "Contact was deleted!");
+
+        RedirectView redirect = new RedirectView("/" + Views.admin);
+        redirect.setExposeModelAttributes(false);
+        return redirect;
+    }
+
+    @GetMapping("/admin/contact/{id}/resendVerse")
+    public RedirectView resendVerse(@PathVariable("id") Integer id,
+                                      RedirectAttributes redirectAttributes) {
+
+        redirectAttributes.addFlashAttribute("sectionId", "view_contacts");
+
+        Optional<Contact> optionalContact = contactsRepository.findById(id);
+        if (!optionalContact.isPresent()){
+            redirectAttributes.addFlashAttribute("contactActionErrorMessage", "No contact found with ID " + id + ".");
+        }
+        else{
+            Optional<Verse> optionalVerse = versesRepository.findByDate(new Date());
+            if (!optionalVerse.isPresent()){
+                redirectAttributes.addFlashAttribute("contactActionErrorMessage", "No verse found for today's date.");
+            }
+            else{
+                String bibleTranslation = optionalContact.get().getBibleTranslation();
+                String verseToSend = null;
+
+                if(bibleTranslation.equals("en_esv")){
+                    verseToSend = optionalVerse.get().getEnEsv() + " " + optionalVerse.get().getEnVerseLocation();
+                }
+                else if(bibleTranslation.equals("en_niv")){
+                    verseToSend = optionalVerse.get().getEnNiv() + " " + optionalVerse.get().getEnVerseLocation();
+                }
+                else if(bibleTranslation.equals("en_kjv")){
+                    verseToSend = optionalVerse.get().getEnKjv() + " " + optionalVerse.get().getEnVerseLocation();
+                }
+                else if(bibleTranslation.equals("ru_synodal")){
+                    verseToSend = optionalVerse.get().getRuSynodal() + " " + optionalVerse.get().getRuVerseLocation();
+                }
+
+                if(verseToSend != null){
+                    twilioService.sendSingleMessage(optionalContact.get().getPhoneNumber(), verseToSend);
+                    redirectAttributes.addFlashAttribute("contactActionSuccessMessage", "Verse resend successful.");
+                }
+                else{
+                    redirectAttributes.addFlashAttribute("contactActionErrorMessage", "Error occurred.");
+                }
+
+            }
+        }
 
         RedirectView redirect = new RedirectView("/" + Views.admin);
         redirect.setExposeModelAttributes(false);

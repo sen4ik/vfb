@@ -150,7 +150,7 @@ public class TwilioService {
                 if(currentContact.getSubscriptionConfirmed() == 0){
                     currentContact.setSubscriptionConfirmed((byte) 1);
                     contactsRepository.save(currentContact);
-                    return returnResponse(fromNumberSanitized, messageSid,"Thank you for confirming subscription to VerseFromBible.com! You will now receive bible verses daily.");
+                    return returnResponse(fromNumberSanitized, messageSid,"Thank you for confirming the subscription to VerseFromBible.com! You will now receive bible verses daily.");
                 }
                 else if(currentContact.getSubscriptionConfirmed() == 1){
                     return returnResponse(fromNumberSanitized, messageSid,"You have confirmed your VerseFromBible.com subscription already. If you are having issues, contact us at VerseFromBible.com.");

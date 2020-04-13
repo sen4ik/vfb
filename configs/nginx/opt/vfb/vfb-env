@@ -1,6 +1,0 @@
-APP_ROOT=/opt/vfb
-BINARY="vfb.war"
-PORT="5050"
-USER="sen4ik"
-JAVA_OPTS="-Xmx1024m"
-LOGGING="-Dlogging.path=/opt/vfb/logs"
