@@ -14,7 +14,7 @@
     <script th:src="@{/bootstrap-datepicker/js/bootstrap-datepicker.min.js}"></script>
 
     <script th:inline="javascript">
-        let debug = true;
+        let debug = false;
         /*<![CDATA[*/
 
         let sectionId = /*[[${sectionId}]]*/ 'default';
@@ -26,8 +26,6 @@
         function scrollToSection(sectionId){
             if(debug) console.log("called: scrollToSection()");
             // https://css-tricks.com/snippets/jquery/smooth-scrolling/
-            //(function($) {
-
             $(window).on('load', function() {
                 let field = $(sectionId);
                 if(debug) console.log('field', field);
@@ -43,19 +41,9 @@
                 });
             });
 
-            // $(document).ready(function() {
-            //
+            // document.querySelector('#sign_up').scrollIntoView({
+            //     behavior: 'smooth'
             // });
-
-            // setTimeout(function(){
-            //
-            // }, 5000);
-
-                // document.querySelector('#sign_up').scrollIntoView({
-                //     behavior: 'smooth'
-                // });
-
-            //})(jQuery);
         }
 
         (function($) {
