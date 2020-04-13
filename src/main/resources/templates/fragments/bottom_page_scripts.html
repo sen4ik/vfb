@@ -27,7 +27,11 @@
             if(debug) console.log("called: scrollToSection()");
             // https://css-tricks.com/snippets/jquery/smooth-scrolling/
             //(function($) {
+
+
+            setTimeout(function(){
                 let field = $(sectionId);
+                if(debug) console.log('field', field);
                 let offset = field.offset().top;
                 let pos = field.position();
                 if(debug) console.log("top: " + pos.top + " left: " + pos.left)
@@ -38,6 +42,8 @@
                     left: 0,
                     behavior: 'smooth'
                 });
+            }, 5000);
+
 
                 // document.querySelector('#sign_up').scrollIntoView({
                 //     behavior: 'smooth'
