@@ -17,15 +17,15 @@
         /*<![CDATA[*/
 
         let sectionId = /*[[${sectionId}]]*/ 'default';
-        console.log(sectionId)
+        console.log('sectionId', sectionId);
         if(sectionId) scrollToSection("#" + sectionId);
 
         function scrollToSection(sectionId){
             // https://css-tricks.com/snippets/jquery/smooth-scrolling/
             (function($) {
-                let signUpField = $(sectionId);
-                let offset = signUpField.offset().top;
-                // console.log(offset)
+                let field = $(sectionId);
+                let offset = field.offset().top;
+                console.log('offset', offset);
 
                 window.scroll({
                     top: offset,
