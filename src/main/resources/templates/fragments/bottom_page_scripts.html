@@ -28,7 +28,7 @@
             // https://css-tricks.com/snippets/jquery/smooth-scrolling/
             //(function($) {
 
-            $(window).load(function () {
+            $(window).on('load', function() {
                 let field = $(sectionId);
                 if(debug) console.log('field', field);
                 let offset = field.offset().top;
@@ -42,6 +42,10 @@
                     behavior: 'smooth'
                 });
             });
+
+            // $(document).ready(function() {
+            //
+            // });
 
             // setTimeout(function(){
             //
