@@ -25,6 +25,7 @@ deploy:
     - if echo $CI_COMMIT_MESSAGE | grep -iqF skip; then
     -   exit;
     - fi
+    - ./scripts/test.sh ${MY_PHONE} ${MY_EMAIL}
     - |
       ssh -A sen4ik@$DEPLOY_SERVER_IP -p$DEPLOY_SERVER_PORT "cd /home/sen4ik/workspace/vfb && \
       sudo systemctl stop vfb && \
