@@ -204,7 +204,7 @@ public class AdminController {
                     if(twilioEnabled) {
                         twilioService.sendSingleMessage(optionalContact.get().getPhoneNumber(), verseToSend);
                     }
-                    redirectAttributes.addFlashAttribute("contactActionSuccessMessage", "Verse resend successful.");
+                    redirectAttributes.addFlashAttribute("contactActionSuccessMessage", "Verse resent successfully.");
                 }
                 else{
                     redirectAttributes.addFlashAttribute("contactActionErrorMessage", "Error occurred.");

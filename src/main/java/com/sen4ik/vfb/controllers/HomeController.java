@@ -89,7 +89,7 @@ public class HomeController {
 
             if(!twilioService.isPhoneNumberValid("+1" + sanitizedPhone)){
                 redirectAttributes.addFlashAttribute("addContactErrorMessage", phoneNumber +
-                        " is not a valid mobile phone number!</br>Please provide valid US or Canada phone number.");
+                        " is not a valid mobile phone number!</br>Please provide a valid US or Canada phone number.");
                 return new RedirectView(Views.index);
             }
 

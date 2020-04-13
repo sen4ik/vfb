@@ -98,7 +98,7 @@ public class TwilioService {
         catch (ApiException e) {
             /*
             if (e.getCode().equals(21614) || e.getCode().equals(21211)) {
-                log.error(to + " is not a valid mobile number!</br>Please provide valid mobile number.");
+                log.error(to + " is not a valid mobile number!</br>Please provide a valid mobile number.");
             }
             else if(e.getCode().equals(21610)){
                 log.error("Attempt to send to unsubscribed recipient!");
