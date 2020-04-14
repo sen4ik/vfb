@@ -38,7 +38,7 @@ ssh -A sen4ik@$2 -p$3 "cd /home/sen4ik/workspace/${1} &&
       sed -i "/recaptcha.validation.secret-key=/c\recaptcha.validation.secret-key=${14}" ${15} &&
       sed -i "/recaptcha.testing.enabled=/c\recaptcha.testing.enabled=false" ${15} &&
       sed -i "/test.env.prefix=/c\test.env.prefix=${TEST_PREFIX}" ${15} &&
-      sed -i -e "s/$ORIGINAL_DB_NAME/$UPDATED_DB_NAME/g" ${15} &&
+      sed -i "s/${ORIGINAL_DB_NAME}/${UPDATED_DB_NAME}/g" ${15} &&
       mvn clean package -DskipTests=true &&
       cp target/vfb.war /opt/${1}/current/ &&
       sudo systemctl start ${1} &&
