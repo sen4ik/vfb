@@ -15,22 +15,22 @@ fi
 ssh -A sen4ik@$2 -p$3 "cd /home/sen4ik/workspace/${1} &&
       sudo systemctl stop ${1} &&
       ${GIT_COMMAND} &&
-      sed -i "/spring.devtools.restart.enabled=/c\spring.devtools.restart.enabled=false" src/main/resources/application.properties &&
-      sed -i "/scheduler.enabled=/c\scheduler.enabled=true" src/main/resources/application.properties &&
-      sed -i "/twilio.sid=/c\twilio.sid=${4}" src/main/resources/application.properties &&
-      sed -i "/twilio.auth-token=/c\twilio.auth-token=${5}" src/main/resources/application.properties &&
-      sed -i "/twilio.phone-number=/c\twilio.phone-number=${6}" src/main/resources/application.properties &&
-      sed -i "/twilio.enabled=/c\twilio.enabled=true" src/main/resources/application.properties &&
-      sed -i "/bible.api.key=/c\bible.api.key=${7}" src/main/resources/application.properties &&
-      sed -i "/my.email=/c\my.email=${8}" src/main/resources/application.properties &&
-      sed -i "/my.phone=/c\my.phone=${9}" src/main/resources/application.properties &&
-      sed -i "/spring.mail.host=/c\spring.mail.host=${10}" src/main/resources/application.properties &&
-      sed -i "/spring.mail.username=/c\spring.mail.username=${11}" src/main/resources/application.properties &&
-      sed -i "/spring.mail.password=/c\spring.mail.password=${12}" src/main/resources/application.properties &&
-      sed -i "/recaptcha.validation.key-site=/c\recaptcha.validation.key-site=${13}" src/main/resources/application.properties &&
-      sed -i "/recaptcha.validation.secret-key=/c\recaptcha.validation.secret-key=${14}" src/main/resources/application.properties &&
-      sed -i "/recaptcha.testing.enabled=/c\recaptcha.testing.enabled=false" src/main/resources/application.properties &&
-      sed -i "/test.env.prefix=/c\test.env.prefix=${TEST_PREFIX}" src/main/resources/application.properties &&
+      sed -i "/spring.devtools.restart.enabled=/c\spring.devtools.restart.enabled=false" ${15} &&
+      sed -i "/scheduler.enabled=/c\scheduler.enabled=true" ${15} &&
+      sed -i "/twilio.sid=/c\twilio.sid=${4}" ${15} &&
+      sed -i "/twilio.auth-token=/c\twilio.auth-token=${5}" ${15} &&
+      sed -i "/twilio.phone-number=/c\twilio.phone-number=${6}" ${15} &&
+      sed -i "/twilio.enabled=/c\twilio.enabled=true" ${15} &&
+      sed -i "/bible.api.key=/c\bible.api.key=${7}" ${15} &&
+      sed -i "/my.email=/c\my.email=${8}" ${15} &&
+      sed -i "/my.phone=/c\my.phone=${9}" ${15} &&
+      sed -i "/spring.mail.host=/c\spring.mail.host=${10}" ${15} &&
+      sed -i "/spring.mail.username=/c\spring.mail.username=${11}" ${15} &&
+      sed -i "/spring.mail.password=/c\spring.mail.password=${12}" ${15} &&
+      sed -i "/recaptcha.validation.key-site=/c\recaptcha.validation.key-site=${13}" ${15} &&
+      sed -i "/recaptcha.validation.secret-key=/c\recaptcha.validation.secret-key=${14}" ${15} &&
+      sed -i "/recaptcha.testing.enabled=/c\recaptcha.testing.enabled=false" ${15} &&
+      sed -i "/test.env.prefix=/c\test.env.prefix=${TEST_PREFIX}" ${15} &&
       mvn clean package -DskipTests=true &&
       cp target/vfb.war /opt/${1}/current/ &&
       sudo systemctl start ${1} &&
