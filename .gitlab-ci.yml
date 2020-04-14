@@ -32,22 +32,22 @@ deploy:
 #      sudo systemctl stop vfb && \
 #      git fetch origin && \
 #      git reset --hard origin/master && \
-#      sed -i "/spring.devtools.restart.enabled=/c\spring.devtools.restart.enabled=false" src/main/resources/application.properties && \
-#      sed -i "/scheduler.enabled=/c\scheduler.enabled=true" src/main/resources/application.properties && \
-#      sed -i "/twilio.sid=/c\twilio.sid=${TWILIO_SID}" src/main/resources/application.properties && \
-#      sed -i "/twilio.auth-token=/c\twilio.auth-token=${TWILIO_AUTH_TOKEN}" src/main/resources/application.properties && \
-#      sed -i "/twilio.phone-number=/c\twilio.phone-number=${TWILIO_PHONE_NUMBER}" src/main/resources/application.properties && \
-#      sed -i "/twilio.enabled=/c\twilio.enabled=true" src/main/resources/application.properties && \
-#      sed -i "/bible.api.key=/c\bible.api.key=${BIBLE_API_KEY}" src/main/resources/application.properties && \
-#      sed -i "/my.email=/c\my.email=${MY_EMAIL}" src/main/resources/application.properties && \
-#      sed -i "/my.phone=/c\my.phone=${MY_PHONE}" src/main/resources/application.properties && \
-#      sed -i "/spring.mail.host=/c\spring.mail.host=${MAIL_HOST}" src/main/resources/application.properties && \
-#      sed -i "/spring.mail.username=/c\spring.mail.username=${MAIL_USERNAME}" src/main/resources/application.properties && \
-#      sed -i "/spring.mail.password=/c\spring.mail.password=${MAIL_PASSWORD}" src/main/resources/application.properties && \
-#      sed -i "/recaptcha.validation.key-site=/c\recaptcha.validation.key-site=${RECAPTCHA_SITE_KEY_V2}" src/main/resources/application.properties && \
-#      sed -i "/recaptcha.validation.secret-key=/c\recaptcha.validation.secret-key=${RECAPTCHA_SECRET_V2}" src/main/resources/application.properties && \
-#      sed -i "/recaptcha.testing.enabled=/c\recaptcha.testing.enabled=false" src/main/resources/application.properties && \
-#      sed -i "/test.env.prefix=/c\test.env.prefix=" src/main/resources/application.properties && \
+#      sed -i "/spring.devtools.restart.enabled=/c\spring.devtools.restart.enabled=false" ${APP_PROP} && \
+#      sed -i "/scheduler.enabled=/c\scheduler.enabled=true" ${APP_PROP} && \
+#      sed -i "/twilio.sid=/c\twilio.sid=${TWILIO_SID}" ${APP_PROP} && \
+#      sed -i "/twilio.auth-token=/c\twilio.auth-token=${TWILIO_AUTH_TOKEN}" ${APP_PROP} && \
+#      sed -i "/twilio.phone-number=/c\twilio.phone-number=${TWILIO_PHONE_NUMBER}" ${APP_PROP} && \
+#      sed -i "/twilio.enabled=/c\twilio.enabled=true" ${APP_PROP} && \
+#      sed -i "/bible.api.key=/c\bible.api.key=${BIBLE_API_KEY}" ${APP_PROP} && \
+#      sed -i "/my.email=/c\my.email=${MY_EMAIL}" ${APP_PROP} && \
+#      sed -i "/my.phone=/c\my.phone=${MY_PHONE}" ${APP_PROP} && \
+#      sed -i "/spring.mail.host=/c\spring.mail.host=${MAIL_HOST}" ${APP_PROP} && \
+#      sed -i "/spring.mail.username=/c\spring.mail.username=${MAIL_USERNAME}" ${APP_PROP} && \
+#      sed -i "/spring.mail.password=/c\spring.mail.password=${MAIL_PASSWORD}" ${APP_PROP} && \
+#      sed -i "/recaptcha.validation.key-site=/c\recaptcha.validation.key-site=${RECAPTCHA_SITE_KEY_V2}" ${APP_PROP} && \
+#      sed -i "/recaptcha.validation.secret-key=/c\recaptcha.validation.secret-key=${RECAPTCHA_SECRET_V2}" ${APP_PROP} && \
+#      sed -i "/recaptcha.testing.enabled=/c\recaptcha.testing.enabled=false" ${APP_PROP} && \
+#      sed -i "/test.env.prefix=/c\test.env.prefix=" ${APP_PROP} && \
 #      mvn clean package -DskipTests=true && \
 #      cp target/vfb.war /opt/vfb/current/ && \
 #      sudo systemctl start vfb && \
@@ -60,4 +60,7 @@ deploy:
 deploy_dev:
   stage: deploy_dev
   script:
-    - ./scripts/deploy.sh "vfb_buggy" $DEPLOY_SERVER_IP $DEPLOY_SERVER_PORT $TWILIO_SID $TWILIO_AUTH_TOKEN $TWILIO_PHONE_NUMBER $BIBLE_API_KEY $MY_EMAIL $MY_PHONE $MAIL_HOST $MAIL_USERNAME $MAIL_PASSWORD $TEST01_RECAPTCHA_KEY $TEST01_RECAPTCHA_SECRET
+    - ./scripts/deploy.sh "vfb_buggy" $DEPLOY_SERVER_IP $DEPLOY_SERVER_PORT $TWILIO_SID $TWILIO_AUTH_TOKEN $TWILIO_PHONE_NUMBER $BIBLE_API_KEY $MY_EMAIL $MY_PHONE $MAIL_HOST $MAIL_USERNAME $MAIL_PASSWORD $TEST01_RECAPTCHA_KEY $TEST01_RECAPTCHA_SECRET $APP_PROP
+  environment:
+    name: dev
+    url: http://dev.$DOMAIN/
