@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ORIGINAL_DB_NAME=$(awk '/spring.datasource.url/{print $NF}' "../${15}" | awk -F'/' '{print $4}' | awk -F'?' '{print $1}')
+ORIGINAL_DB_NAME=$(awk '/spring.datasource.url/{print $NF}' ${15} | awk -F'/' '{print $4}' | awk -F'?' '{print $1}')
 GIT_COMMAND=""
 TEST_PREFIX=""
 UPDATED_DB_NAME=""
