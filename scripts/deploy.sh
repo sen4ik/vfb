@@ -1,15 +1,20 @@
 #!/bin/bash
 
-GITCOMMANDS=""
+GIT_COMMAND=""
+TEST_PREFIX=""
 if [[ "$1" == "vfb" ]]; then
-    GITCOMMANDS="git fetch origin && git reset --hard origin/master"
+    GIT_COMMAND="git fetch origin && git reset --hard origin/master"
+elif [[ "$1" == "vfb_buggy" ]]; then
+    GIT_COMMAND="git fetch origin buggy_version && git reset --hard origin/buggy_version"
+    TEST_PREFIX="dev:"
 else
-    GITCOMMANDS="git fetch origin buggy_version && git reset --hard origin/buggy_version"
+    echo "Unexpected parameter: ${1}"
+    exit 1;
 fi
 
 ssh -A sen4ik@$2 -p$3 "cd /home/sen4ik/workspace/${1} &&
       sudo systemctl stop ${1} &&
-      ${GITCOMMANDS} &&
+      ${GIT_COMMAND} &&
       sed -i "/spring.devtools.restart.enabled=/c\spring.devtools.restart.enabled=false" src/main/resources/application.properties &&
       sed -i "/scheduler.enabled=/c\scheduler.enabled=true" src/main/resources/application.properties &&
       sed -i "/twilio.sid=/c\twilio.sid=${4}" src/main/resources/application.properties &&
@@ -25,7 +30,7 @@ ssh -A sen4ik@$2 -p$3 "cd /home/sen4ik/workspace/${1} &&
       sed -i "/recaptcha.validation.key-site=/c\recaptcha.validation.key-site=${13}" src/main/resources/application.properties &&
       sed -i "/recaptcha.validation.secret-key=/c\recaptcha.validation.secret-key=${14}" src/main/resources/application.properties &&
       sed -i "/recaptcha.testing.enabled=/c\recaptcha.testing.enabled=false" src/main/resources/application.properties &&
-      sed -i "/test.env.prefix=/c\test.env.prefix=" src/main/resources/application.properties &&
+      sed -i "/test.env.prefix=/c\test.env.prefix=${TEST_PREFIX}" src/main/resources/application.properties &&
       mvn clean package -DskipTests=true &&
       cp target/vfb.war /opt/${1}/current/ &&
       sudo systemctl start ${1} &&
