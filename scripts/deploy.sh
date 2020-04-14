@@ -3,17 +3,18 @@
 ORIGINAL_DB_NAME=$(awk '/spring.datasource.url/{print $NF}' ${15} | awk -F'/' '{print $4}' | awk -F'?' '{print $1}')
 GIT_COMMAND=""
 TEST_PREFIX=""
-UPDATED_DB_NAME=""
+# if its production db, leave db name as it is
+UPDATED_DB_NAME=$ORIGINAL_DB_NAME
+SCHEDULER_ENABLED="true"
 if [[ "$1" == "vfb" ]]; then
     GIT_COMMAND="git fetch origin && git reset --hard origin/master"
-    # if its production db, leave db name as it is
-    UPDATED_DB_NAME=$ORIGINAL_DB_NAME
 elif [[ "$1" == "vfb_buggy" ]]; then
     # reset buggy_version branch to head
     GIT_COMMAND="git fetch origin buggy_version && git reset --hard origin/buggy_version"
     TEST_PREFIX="dev:"
     # we only need to update db name for the buggy version
     UPDATED_DB_NAME=$1
+    SCHEDULER_ENABLED="false"
 else
     echo "Unexpected parameter: ${1}"
     exit 1;
@@ -23,7 +24,7 @@ ssh -A sen4ik@$2 -p$3 "cd /home/sen4ik/workspace/${1} &&
       sudo systemctl stop ${1} &&
       ${GIT_COMMAND} &&
       sed -i "/spring.devtools.restart.enabled=/c\spring.devtools.restart.enabled=false" ${15} &&
-      sed -i "/scheduler.enabled=/c\scheduler.enabled=true" ${15} &&
+      sed -i "/scheduler.enabled=/c\scheduler.enabled=${SCHEDULER_ENABLED}" ${15} &&
       sed -i "/twilio.sid=/c\twilio.sid=${4}" ${15} &&
       sed -i "/twilio.auth-token=/c\twilio.auth-token=${5}" ${15} &&
       sed -i "/twilio.phone-number=/c\twilio.phone-number=${6}" ${15} &&
