@@ -38,14 +38,6 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 		this.accessDeniedHandler = accessDeniedHandler;
 	}
 
-	/**
-	 * HTTPSecurity configurer
-	 * - roles ADMIN allow to access /admin/**
-	 * - roles USER allow to access /user/** and /newPost/**
-	 * - anybody can visit /, /home, /about, /registration, /error, /blog/**, /post/**, /h2-console/**
-	 * - every other page needs authentication
-	 * - custom 403 access denied handler
-	 */
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 

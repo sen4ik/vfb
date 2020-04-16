@@ -1,9 +1,9 @@
 #!/bin/bash
-
+# get database from application.properties
 ORIGINAL_DB_NAME=$(awk '/spring.datasource.url/{print $NF}' ${15} | awk -F'/' '{print $4}' | awk -F'?' '{print $1}')
 GIT_COMMAND=""
 TEST_PREFIX=""
-# if its production db, leave db name as it is
+# if it is production database, leave its name as it is
 UPDATED_DB_NAME=$ORIGINAL_DB_NAME
 SCHEDULER_ENABLED="true"
 if [[ "$1" == "vfb" ]]; then
@@ -12,7 +12,7 @@ elif [[ "$1" == "vfb_buggy" ]]; then
     # reset buggy_version branch to head
     GIT_COMMAND="git fetch origin buggy_version && git reset --hard origin/buggy_version"
     TEST_PREFIX="dev:"
-    # we only need to update db name for the buggy version
+    # if it is vfb_buggy we need to update db name
     UPDATED_DB_NAME=$1
     SCHEDULER_ENABLED="false"
 else

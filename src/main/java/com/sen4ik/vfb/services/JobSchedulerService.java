@@ -33,6 +33,9 @@ public class JobSchedulerService {
     @Value("${twilio.enabled}")
     private Boolean twilioEnabled;
 
+    @Value("${test.env.prefix}")
+    private String testEnvPrefix;
+
     @Autowired
     private TwilioService twilioService;
 
@@ -125,7 +128,13 @@ public class JobSchedulerService {
         if (!verseForTomorrowOptional.isPresent()){
             String errMsg = "No verses found for " + formattedTomorrowDate;
             log.error(errMsg);
-            emailServiceImpl.sendEmail("VerseFromBible.com  - no verse present for tomorrow", "Hi Artur, There is no bible verse present for tomorrow. VerseFromBible.");
+
+            String subject = "VerseFromBible.com  - no verse present for tomorrow";
+            if(testEnvPrefix != null && !testEnvPrefix.isEmpty()){
+                subject = testEnvPrefix + " " + subject;
+            }
+
+            emailServiceImpl.sendEmail(subject, "Hi Artur, There is no bible verse present for tomorrow. VerseFromBible.");
         }
         else{
             log.info("Verse for tomorrow is present.");
