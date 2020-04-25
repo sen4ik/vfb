@@ -1,1 +1,1 @@
-Sources of versefrombible.com.
+versefrombible.com sources | built with Spring Boot and Thymeleaf
