@@ -1,1 +1,5 @@
+- Add functionality for admin user to change the password
+- When verse is being added, verify if the verse already exists
+- Figure our where does “Invalid character found in method name. HTTP method names must be tokens” comes from
+- [Errno 13] Permission denied: '/var/log/letsencrypt/.certbot.lock' Either run as root, or set --config-dir, --work-dir, and --logs-dir to writeable paths.
 - Confirmation token can be reused to set new password. Is this a problem? Should ii expire in 15 minutes?
