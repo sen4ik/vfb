@@ -236,8 +236,7 @@ public class AdminController {
 
     @ModelAttribute("actionlogs")
     private List<ActionLog> getActionLogs(){
-        return actionLogRepository.findAll()
-                .stream().limit(500).collect(Collectors.toList());
+        return actionLogRepository.findAll();
     }
 
     @ModelAttribute("twilioPhoneNumber")
