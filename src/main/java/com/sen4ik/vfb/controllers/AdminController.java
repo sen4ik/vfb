@@ -28,6 +28,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 @Slf4j
@@ -235,7 +236,8 @@ public class AdminController {
 
     @ModelAttribute("actionlogs")
     private List<ActionLog> getActionLogs(){
-        return actionLogRepository.findAll();
+        return actionLogRepository.findAll()
+                .stream().limit(500).collect(Collectors.toList());
     }
 
     @ModelAttribute("twilioPhoneNumber")
