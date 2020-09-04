@@ -293,9 +293,9 @@
                             <th>Name</th>
                             <th>Phone Number</th>
                             <th>Bible Translation</th>
+<!--                            <th>Send Time</th>-->
+<!--                            <th>TZ</th>-->
                             <th>Send Time</th>
-                            <th>TZ</th>
-                            <th>Send Time Pacific</th>
                             <th>Subscription Confirmed</th>
                             <th>Actions</th>
                         </tr>
@@ -306,9 +306,9 @@
                                 <td th:text="${c.name}"></td>
                                 <td th:text="${c.phoneNumber}"></td>
                                 <td th:text="${c.bibleTranslation}"></td>
-                                <td th:text="${c.selectedSendTime} + @{''}"></td>
-                                <td th:text="${c.selectedTimeZone}"></td>
-                                <td th:text="${c.selectedSendTimePacific}"></td>
+<!--                                <td th:text="${c.selectedSendTime} + @{''}"></td>-->
+<!--                                <td th:text="${c.selectedTimeZone}"></td>-->
+                                <td th:text="'${c.selectedSendTimePacific}' '${c.selectedTimeZone}' ('${c.selectedSendTimePacific}' Pacific)"></td>
                                 <td th:text="${c.subscriptionConfirmed}"></td>
                                 <td>
                                     <span th:if="${c.subscriptionConfirmed == 0}">[</span><a th:href="@{/admin/contact/} + ${c.id} + @{/resendConfirmation}" th:if="${c.subscriptionConfirmed == 0}">Resend Confirmation</a><span th:if="${c.subscriptionConfirmed == 0}">]</span>
