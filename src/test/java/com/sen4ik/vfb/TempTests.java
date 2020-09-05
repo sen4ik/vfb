@@ -10,6 +10,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.io.IOException;
 import java.util.List;
@@ -18,6 +19,9 @@ import java.util.List;
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TempTests {
+
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
     private JobSchedulerService jobSchedulerService;
@@ -80,6 +84,12 @@ public class TempTests {
     @Disabled
     public void o() {
         twilioService.isPhoneNumberValid("+14084574516");
+    }
+
+    @Test
+    @Disabled
+    public void pass(){
+        System.out.println(bCryptPasswordEncoder.encode("Sacramento#2021"));
     }
 
 }

@@ -25,8 +25,6 @@ public class LoginController {
     // BUG: access_denied page is inaccessible
     @GetMapping("/" + Views.accessDenied)
     public String accessDenied(){
-        log.info("CALLED: accessDenied()");
-//        return new ModelAndView(Views.accessDenied);
         return "/" + Views.accessDenied;
     }
 
