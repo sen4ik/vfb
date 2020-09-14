@@ -64,6 +64,13 @@ public class BibleApiService {
             String booksJson = response.body().string();
             // log.info("booksJson: " + booksJson);
 
+            // verify the response and throw an error if its not 200
+            int sc = response.code();
+            if(sc != 200){
+                log.error("api.bible returned " + sc + " status code while getting the list of Bible books.\nResponse Body: " + booksJson);
+                return null;
+            }
+
             String bookNameField = "name";
             if(currentBibleId.equals(nivId)){
                 // use nameLong field for lookup
@@ -110,10 +117,10 @@ public class BibleApiService {
                     .build();
 
             Response verseResponse = client.newCall(verseRequest).execute();
-            int statusCode = verseResponse.code();
             String verseJson = verseResponse.body().string();
+            int statusCode = verseResponse.code();
             if(statusCode != 200){
-                log.error("api.bible returned " + statusCode + " while doing verse lookup.\nResponse Body: " + verseJson);
+                log.error("api.bible returned " + statusCode + " status code while doing verse lookup.\nResponse Body: " + verseJson);
                 return null;
             }
 
