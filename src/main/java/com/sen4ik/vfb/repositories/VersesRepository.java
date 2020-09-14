@@ -11,4 +11,5 @@ import java.util.Optional;
 public interface VersesRepository extends JpaRepository<Verse, Integer> {
     Optional<Verse> findById(Integer id);
     Optional<Verse> findByDate(Date date);
+    Verse findTopByOrderByDateDesc();
 }

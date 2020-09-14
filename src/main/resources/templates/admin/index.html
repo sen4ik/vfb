@@ -99,7 +99,7 @@
                                 <div class="form-group required">
                                     <label for="add_verse_date" class="control-label">Date</label>
                                     <!-- https://uxsolutions.github.io/bootstrap-datepicker -->
-                                    <input th:field="*{date}" type="text" id="add_verse_date" name="add_verse_date" class="form-control" required><span class="input-group-addon"></span>
+                                    <input th:value="${dateForTheNextVerse}" type="text" id="add_verse_date" name="add_verse_date" class="form-control" required><span class="input-group-addon"></span>
                                     <div class="invalid-feedback">
                                         Please provide a date.
                                     </div>

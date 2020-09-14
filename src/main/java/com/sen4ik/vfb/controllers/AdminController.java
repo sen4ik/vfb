@@ -25,10 +25,11 @@ import org.springframework.web.servlet.view.RedirectView;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Controller
 @Slf4j
@@ -238,12 +239,31 @@ public class AdminController {
     private List<ActionLog> getActionLogs(){
         List<ActionLog> actionLogs = actionLogRepository.findAll();
         // return actionLogs.stream().limit(500).collect(Collectors.toList());
-        return actionLogs.subList(actionLogs.size() - 500, actionLogs.size());
+        if(actionLogs.size() > 1000){
+            return actionLogs.subList(actionLogs.size() - 500, actionLogs.size());
+        }
+        return actionLogs;
     }
 
     @ModelAttribute("twilioPhoneNumber")
     private String getTwilioPhoneNumber(){
         return twilioPhoneNumber;
+    }
+
+    @ModelAttribute("dateForTheNextVerse")
+    private String getDateForTheNextVerse(){
+        Verse latestVerse = versesRepository.findTopByOrderByDateDesc();
+        Date latestVerseDate = latestVerse.getDate();
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(latestVerseDate);
+        cal.add(Calendar.DATE, 1);
+        Date dateForTheNextVerseDt = cal.getTime();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+        String dateForTheNextVerse = sdf.format(dateForTheNextVerseDt);
+
+        return dateForTheNextVerse;
     }
 
 }
