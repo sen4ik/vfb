@@ -25,7 +25,6 @@ import org.springframework.web.servlet.view.RedirectView;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -68,7 +67,7 @@ public class AdminController {
     }
 
     @PostMapping("/" + Views.addVerse)
-    public RedirectView addContact(@Valid Verse verse, BindingResult result, RedirectAttributes redirectAttributes) {
+    public RedirectView addVerse(@Valid Verse verse, BindingResult result, RedirectAttributes redirectAttributes) {
 
         if(result.hasErrors()) {
             log.error(result.getAllErrors().toString());
@@ -222,7 +221,22 @@ public class AdminController {
 
     @ModelAttribute("verse")
     private Verse getVerse(){
-        return new Verse();
+
+        Verse latestVerse = versesRepository.findTopByOrderByDateDesc();
+        Date latestVerseDate = latestVerse.getDate();
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(latestVerseDate);
+        cal.add(Calendar.DATE, 1);
+        Date dateForTheNextVerseDt = cal.getTime();
+
+        // SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+        // String dateForTheNextVerse = sdf.format(dateForTheNextVerseDt);
+
+        Verse v = new Verse();
+        v.setDate(dateForTheNextVerseDt);
+
+        return v;
     }
 
     @ModelAttribute("verses")
@@ -248,22 +262,6 @@ public class AdminController {
     @ModelAttribute("twilioPhoneNumber")
     private String getTwilioPhoneNumber(){
         return twilioPhoneNumber;
-    }
-
-    @ModelAttribute("dateForTheNextVerse")
-    private String getDateForTheNextVerse(){
-        Verse latestVerse = versesRepository.findTopByOrderByDateDesc();
-        Date latestVerseDate = latestVerse.getDate();
-
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(latestVerseDate);
-        cal.add(Calendar.DATE, 1);
-        Date dateForTheNextVerseDt = cal.getTime();
-
-        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-        String dateForTheNextVerse = sdf.format(dateForTheNextVerseDt);
-
-        return dateForTheNextVerse;
     }
 
 }
