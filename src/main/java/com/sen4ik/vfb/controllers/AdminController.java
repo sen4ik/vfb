@@ -108,6 +108,7 @@ public class AdminController {
                                     @RequestParam("chapter_number") Integer chapterNumber,
                                     @RequestParam("verse_number") Integer verseNumber, RedirectAttributes redirectAttributes) throws IOException {
         Verse verse = bibleApiService.getBibleVerse(bookName, chapterNumber, verseNumber);
+        verse.setDate(getDateForTheNextVerse());
         if(verse != null){
             redirectAttributes.addFlashAttribute("verse", verse);
         }
@@ -221,7 +222,12 @@ public class AdminController {
 
     @ModelAttribute("verse")
     private Verse getVerse(){
+        Verse v = new Verse();
+        v.setDate(getDateForTheNextVerse());
+        return v;
+    }
 
+    private Date getDateForTheNextVerse(){
         Verse latestVerse = versesRepository.findTopByOrderByDateDesc();
         Date latestVerseDate = latestVerse.getDate();
 
@@ -233,10 +239,7 @@ public class AdminController {
         // SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
         // String dateForTheNextVerse = sdf.format(dateForTheNextVerseDt);
 
-        Verse v = new Verse();
-        v.setDate(dateForTheNextVerseDt);
-
-        return v;
+        return dateForTheNextVerseDt;
     }
 
     @ModelAttribute("verses")
