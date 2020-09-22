@@ -1,5 +1,6 @@
 package com.sen4ik.vfb.services;
 
+import com.sen4ik.vfb.constants.Constants;
 import com.sen4ik.vfb.entities.Contact;
 import com.sen4ik.vfb.entities.Verse;
 import com.sen4ik.vfb.repositories.ContactsRepository;
@@ -129,7 +130,7 @@ public class JobSchedulerService {
             String errMsg = "No verses found for " + formattedTomorrowDate;
             log.error(errMsg);
 
-            String subject = "VerseFromBible.com  - no verse present for tomorrow";
+            String subject = Constants.WEBSITE_NAME + " - no verse present for tomorrow";
             if(testEnvPrefix != null && !testEnvPrefix.isEmpty()){
                 subject = testEnvPrefix + " " + subject;
             }

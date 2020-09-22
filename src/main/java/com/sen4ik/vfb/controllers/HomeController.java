@@ -175,7 +175,7 @@ public class HomeController {
                 return new RedirectView(Views.index);
             }
 
-            String message = "We have received a request to unsubscribe this number from www.verseformbible.com. Please confirm you want to unsubscribe by replying with the word STOP";
+            String message = "We have received a request to unsubscribe this number from " + Constants.WEBSITE_NAME + ". Please confirm you want to unsubscribe by replying with the word STOP";
             if(twilioEnabled){
                 twilioService.sendSingleMessage("+1" + contact.get().getPhoneNumber(), message);
             }
@@ -211,7 +211,7 @@ public class HomeController {
                 emailBody.append("Email: " + cmEmail + "\n");
                 emailBody.append("Phone number: " + cmPhoneNumber + "\n");
                 emailBody.append("Message: " + cmMessage + "\n\n");
-                emailBody.append("VerseFromBible.com");
+                emailBody.append(Constants.WEBSITE_NAME);
                 emailService.sendEmail("VerseFromBible Contact Form Message", emailBody.toString());
 
                 redirectAttributes.addFlashAttribute("contactMeSuccessMessage", "We have received your message and will get back to you as soon as we can.");

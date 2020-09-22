@@ -150,10 +150,10 @@ public class TwilioService {
                 if(currentContact.getSubscriptionConfirmed() == 0){
                     currentContact.setSubscriptionConfirmed((byte) 1);
                     contactsRepository.save(currentContact);
-                    return returnResponse(fromNumberSanitized, messageSid,"Thank you for confirming the subscription to VerseFromBible.com! You will now receive bible verses daily.");
+                    return returnResponse(fromNumberSanitized, messageSid,"Thank you for confirming the subscription to " + Constants.WEBSITE_NAME + "! You will now receive bible verses daily.");
                 }
                 else if(currentContact.getSubscriptionConfirmed() == 1){
-                    return returnResponse(fromNumberSanitized, messageSid,"You have confirmed your VerseFromBible.com subscription already. If you are having issues, contact us at VerseFromBible.com.");
+                    return returnResponse(fromNumberSanitized, messageSid,"You have confirmed your " + Constants.WEBSITE_NAME + " subscription already. If you are having issues, contact us at " + Constants.WEBSITE_NAME + ".");
                 }
                 else{
                     String msg = "Contact " + fromNumberSanitized + " messaged \"" + body + "\" but subscription is not 1 or 0.";
@@ -164,7 +164,7 @@ public class TwilioService {
         }
         else if(bodyLowerCase.equals("start") || bodyLowerCase.equals("start.")){
             log.info("Start Subscription");
-            return returnResponse(fromNumberSanitized, messageSid, "Hi. It looks like you are interested in subscribing for daily Bible verses. Please use Sign Up form on www.VerseFromBible.com.");
+            return returnResponse(fromNumberSanitized, messageSid, "Hi. It looks like you are interested in subscribing for daily Bible verses. Please use Sign Up form on " + Constants.WEBSITE_NAME + ".");
         }
         else if(stopWords.contains(bodyLowerCase)){
             log.info("Stop received");

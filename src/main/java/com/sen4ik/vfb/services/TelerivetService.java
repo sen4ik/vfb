@@ -135,10 +135,10 @@ public class TelerivetService {
                     if(currentContact.getSubscriptionConfirmed() == 0){ // tested
                         currentContact.setSubscriptionConfirmed((byte) 1);
                         contactsRepository.save(currentContact);
-                        return sendMessageInResponse("Thank you for confirming subscription to VerseFromBible.com! You will now receive bible verses daily.");
+                        return sendMessageInResponse("Thank you for confirming subscription to " + Constants.WEBSITE_NAME + "! You will now receive bible verses daily.");
                     }
                     else if(currentContact.getSubscriptionConfirmed() == 1){ // tested: works
-                        return sendMessageInResponse("You have confirmed your VerseFromBible.com subscription already. If you are having issues, contact us at VerseFromBible.com.");
+                        return sendMessageInResponse("You have confirmed your " + Constants.WEBSITE_NAME + " subscription already. If you are having issues, contact us at " + Constants.WEBSITE_NAME + ".");
                     }
                     else{ // tested
                         String msg = "Contact " + fromNumberSanitized + " messaged \"" + content + "\" but subscription is not 1 or 0.";
@@ -150,7 +150,7 @@ public class TelerivetService {
             }
             else if(Arrays.asList("Start", "start", "START").contains(content.trim())){
                 log.info("Start");
-                return sendMessageInResponse("Hi. It looks like you are interested in subscribing for daily Bible verses. Please use Sign Up form on www.VerseFromBible.com.");
+                return sendMessageInResponse("Hi. It looks like you are interested in subscribing for daily Bible verses. Please use Sign Up form on " + Constants.WEBSITE_NAME + ".");
             }
             else if(Arrays.asList("STOP", "stop", "Stop").contains(content.trim())){
                 // Telerivet automatically blocks phone numbers who sent STOP message.
