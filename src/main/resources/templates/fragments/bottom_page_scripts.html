@@ -64,9 +64,17 @@
                 });
                 $('#contacts_table').DataTable({
                         "order" : [ [ 0, "desc" ], ],
+                        "columnDefs": [ {
+                            'targets': [6],
+                            'orderable': false,
+                        }],
                 });
                 $('#verses_table').DataTable({
                         "order" : [ [ 0, "desc" ], ],
+                        "columnDefs": [ {
+                            'targets': [8], /* column index */
+                            'orderable': false,
+                        }],
                 });
                 $('#log_table').DataTable({
                     "order" : [ [ 0, "desc" ], ],
