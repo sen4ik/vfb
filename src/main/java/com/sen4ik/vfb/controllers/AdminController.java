@@ -110,10 +110,10 @@ public class AdminController {
                                     @RequestParam("verse_number_to") Integer verseTo,
                                     RedirectAttributes redirectAttributes) throws IOException {
 
-        if(verseTo <= 0 || fromVerse <= 0){
+        if(verseTo != null && (verseTo <= 0 || fromVerse <= 0)){
             redirectAttributes.addFlashAttribute("addVerseErrorMessage", "Lookup Error! The From and To values can't equal or less than zero.");
         }
-        else if(verseTo < fromVerse){
+        else if(verseTo != null && verseTo < fromVerse){
             redirectAttributes.addFlashAttribute("addVerseErrorMessage", "Lookup Error! The To value can't be less than From value.");
         }
         else{
