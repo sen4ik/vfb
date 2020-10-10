@@ -106,15 +106,27 @@ public class AdminController {
     @PostMapping(value = "/admin/lookup_verse")
     public RedirectView lookupVerse(@RequestParam("book_name") String bookName,
                                     @RequestParam("chapter_number") Integer chapterNumber,
-                                    @RequestParam("verse_number") Integer verseNumber, RedirectAttributes redirectAttributes) throws IOException {
-        Verse verse = bibleApiService.getBibleVerse(bookName, chapterNumber, verseNumber);
-        verse.setDate(getDateForTheNextVerse());
-        if(verse != null){
-            redirectAttributes.addFlashAttribute("verse", verse);
+                                    @RequestParam("verse_number") Integer fromVerse,
+                                    @RequestParam("verse_number_to") Integer verseTo,
+                                    RedirectAttributes redirectAttributes) throws IOException {
+
+        if(verseTo <= 0 || fromVerse <= 0){
+            redirectAttributes.addFlashAttribute("addVerseErrorMessage", "Lookup Error! The From and To values can't equal or less than zero.");
+        }
+        else if(verseTo < fromVerse){
+            redirectAttributes.addFlashAttribute("addVerseErrorMessage", "Lookup Error! The To value can't be less than From value.");
         }
         else{
-            redirectAttributes.addFlashAttribute("addVerseErrorMessage", "Error occurred while doing lookup.");
+            Verse verse = bibleApiService.getBibleVerse(bookName, chapterNumber, fromVerse, verseTo);
+            verse.setDate(getDateForTheNextVerse());
+            if(verse != null){
+                redirectAttributes.addFlashAttribute("verse", verse);
+            }
+            else{
+                redirectAttributes.addFlashAttribute("addVerseErrorMessage", "Error occurred during lookup!");
+            }
         }
+
         RedirectView redirect = new RedirectView("/" + Views.admin);
         redirect.setExposeModelAttributes(false);
         return redirect;

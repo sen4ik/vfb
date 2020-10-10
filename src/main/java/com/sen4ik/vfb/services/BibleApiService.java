@@ -26,13 +26,12 @@ public class BibleApiService {
     private String esvId = "f421fe261da7624f-01";
     private String nivId = "78a9f6124f344018-01";
     private String kjvId = "de4e12af7f28f599-01";
-    private String ruSynodalId;
 
-    public Verse getBibleVerse(String bookName, int chapterNumber, int verseNumber) throws IOException {
+    public Verse getBibleVerse(String bookName, int chapterNumber, int verseFrom, Integer verseTo) throws IOException {
 
         log.info("book: " + bookName);
         log.info("chapter: " + chapterNumber);
-        log.info("verse: " + verseNumber);
+        log.info("verse: " + verseFrom);
 
         // List<String> bibleIDs = Arrays.asList(esvId, nivId, kjvId);
         Map<String, String> bibles = new HashMap<String, String>();
@@ -87,50 +86,44 @@ public class BibleApiService {
             net.minidev.json.JSONArray bookArr = JsonPath.parse(booksJson).read("$.data[?(@." + bookNameField + " == '" + currentBookName + "')].id");
             String bookId = bookArr.get(0).toString();
 
+            // set verse location. use ESV to get the book abbreviation.
             if(currentBibleId.equals(esvId)){
                 net.minidev.json.JSONArray abbrObj = JsonPath.parse(booksJson).read("$.data[?(@." + bookNameField + " == '" + currentBookName + "')].abbreviation");
-                verseResultObj.setEnVerseLocation(abbrObj.get(0).toString() + " " + chapterNumber + ":" + verseNumber);
-            }
+                String bookAbbreviation = abbrObj.get(0).toString();
 
+                String verseLocation;
+                if(verseTo == null || verseTo == verseFrom){
+                    // single verse
+                    verseLocation = bookAbbreviation + " " + chapterNumber + ":" + verseFrom;
+                }
+                else{
+                    // verse range
+                    verseLocation = bookAbbreviation + " " + chapterNumber + ":" + verseFrom + "-" + verseTo;
+                }
+
+                verseResultObj.setEnVerseLocation(verseLocation);
+            }
             response.close();
 
-            // get chapter ID
-            HttpUrl httpUrl = new HttpUrl.Builder()
-                    .scheme("https")
-                    .host(host)
-                    .addPathSegment("v1")
-                    .addPathSegment("bibles")
-                    .addPathSegment(currentBibleId)
-                    .addPathSegment("verses")
-                    .addPathSegment(bookId + "." + chapterNumber + "." + verseNumber)
-                    .addQueryParameter("include-titles", "false")
-                    .addQueryParameter("include-notes", "false")
-                    .addQueryParameter("include-verse-numbers", "false")
-                    .addQueryParameter("include-verse-spans", "false")
-                    .addQueryParameter("include-chapter-numbers", "false")
-                    .addQueryParameter("content-type", "text")
-                    .build();
-
-            Request verseRequest = new Request.Builder()
-                    .url(httpUrl)
-                    .header("api-key", apiKey)
-                    .build();
-
-            Response verseResponse = client.newCall(verseRequest).execute();
-            String verseJson = verseResponse.body().string();
-            int statusCode = verseResponse.code();
-            if(statusCode != 200){
-                log.error("api.bible returned " + statusCode + " status code while doing verse lookup.\nResponse Body: " + verseJson);
-                return null;
+            String verse = null;
+            if(verseTo == null || verseTo == verseFrom){
+                // single verse
+                String v = getVerse(currentBibleId, bookId, chapterNumber, verseFrom, client);
+                if(v == null){
+                    return null;
+                }
+                verse = v;
             }
-
-            String verse = JsonPath.parse(verseJson).read("$.data.content");
-            verse = verse
-                    .replaceAll("\n", "")
-                    .replaceAll("\r", "").trim()
-                    .replaceAll("\\s+", " ");
-
-            // responseObj.put(currentBibleAbr, verseStr);
+            else{
+                // verse range
+                for(int i = verseFrom; i <= verseTo; i++){
+                    String v = getVerse(currentBibleId, bookId, chapterNumber, verseFrom, client);
+                    if(v == null){
+                        return null;
+                    }
+                    verse = verse + " " + v;
+                }
+            }
 
             if(currentBibleId.equals(esvId)){
                 verseResultObj.setEnEsv(verse);
@@ -141,16 +134,54 @@ public class BibleApiService {
             else if(currentBibleId.equals(kjvId)){
                 verseResultObj.setEnKjv(verse);
             }
-
         }
 
         return verseResultObj;
+    }
 
-        /*
-        return ResponseEntity.status(HttpStatus.OK)
-                .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-                .body(responseObj.toString());
-         */
+    private String getVerse(String currentBibleId,
+                            String bookId,
+                            int chapterNumber,
+                            int verseFrom,
+                            OkHttpClient client) throws IOException {
+
+        HttpUrl httpUrl = new HttpUrl.Builder()
+                .scheme("https")
+                .host(host)
+                .addPathSegment("v1")
+                .addPathSegment("bibles")
+                .addPathSegment(currentBibleId)
+                .addPathSegment("verses")
+                .addPathSegment(bookId + "." + chapterNumber + "." + verseFrom)
+                .addQueryParameter("include-titles", "false")
+                .addQueryParameter("include-notes", "false")
+                .addQueryParameter("include-verse-numbers", "false")
+                .addQueryParameter("include-verse-spans", "false")
+                .addQueryParameter("include-chapter-numbers", "false")
+                .addQueryParameter("content-type", "text")
+                .build();
+
+        Request verseRequest = new Request.Builder()
+                .url(httpUrl)
+                .header("api-key", apiKey)
+                .build();
+
+        Response verseResponse = client.newCall(verseRequest).execute();
+        String verseJson = verseResponse.body().string();
+        int statusCode = verseResponse.code();
+        if(statusCode != 200){
+            log.error("api.bible returned " + statusCode + " status code while doing verse lookup.\nResponse Body: " + verseJson);
+            return null;
+        }
+        verseResponse.close();
+
+        String verse = JsonPath.parse(verseJson).read("$.data.content");
+        verse = verse
+                .replaceAll("\n", "")
+                .replaceAll("\r", "").trim()
+                .replaceAll("\\s+", " ");
+
+        return verse.trim();
     }
 
 }

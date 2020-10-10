@@ -49,7 +49,7 @@ public class TempTests {
     @Test
     @Disabled
     public void w() throws IOException {
-        bibleApiService.getBibleVerse("Genesis",1,1);
+        bibleApiService.getBibleVerse("Genesis",1,1, null);
     }
 
     @Test

@@ -119,7 +119,7 @@
 
                     <form autocomplete="off" action="#" th:action="@{/admin/lookup_verse}" id="lookup_verse_form" name="lookup_verse_form" class="needs-validation pt-5" method="post">
                         <div class="form-row">
-                            <div class="col-md-2 mb-3">
+                            <div class="col-md-3 mb-3">
                                 <select autocomplete="off" class="form-control" id="book_name" name="book_name" required>
                                     <option></option>
                                     <option th:value="Genesis" th:text="'Genesis'"></option>
@@ -198,9 +198,27 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="mt-1">
+                                <div class="form-group">
+                                    &nbsp; : &nbsp;
+                                </div>
+                            </div>
                             <div class="col-md-1 mb-3">
                                 <div class="form-group">
-                                    <input type="text" class="form-control" id="verse_number" name="verse_number" maxlength="3" placeholder="Verse" required>
+                                    <input type="text" class="form-control" id="verse_number" name="verse_number" maxlength="3" placeholder="From" required>
+                                    <div class="invalid-feedback">
+                                        Please provide verse number.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-1">
+                                <div class="form-group">
+                                    &nbsp; - &nbsp;
+                                </div>
+                            </div>
+                            <div class="col-md-1 mb-3">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" id="verse_number_to" name="verse_number_to" maxlength="3" placeholder="To">
                                     <div class="invalid-feedback">
                                         Please provide verse number.
                                     </div>
@@ -208,7 +226,7 @@
                             </div>
                         </div>
                         <div class="form-row">
-                            <div class="col-md-1 mb-3">
+                            <div class="col-md-2 mb-3">
                                 <button type="submit" id="lookup_verse_form_submit" form="lookup_verse_form" class="btn btn-primary">Lookup</button>
                             </div>
                         </div>
