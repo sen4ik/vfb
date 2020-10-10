@@ -107,20 +107,21 @@ public class AdminController {
     public RedirectView lookupVerse(@RequestParam("book_name") String bookName,
                                     @RequestParam("chapter_number") Integer chapterNumber,
                                     @RequestParam("verse_number") Integer fromVerse,
-                                    @RequestParam("verse_number_to") Integer verseTo,
+                                    @RequestParam("verse_number_to") Integer toVerse,
                                     RedirectAttributes redirectAttributes) throws IOException {
 
         if(chapterNumber != null && chapterNumber <= 0) {
             redirectAttributes.addFlashAttribute("addVerseErrorMessage", "Lookup Error! The Chapter value can't be equal or less than zero.");
         }
-        else if(verseTo != null && (verseTo <= 0 || fromVerse <= 0)){
+        //else if((fromVerse != null || toVerse != null) && (toVerse <= 0 || fromVerse <= 0)){
+        else if((fromVerse != null && fromVerse <= 0) && (toVerse != null && toVerse <= 0)){
             redirectAttributes.addFlashAttribute("addVerseErrorMessage", "Lookup Error! The From and To values can't equal or less than zero.");
         }
-        else if(verseTo != null && verseTo < fromVerse){
+        else if(toVerse != null && toVerse < fromVerse){
             redirectAttributes.addFlashAttribute("addVerseErrorMessage", "Lookup Error! The To value can't be less than From value.");
         }
         else{
-            Verse verse = bibleApiService.getBibleVerse(bookName, chapterNumber, fromVerse, verseTo);
+            Verse verse = bibleApiService.getBibleVerse(bookName, chapterNumber, fromVerse, toVerse);
             verse.setDate(getDateForTheNextVerse());
             if(verse != null){
                 redirectAttributes.addFlashAttribute("verse", verse);
