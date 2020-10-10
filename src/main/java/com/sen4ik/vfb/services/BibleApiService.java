@@ -93,22 +93,31 @@ public class BibleApiService {
                 String enBookAbbreviation = abbrObj.get(0).toString();
                 String ruBookAbbr = getRusBookAbbr(enBookAbbreviation);
 
-                String enVerseLocation;
-                String ruVerseLocation;
+                // TODO: tweak the chapter and verse numbers for russian translation for the book of Psalms
+                // We might need to do tweaks for other books
+                // https://www.ph4.org/btraduk_ruennum.php
+                // https://mybible.zone/ruennum-eng.php
+
+                String enVerseLocation = "";
+                String ruVerseLocation = "";
                 if (verseTo == null || verseTo == verseFrom) {
                     // single verse
                     // set verse location for EN version
                     enVerseLocation = enBookAbbreviation + " " + chapterNumber + ":" + verseFrom;
 
                     // set verse location for RU version
-                    ruVerseLocation = ruBookAbbr + " " + chapterNumber + ":" + verseFrom;
+                    if(!currentBookName.equals("Psalm") || !currentBookName.equals("Psalms")){
+                        ruVerseLocation = ruBookAbbr + " " + chapterNumber + ":" + verseFrom;
+                    }
                 } else {
                     // verse range
                     // set verse location for EN version
                     enVerseLocation = enBookAbbreviation + " " + chapterNumber + ":" + verseFrom + "-" + verseTo;
 
                     // set verse location for RU version
-                    ruVerseLocation = ruBookAbbr + " " + chapterNumber + ":" + verseFrom + "-" + verseTo;
+                    if(!currentBookName.equals("Psalm") || !currentBookName.equals("Psalms")){
+                        ruVerseLocation = ruBookAbbr + " " + chapterNumber + ":" + verseFrom + "-" + verseTo;
+                    }
                 }
                 verseResultObj.setEnVerseLocation(enVerseLocation);
                 verseResultObj.setRuVerseLocation(ruVerseLocation);
