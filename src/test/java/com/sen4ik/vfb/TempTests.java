@@ -1,9 +1,14 @@
 package com.sen4ik.vfb;
 
+import com.jayway.jsonpath.JsonPath;
 import com.sen4ik.vfb.repositories.ActionLogRepository;
 import com.sen4ik.vfb.services.*;
 import com.telerivet.Contact;
 import lombok.extern.slf4j.Slf4j;
+import okhttp3.Call;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -12,7 +17,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @SpringBootTest
@@ -80,6 +88,27 @@ public class TempTests {
     @Disabled
     public void o() {
         twilioService.isPhoneNumberValid("+14084574516");
+    }
+
+    @Test
+    @Disabled
+    public void bookAbbr() throws IOException {
+        String host = "api.scripture.api.bible";
+        String url = "https://" + host + "/v1";
+        OkHttpClient client = new OkHttpClient();
+
+        Request booksRequest = new Request.Builder()
+                .url(url + "/bibles/f421fe261da7624f-01/books")
+                .header("api-key", "API_KEY_GOES_HERE")
+                .build();
+
+        Call call = client.newCall(booksRequest);
+        Response response = call.execute();
+        String booksJson = response.body().string();
+        System.out.println(booksJson + "\n\n");
+
+        net.minidev.json.JSONArray abbrObj = JsonPath.parse(booksJson).read("$.data[*].abbreviation");
+        System.out.println(abbrObj.toJSONString());
     }
 
 }

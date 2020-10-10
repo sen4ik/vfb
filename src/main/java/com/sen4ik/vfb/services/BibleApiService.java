@@ -87,21 +87,31 @@ public class BibleApiService {
             String bookId = bookArr.get(0).toString();
 
             // set verse location. use ESV to get the book abbreviation.
-            if(currentBibleId.equals(esvId)){
+            if(currentBibleId.equals(esvId)) {
+
                 net.minidev.json.JSONArray abbrObj = JsonPath.parse(booksJson).read("$.data[?(@." + bookNameField + " == '" + currentBookName + "')].abbreviation");
-                String bookAbbreviation = abbrObj.get(0).toString();
+                String enBookAbbreviation = abbrObj.get(0).toString();
+                String ruBookAbbr = getRusBookAbbr(enBookAbbreviation);
 
-                String verseLocation;
-                if(verseTo == null || verseTo == verseFrom){
+                String enVerseLocation;
+                String ruVerseLocation;
+                if (verseTo == null || verseTo == verseFrom) {
                     // single verse
-                    verseLocation = bookAbbreviation + " " + chapterNumber + ":" + verseFrom;
-                }
-                else{
-                    // verse range
-                    verseLocation = bookAbbreviation + " " + chapterNumber + ":" + verseFrom + "-" + verseTo;
-                }
+                    // set verse location for EN version
+                    enVerseLocation = enBookAbbreviation + " " + chapterNumber + ":" + verseFrom;
 
-                verseResultObj.setEnVerseLocation(verseLocation);
+                    // set verse location for RU version
+                    ruVerseLocation = ruBookAbbr + " " + chapterNumber + ":" + verseFrom;
+                } else {
+                    // verse range
+                    // set verse location for EN version
+                    enVerseLocation = enBookAbbreviation + " " + chapterNumber + ":" + verseFrom + "-" + verseTo;
+
+                    // set verse location for RU version
+                    ruVerseLocation = ruBookAbbr + " " + chapterNumber + ":" + verseFrom + "-" + verseTo;
+                }
+                verseResultObj.setEnVerseLocation(enVerseLocation);
+                verseResultObj.setRuVerseLocation(ruVerseLocation);
             }
             response.close();
 
@@ -188,6 +198,77 @@ public class BibleApiService {
                 .replaceAll("\\s+", " ");
 
         return verse.trim();
+    }
+
+    private String getRusBookAbbr(String enEsvBookAbbr){
+        Map<String,String> bookAbbreviationsMap = new HashMap<String,String>();
+        bookAbbreviationsMap.put("Gen.", "Быт.");
+        bookAbbreviationsMap.put("Ex.", "Исх.");
+        bookAbbreviationsMap.put("Lev.", "Лев.");
+        bookAbbreviationsMap.put("Num.", "Чис.");
+        bookAbbreviationsMap.put("Deut.", "Втор.");
+        bookAbbreviationsMap.put("Josh.", "И. Нав.");
+        bookAbbreviationsMap.put("Judg.", "Суд.");
+        bookAbbreviationsMap.put("Ruth", "Руфь");
+        bookAbbreviationsMap.put("1 Sam.", "1 Цар.");
+        bookAbbreviationsMap.put("2 Sam.", "2 Цар.");
+        bookAbbreviationsMap.put("1 Kgs.", "3 Цар.");
+        bookAbbreviationsMap.put("2 Kgs.", "4 Цар.");
+        bookAbbreviationsMap.put("1 Chr.", "1 Пар.");
+        bookAbbreviationsMap.put("2 Chr.", "2 Пар.");
+        bookAbbreviationsMap.put("Ezra", "Ездра");
+        bookAbbreviationsMap.put("Neh.", "Неем.");
+        bookAbbreviationsMap.put("Esth.", "Есф.");
+        bookAbbreviationsMap.put("Job", "Иов");
+        bookAbbreviationsMap.put("Ps.", "Пс.");
+        bookAbbreviationsMap.put("Prov.", "Прит.");
+        bookAbbreviationsMap.put("Eccles.", "Еккл.");
+        bookAbbreviationsMap.put("Song", "П. Песн.");
+        bookAbbreviationsMap.put("Isa.", "Ис.");
+        bookAbbreviationsMap.put("Jer.", "Иер.");
+        bookAbbreviationsMap.put("Lam.", "Пл. Иер.");
+        bookAbbreviationsMap.put("Ezek.", "Иез.");
+        bookAbbreviationsMap.put("Dan.", "Дан.");
+        bookAbbreviationsMap.put("Hos.", "Ос.");
+        bookAbbreviationsMap.put("Joel", "Иоиль");
+        bookAbbreviationsMap.put("Amos", "Амос");
+        bookAbbreviationsMap.put("Obad.", "Ав.");
+        bookAbbreviationsMap.put("Jonah", "Иона");
+        bookAbbreviationsMap.put("Mic.", "Мих.");
+        bookAbbreviationsMap.put("Nah.", "Наум");
+        bookAbbreviationsMap.put("Hab.", "Авв.");
+        bookAbbreviationsMap.put("Zeph.", "Соф.");
+        bookAbbreviationsMap.put("Hag.", "Аггей");
+        bookAbbreviationsMap.put("Zech.", "Зах.");
+        bookAbbreviationsMap.put("Mal.", "Мал.");
+        bookAbbreviationsMap.put("Matt.", "Матф.");
+        bookAbbreviationsMap.put("Mark", "Марк");
+        bookAbbreviationsMap.put("Luke", "Луки");
+        bookAbbreviationsMap.put("John", "Иоан.");
+        bookAbbreviationsMap.put("Acts", "Деян.");
+        bookAbbreviationsMap.put("Rom.", "Рим.");
+        bookAbbreviationsMap.put("1 Cor.", "1 Кор.");
+        bookAbbreviationsMap.put("2 Cor.", "2 Кор.");
+        bookAbbreviationsMap.put("Gal.", "Гал.");
+        bookAbbreviationsMap.put("Eph.", "Еф.");
+        bookAbbreviationsMap.put("Phil.", "Филип.");
+        bookAbbreviationsMap.put("Col.", "Кол.");
+        bookAbbreviationsMap.put("1 Thess.", "1 Фесс.");
+        bookAbbreviationsMap.put("2 Thess.", "2 Фесс.");
+        bookAbbreviationsMap.put("1 Tim.", "1 Тим.");
+        bookAbbreviationsMap.put("2 Tim.", "2 Тим.");
+        bookAbbreviationsMap.put("Titus", "Титу");
+        bookAbbreviationsMap.put("Philem.", "Филем.");
+        bookAbbreviationsMap.put("Heb.", "Евр.");
+        bookAbbreviationsMap.put("James", "Иак.");
+        bookAbbreviationsMap.put("1 Pet.", "1 Пет.");
+        bookAbbreviationsMap.put("2 Pet.", "2 Пет.");
+        bookAbbreviationsMap.put("1 John", "1 Иоан.");
+        bookAbbreviationsMap.put("2 John", "2 Иоан.");
+        bookAbbreviationsMap.put("3 John", "3 Иоан.");
+        bookAbbreviationsMap.put("Jude", "Иуда");
+        bookAbbreviationsMap.put("Rev.", "Откр.");
+        return bookAbbreviationsMap.get(enEsvBookAbbr);
     }
 
 }
