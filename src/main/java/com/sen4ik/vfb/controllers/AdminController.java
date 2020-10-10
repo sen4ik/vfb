@@ -114,7 +114,7 @@ public class AdminController {
             redirectAttributes.addFlashAttribute("addVerseErrorMessage", "Lookup Error! The Chapter value can't be equal or less than zero.");
         }
         //else if((fromVerse != null || toVerse != null) && (toVerse <= 0 || fromVerse <= 0)){
-        else if((fromVerse != null && fromVerse <= 0) && (toVerse != null && toVerse <= 0)){
+        else if((fromVerse != null && fromVerse <= 0) || (toVerse != null && toVerse <= 0)){
             redirectAttributes.addFlashAttribute("addVerseErrorMessage", "Lookup Error! The From and To values can't equal or less than zero.");
         }
         else if(toVerse != null && toVerse < fromVerse){
