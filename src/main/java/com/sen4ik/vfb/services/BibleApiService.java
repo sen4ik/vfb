@@ -105,11 +105,11 @@ public class BibleApiService {
             }
             response.close();
 
-            String verse = null;
+            String verse = "";
             if(verseTo == null || verseTo == verseFrom){
                 // single verse
                 String v = getVerse(currentBibleId, bookId, chapterNumber, verseFrom, client);
-                if(v == null){
+                if(v == null || v.isEmpty()){
                     return null;
                 }
                 verse = v;
@@ -118,7 +118,7 @@ public class BibleApiService {
                 // verse range
                 for(int i = verseFrom; i <= verseTo; i++){
                     String v = getVerse(currentBibleId, bookId, chapterNumber, verseFrom, client);
-                    if(v == null){
+                    if(v == null || v.isEmpty()){
                         return null;
                     }
                     verse = verse + " " + v;
