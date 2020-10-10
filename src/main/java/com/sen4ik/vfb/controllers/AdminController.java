@@ -122,12 +122,12 @@ public class AdminController {
         }
         else{
             Verse verse = bibleApiService.getBibleVerse(bookName, chapterNumber, fromVerse, toVerse);
-            verse.setDate(getDateForTheNextVerse());
-            if(verse != null){
-                redirectAttributes.addFlashAttribute("verse", verse);
+            if(verse == null){
+                redirectAttributes.addFlashAttribute("addVerseErrorMessage", "Error occurred during lookup!");
             }
             else{
-                redirectAttributes.addFlashAttribute("addVerseErrorMessage", "Error occurred during lookup!");
+                redirectAttributes.addFlashAttribute("verse", verse);
+                verse.setDate(getDateForTheNextVerse());
             }
         }
 
