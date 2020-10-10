@@ -117,7 +117,7 @@ public class BibleApiService {
             else{
                 // verse range
                 for(int i = verseFrom; i <= verseTo; i++){
-                    String v = getVerse(currentBibleId, bookId, chapterNumber, verseFrom, client);
+                    String v = getVerse(currentBibleId, bookId, chapterNumber, i, client);
                     if(v == null || v.isEmpty()){
                         return null;
                     }
