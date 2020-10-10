@@ -176,7 +176,7 @@ public class BibleApiService {
         String verseJson = verseResponse.body().string();
         int statusCode = verseResponse.code();
         if(statusCode != 200){
-            log.error("api.bible returned " + statusCode + " status code while doing verse lookup.\nResponse Body: " + verseJson);
+            log.error("api.bible returned " + statusCode + " status code while doing verse lookup.\nRequest: " + verseRequest.toString() + "\nResponse Body: " + verseJson);
             return null;
         }
         verseResponse.close();
