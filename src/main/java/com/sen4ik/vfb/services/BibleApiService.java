@@ -121,7 +121,13 @@ public class BibleApiService {
                     if(v == null || v.isEmpty()){
                         return null;
                     }
-                    verse = verse + " " + v;
+                    if(i == verseFrom)
+                    {
+                        verse = v;
+                    }
+                    else{
+                        verse = verse + " " + v;
+                    }
                 }
             }
 
