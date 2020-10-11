@@ -1,6 +1,7 @@
 package com.sen4ik.vfb.services;
 
 import com.jayway.jsonpath.JsonPath;
+import com.sen4ik.vfb.constants.Constants;
 import com.sen4ik.vfb.entities.Verse;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
@@ -8,8 +9,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -26,6 +31,7 @@ public class BibleApiService {
     private String esvId = "f421fe261da7624f-01";
     private String nivId = "78a9f6124f344018-01";
     private String kjvId = "de4e12af7f28f599-01";
+    private String enBookAbbreviation;
 
     public Verse getBibleVerse(String bookName, int chapterNumber, int verseFrom, Integer verseTo) throws IOException {
 
@@ -33,16 +39,12 @@ public class BibleApiService {
         log.info("chapter: " + chapterNumber);
         log.info("verse: " + verseFrom);
 
-        // List<String> bibleIDs = Arrays.asList(esvId, nivId, kjvId);
         Map<String, String> bibles = new HashMap<String, String>();
         bibles.put("esv", esvId);
         bibles.put("niv", nivId);
         bibles.put("kjv", kjvId);
 
-        // JSONObject responseObj = new JSONObject();
-
         Verse verseResultObj = new Verse();
-
         OkHttpClient client = new OkHttpClient();
 
         for (Map.Entry<String, String> entry : bibles.entrySet()) {
@@ -90,7 +92,7 @@ public class BibleApiService {
             if(currentBibleId.equals(esvId)) {
 
                 net.minidev.json.JSONArray abbrObj = JsonPath.parse(booksJson).read("$.data[?(@." + bookNameField + " == '" + currentBookName + "')].abbreviation");
-                String enBookAbbreviation = abbrObj.get(0).toString();
+                enBookAbbreviation = abbrObj.get(0).toString();
                 String ruBookAbbr = getRusBookAbbr(enBookAbbreviation);
 
                 // TODO: tweak the chapter and verse numbers for russian translation for the book of Psalms
@@ -98,7 +100,7 @@ public class BibleApiService {
                 // https://www.ph4.org/btraduk_ruennum.php
                 // https://mybible.zone/ruennum-eng.php
 
-                String enVerseLocation = "";
+                String enVerseLocation;
                 String ruVerseLocation = "";
                 if (verseTo == null || verseTo == verseFrom) {
                     // single verse
@@ -109,7 +111,8 @@ public class BibleApiService {
                     if(!currentBookName.equals("Psalm") || !currentBookName.equals("Psalms")){
                         ruVerseLocation = ruBookAbbr + " " + chapterNumber + ":" + verseFrom;
                     }
-                } else {
+                }
+                else {
                     // verse range
                     // set verse location for EN version
                     enVerseLocation = enBookAbbreviation + " " + chapterNumber + ":" + verseFrom + "-" + verseTo;
@@ -127,7 +130,8 @@ public class BibleApiService {
             String verse = "";
             if(verseTo == null || verseTo == verseFrom){
                 // single verse
-                String v = getVerse(currentBibleId, bookId, chapterNumber, verseFrom, client);
+                // get EN verse
+                String v = getEnVerse(currentBibleId, bookId, chapterNumber, verseFrom, client);
                 if(v == null || v.isEmpty()){
                     return null;
                 }
@@ -136,12 +140,12 @@ public class BibleApiService {
             else{
                 // verse range
                 for(int i = verseFrom; i <= verseTo; i++){
-                    String v = getVerse(currentBibleId, bookId, chapterNumber, i, client);
+                    // get EN verses
+                    String v = getEnVerse(currentBibleId, bookId, chapterNumber, i, client);
                     if(v == null || v.isEmpty()){
                         return null;
                     }
-                    if(i == verseFrom)
-                    {
+                    if(i == verseFrom){
                         verse = v;
                     }
                     else{
@@ -161,14 +165,21 @@ public class BibleApiService {
             }
         }
 
+        // Get RU verse
+        String ruVerse = getRuVerse(enBookAbbreviation, chapterNumber, verseFrom, verseTo);
+        if(ruVerse == null || ruVerse.isEmpty()){
+            return null;
+        }
+        verseResultObj.setRuSynodal(ruVerse);
+
         return verseResultObj;
     }
 
-    private String getVerse(String currentBibleId,
-                            String bookId,
-                            int chapterNumber,
-                            int verseFrom,
-                            OkHttpClient client) throws IOException {
+    private String getEnVerse(String currentBibleId,
+                              String bookId,
+                              int chapterNumber,
+                              int verseFrom,
+                              OkHttpClient client) throws IOException {
 
         HttpUrl httpUrl = new HttpUrl.Builder()
                 .scheme("https")
@@ -209,75 +220,60 @@ public class BibleApiService {
         return verse.trim();
     }
 
+    private String getRuVerse(String enBookAbbreviation, int chapterNumber, int verseFrom, Integer verseTo){
+        String verse = "";
+        String fileName = Constants.bookAbbrsAndDatFiles.get(enBookAbbreviation).get(1);
+        List<String> bookArr = readFileIntoArray("./resources/static/bible/rst/" + fileName);
+
+        if(verseTo == null || verseTo == verseFrom) {
+            // single verse
+            verse = findLineFromArrayThatStartsWithPrefix(bookArr, "#" + chapterNumber + ":" + verseFrom + "#");
+        }
+        else {
+            // verse range
+            for(int i = verseFrom; i <= verseTo; i++){
+                String v = findLineFromArrayThatStartsWithPrefix(bookArr, "#" + chapterNumber + ":" + i + "#");
+                verse = (i == verseFrom) ? v : verse + " " + v;
+//                if(i == verseFrom){
+//                    verse = v;
+//                }
+//                else{
+//                    verse = verse + " " + v;
+//                }
+            }
+        }
+        return verse;
+    }
+
     private String getRusBookAbbr(String enEsvBookAbbr){
-        Map<String,String> bookAbbreviationsMap = new HashMap<String,String>();
-        bookAbbreviationsMap.put("Gen.", "Быт.");
-        bookAbbreviationsMap.put("Ex.", "Исх.");
-        bookAbbreviationsMap.put("Lev.", "Лев.");
-        bookAbbreviationsMap.put("Num.", "Чис.");
-        bookAbbreviationsMap.put("Deut.", "Втор.");
-        bookAbbreviationsMap.put("Josh.", "И. Нав.");
-        bookAbbreviationsMap.put("Judg.", "Суд.");
-        bookAbbreviationsMap.put("Ruth", "Руфь");
-        bookAbbreviationsMap.put("1 Sam.", "1 Цар.");
-        bookAbbreviationsMap.put("2 Sam.", "2 Цар.");
-        bookAbbreviationsMap.put("1 Kgs.", "3 Цар.");
-        bookAbbreviationsMap.put("2 Kgs.", "4 Цар.");
-        bookAbbreviationsMap.put("1 Chr.", "1 Пар.");
-        bookAbbreviationsMap.put("2 Chr.", "2 Пар.");
-        bookAbbreviationsMap.put("Ezra", "Ездра");
-        bookAbbreviationsMap.put("Neh.", "Неем.");
-        bookAbbreviationsMap.put("Esth.", "Есф.");
-        bookAbbreviationsMap.put("Job", "Иов");
-        bookAbbreviationsMap.put("Ps.", "Пс.");
-        bookAbbreviationsMap.put("Prov.", "Прит.");
-        bookAbbreviationsMap.put("Eccles.", "Еккл.");
-        bookAbbreviationsMap.put("Song", "П. Песн.");
-        bookAbbreviationsMap.put("Isa.", "Ис.");
-        bookAbbreviationsMap.put("Jer.", "Иер.");
-        bookAbbreviationsMap.put("Lam.", "Пл. Иер.");
-        bookAbbreviationsMap.put("Ezek.", "Иез.");
-        bookAbbreviationsMap.put("Dan.", "Дан.");
-        bookAbbreviationsMap.put("Hos.", "Ос.");
-        bookAbbreviationsMap.put("Joel", "Иоиль");
-        bookAbbreviationsMap.put("Amos", "Амос");
-        bookAbbreviationsMap.put("Obad.", "Ав.");
-        bookAbbreviationsMap.put("Jonah", "Иона");
-        bookAbbreviationsMap.put("Mic.", "Мих.");
-        bookAbbreviationsMap.put("Nah.", "Наум");
-        bookAbbreviationsMap.put("Hab.", "Авв.");
-        bookAbbreviationsMap.put("Zeph.", "Соф.");
-        bookAbbreviationsMap.put("Hag.", "Аггей");
-        bookAbbreviationsMap.put("Zech.", "Зах.");
-        bookAbbreviationsMap.put("Mal.", "Мал.");
-        bookAbbreviationsMap.put("Matt.", "Матф.");
-        bookAbbreviationsMap.put("Mark", "Марк");
-        bookAbbreviationsMap.put("Luke", "Луки");
-        bookAbbreviationsMap.put("John", "Иоан.");
-        bookAbbreviationsMap.put("Acts", "Деян.");
-        bookAbbreviationsMap.put("Rom.", "Рим.");
-        bookAbbreviationsMap.put("1 Cor.", "1 Кор.");
-        bookAbbreviationsMap.put("2 Cor.", "2 Кор.");
-        bookAbbreviationsMap.put("Gal.", "Гал.");
-        bookAbbreviationsMap.put("Eph.", "Еф.");
-        bookAbbreviationsMap.put("Phil.", "Филип.");
-        bookAbbreviationsMap.put("Col.", "Кол.");
-        bookAbbreviationsMap.put("1 Thess.", "1 Фесс.");
-        bookAbbreviationsMap.put("2 Thess.", "2 Фесс.");
-        bookAbbreviationsMap.put("1 Tim.", "1 Тим.");
-        bookAbbreviationsMap.put("2 Tim.", "2 Тим.");
-        bookAbbreviationsMap.put("Titus", "Титу");
-        bookAbbreviationsMap.put("Philem.", "Филем.");
-        bookAbbreviationsMap.put("Heb.", "Евр.");
-        bookAbbreviationsMap.put("James", "Иак.");
-        bookAbbreviationsMap.put("1 Pet.", "1 Пет.");
-        bookAbbreviationsMap.put("2 Pet.", "2 Пет.");
-        bookAbbreviationsMap.put("1 John", "1 Иоан.");
-        bookAbbreviationsMap.put("2 John", "2 Иоан.");
-        bookAbbreviationsMap.put("3 John", "3 Иоан.");
-        bookAbbreviationsMap.put("Jude", "Иуда");
-        bookAbbreviationsMap.put("Rev.", "Откр.");
-        return bookAbbreviationsMap.get(enEsvBookAbbr);
+        return Constants.bookAbbrsAndDatFiles.get(enEsvBookAbbr).get(0);
+    }
+
+    private List<String> readFileIntoArray(String filePath){
+        List<String> arr = new ArrayList<>();
+        BufferedReader reader;
+        try {
+            reader = new BufferedReader(new FileReader(filePath));
+            String line = reader.readLine();
+            while (line != null) {
+                // System.out.println(line);
+                arr.add(line);
+                line = reader.readLine();
+            }
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return arr;
+    }
+
+    private String findLineFromArrayThatStartsWithPrefix(List<String> arr, String prefix){
+        for(String str : arr){
+            if(str.startsWith(prefix)){
+                return str.replace(prefix, "").trim();
+            }
+        }
+        return null;
     }
 
 }
