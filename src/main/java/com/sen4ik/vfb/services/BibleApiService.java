@@ -165,6 +165,7 @@ public class BibleApiService {
 
         // Get RU verse
         String ruVerse = getRuVerse(enBookAbbreviation, chapterNumber, verseFrom, verseTo);
+        log.info("ruVerse: " + ruVerse);
         if(ruVerse == null || ruVerse.isEmpty()){
             return null;
         }
@@ -223,6 +224,7 @@ public class BibleApiService {
         String fileName = Constants.bookAbbrsAndDatFiles.get(enBookAbbreviation).get(1);
         log.info("ru .dat file:  " + fileName);
         List<String> bookArr = readFileIntoArray("static/bible/rst/" + fileName);
+        log.info("bookArr size: " + bookArr.size());
 
         if(verseTo == null || verseTo == verseFrom) {
             // single verse
