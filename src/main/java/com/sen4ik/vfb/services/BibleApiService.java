@@ -263,7 +263,7 @@ public class BibleApiService {
 //        File file = new File(classLoader.getResource(filePath).getFile());
 
         Resource resource = resourceLoader.getResource(filePath);
-        InputStream input = resource.getInputStream();
+        // InputStream input = resource.getInputStream();
         File file = resource.getFile();
         log.info(filePath + " file found: " + file.exists());
 
