@@ -270,6 +270,7 @@ public class BibleApiService {
         while(reader.ready()) {
             String line = reader.readLine();
             log.info("is: " + line);
+            arr.add(line);
         }
 
         //        ClassLoader classLoader = getClass().getClassLoader();
