@@ -259,13 +259,11 @@ public class BibleApiService {
         log.info("filePath: " + filePath);
         List<String> arr = new ArrayList<>();
 
-//        ClassLoader classLoader = getClass().getClassLoader();
-//        File file = new File(classLoader.getResource(filePath).getFile());
 
-        Resource resource = resourceLoader.getResource(filePath);
-        // InputStream input = resource.getInputStream();
-        File file = resource.getFile();
-        log.info(filePath + " file found: " + file.exists());
+//        Resource resource = resourceLoader.getResource(filePath);
+//        // InputStream input = resource.getInputStream();
+//        File file = resource.getFile();
+//        log.info(filePath + " file found: " + file.exists());
 
         InputStream is = new ClassPathResource(filePath).getInputStream();
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
@@ -274,16 +272,18 @@ public class BibleApiService {
             log.info("is: " + line);
         }
 
-        try (Scanner scanner = new Scanner(file)) {
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
-                log.info(line);
-                arr.add(line);
-            }
-            scanner.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        //        ClassLoader classLoader = getClass().getClassLoader();
+//        File file = new File(classLoader.getResource(filePath).getFile());
+//        try (Scanner scanner = new Scanner(file)) {
+//            while (scanner.hasNextLine()) {
+//                String line = scanner.nextLine();
+//                log.info(line);
+//                arr.add(line);
+//            }
+//            scanner.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
         return arr;
     }
