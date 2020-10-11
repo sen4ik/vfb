@@ -62,7 +62,7 @@ public class TempTests {
 
     @Test
     @Disabled
-    public void vvv() {
+    public void vvv() throws IOException {
         String verse = bibleApiService.getRuVerse("Gen.",1,1, null);
         log.info("verse: " + verse);
     }

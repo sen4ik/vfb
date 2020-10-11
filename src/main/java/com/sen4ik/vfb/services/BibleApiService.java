@@ -5,14 +5,16 @@ import com.sen4ik.vfb.constants.Constants;
 import com.sen4ik.vfb.entities.Verse;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 @Service
@@ -22,6 +24,9 @@ public class BibleApiService {
 
     @Value("${bible.api.key}")
     private String apiKey;
+
+    @Autowired
+    ResourceLoader resourceLoader;
 
     // Docs: https://scripture.api.bible/docs#all-bibles
     private String host = "api.scripture.api.bible";
@@ -219,7 +224,7 @@ public class BibleApiService {
         return verse.trim();
     }
 
-    public String getRuVerse(String enBookAbbreviation, int chapterNumber, int verseFrom, Integer verseTo){
+    public String getRuVerse(String enBookAbbreviation, int chapterNumber, int verseFrom, Integer verseTo) throws IOException {
         String verse = "";
         String fileName = Constants.bookAbbrsAndDatFiles.get(enBookAbbreviation).get(1);
         log.info("ru .dat file:  " + fileName);
@@ -250,10 +255,24 @@ public class BibleApiService {
         return Constants.bookAbbrsAndDatFiles.get(enEsvBookAbbr).get(0);
     }
 
-    private List<String> readFileIntoArray(String filePath){
+    private List<String> readFileIntoArray(String filePath) throws IOException {
+        log.info("filePath: " + filePath);
         List<String> arr = new ArrayList<>();
-        ClassLoader classLoader = getClass().getClassLoader();
-        File file = new File(classLoader.getResource(filePath).getFile());
+
+//        ClassLoader classLoader = getClass().getClassLoader();
+//        File file = new File(classLoader.getResource(filePath).getFile());
+
+        Resource resource = resourceLoader.getResource(filePath);
+        InputStream input = resource.getInputStream();
+        File file = resource.getFile();
+        log.info(filePath + " file found: " + file.exists());
+
+        InputStream is = new ClassPathResource(filePath).getInputStream();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        while(reader.ready()) {
+            String line = reader.readLine();
+            log.info("is: " + line);
+        }
 
         try (Scanner scanner = new Scanner(file)) {
             while (scanner.hasNextLine()) {
