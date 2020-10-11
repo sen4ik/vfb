@@ -258,7 +258,7 @@ public class BibleApiService {
         try (Scanner scanner = new Scanner(file)) {
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
-                // log.info(line);
+                log.info(line);
                 arr.add(line);
             }
             scanner.close();
