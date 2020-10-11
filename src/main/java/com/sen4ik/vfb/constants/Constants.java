@@ -15,7 +15,7 @@ public class Constants {
     public static final String confirmSubscriptionMessage = "It looks like you have subscribed to " + WEBSITE_NAME + ". If that is correct, reply YES.";
     public static Map<String, List<String>> bookAbbrsAndDatFiles = new HashMap<>();
 
-    {
+    static {
         bookAbbrsAndDatFiles.put("Gen.",   Lists.newArrayList("Быт.", "01-genesis.dat"));
         bookAbbrsAndDatFiles.put("Ex.",    Lists.newArrayList("Исх.", "02-exodus.dat"));
         bookAbbrsAndDatFiles.put("Lev.",   Lists.newArrayList("Лев.", "03-leviticus.dat"));
