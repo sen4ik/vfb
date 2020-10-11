@@ -223,6 +223,7 @@ public class BibleApiService {
     private String getRuVerse(String enBookAbbreviation, int chapterNumber, int verseFrom, Integer verseTo){
         String verse = "";
         String fileName = Constants.bookAbbrsAndDatFiles.get(enBookAbbreviation).get(1);
+        log.info("ru .dat file:  " + fileName);
         List<String> bookArr = readFileIntoArray("./resources/static/bible/rst/" + fileName);
 
         if(verseTo == null || verseTo == verseFrom) {
@@ -256,7 +257,7 @@ public class BibleApiService {
             reader = new BufferedReader(new FileReader(filePath));
             String line = reader.readLine();
             while (line != null) {
-                // System.out.println(line);
+                log.info(line);
                 arr.add(line);
                 line = reader.readLine();
             }
