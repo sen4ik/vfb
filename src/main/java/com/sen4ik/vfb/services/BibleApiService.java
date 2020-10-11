@@ -135,9 +135,6 @@ public class BibleApiService {
                 // single verse
                 // get EN verse
                 String v = getEnVerse(currentBibleId, bookId, chapterNumber, verseFrom, client);
-                if(v == null || v.isEmpty()){
-                    return null;
-                }
                 verse = v;
             }
             else{
@@ -145,15 +142,7 @@ public class BibleApiService {
                 for(int i = verseFrom; i <= verseTo; i++){
                     // get EN verses
                     String v = getEnVerse(currentBibleId, bookId, chapterNumber, i, client);
-                    if(v == null || v.isEmpty()){
-                        return null;
-                    }
-                    if(i == verseFrom){
-                        verse = v;
-                    }
-                    else{
-                        verse = verse + " " + v;
-                    }
+                    verse = (i == verseFrom) ? v : verse + " " + v;
                 }
             }
 
@@ -240,12 +229,6 @@ public class BibleApiService {
             for(int i = verseFrom; i <= verseTo; i++){
                 String v = findLineFromArrayThatStartsWithPrefix(bookArr, "#" + chapterNumber + ":" + i + "#");
                 verse = (i == verseFrom) ? v : verse + " " + v;
-//                if(i == verseFrom){
-//                    verse = v;
-//                }
-//                else{
-//                    verse = verse + " " + v;
-//                }
             }
         }
         return verse;
@@ -256,35 +239,16 @@ public class BibleApiService {
     }
 
     private List<String> readFileIntoArray(String filePath) throws IOException {
-        log.info("filePath: " + filePath);
+        log.info("readFileIntoArray(): filePath: " + filePath);
         List<String> arr = new ArrayList<>();
-
-
-//        Resource resource = resourceLoader.getResource(filePath);
-//        // InputStream input = resource.getInputStream();
-//        File file = resource.getFile();
-//        log.info(filePath + " file found: " + file.exists());
 
         InputStream is = new ClassPathResource(filePath).getInputStream();
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         while(reader.ready()) {
             String line = reader.readLine();
-            log.info("is: " + line);
+            // log.info("is: " + line);
             arr.add(line);
         }
-
-        //        ClassLoader classLoader = getClass().getClassLoader();
-//        File file = new File(classLoader.getResource(filePath).getFile());
-//        try (Scanner scanner = new Scanner(file)) {
-//            while (scanner.hasNextLine()) {
-//                String line = scanner.nextLine();
-//                log.info(line);
-//                arr.add(line);
-//            }
-//            scanner.close();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
 
         return arr;
     }
@@ -295,9 +259,6 @@ public class BibleApiService {
                 log.info("Line that matched " + prefix + ": " + str);
                 return str
                         .replace(prefix, "")
-                        //.replaceAll("\\n", "")
-                        //.replaceAll("\\r", "")
-                        //.replaceAll("\\r\\n", "")
                         .replaceAll("(\\r|\\n|\\t)", "")
                         .trim();
             }
