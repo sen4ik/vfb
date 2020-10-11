@@ -62,6 +62,13 @@ public class TempTests {
 
     @Test
     @Disabled
+    public void vvv() {
+        String verse = bibleApiService.getRuVerse("Gen.",1,1, null);
+        log.info("verse: " + verse);
+    }
+
+    @Test
+    @Disabled
     public void ww() {
         List<Contact> allContacts = telerivetService.getAllContacts();
         for(Contact contact : allContacts){

@@ -10,12 +10,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Component
@@ -220,11 +218,11 @@ public class BibleApiService {
         return verse.trim();
     }
 
-    private String getRuVerse(String enBookAbbreviation, int chapterNumber, int verseFrom, Integer verseTo){
+    public String getRuVerse(String enBookAbbreviation, int chapterNumber, int verseFrom, Integer verseTo){
         String verse = "";
         String fileName = Constants.bookAbbrsAndDatFiles.get(enBookAbbreviation).get(1);
         log.info("ru .dat file:  " + fileName);
-        List<String> bookArr = readFileIntoArray("./resources/static/bible/rst/" + fileName);
+        List<String> bookArr = readFileIntoArray("static/bible/rst/" + fileName);
 
         if(verseTo == null || verseTo == verseFrom) {
             // single verse
@@ -252,26 +250,34 @@ public class BibleApiService {
 
     private List<String> readFileIntoArray(String filePath){
         List<String> arr = new ArrayList<>();
-        BufferedReader reader;
-        try {
-            reader = new BufferedReader(new FileReader(filePath));
-            String line = reader.readLine();
-            while (line != null) {
-                log.info(line);
+        ClassLoader classLoader = getClass().getClassLoader();
+        File file = new File(classLoader.getResource(filePath).getFile());
+
+        try (Scanner scanner = new Scanner(file)) {
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                // log.info(line);
                 arr.add(line);
-                line = reader.readLine();
             }
-            reader.close();
+            scanner.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         return arr;
     }
 
     private String findLineFromArrayThatStartsWithPrefix(List<String> arr, String prefix){
         for(String str : arr){
             if(str.startsWith(prefix)){
-                return str.replace(prefix, "").trim();
+                log.info("Line that matched " + prefix + ": " + str);
+                return str
+                        .replace(prefix, "")
+                        //.replaceAll("\\n", "")
+                        //.replaceAll("\\r", "")
+                        //.replaceAll("\\r\\n", "")
+                        .replaceAll("(\\r|\\n|\\t)", "")
+                        .trim();
             }
         }
         return null;
