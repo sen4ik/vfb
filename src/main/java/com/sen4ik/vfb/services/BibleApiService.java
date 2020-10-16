@@ -258,9 +258,11 @@ public class BibleApiService {
             if(str.startsWith(prefix)){
                 log.info("Line that matched " + prefix + ": " + str);
                 return str
-                        .replace(prefix, "")
-                        .replaceAll("(\\r|\\n|\\t)", "")
-                        .trim();
+                    .replace(prefix, "")
+                    .replaceAll("(\\r|\\n|\\t)", "")
+                    .replace("<i>", "[")
+                    .replace("</i>", "]")
+                    .trim();
             }
         }
         return null;
