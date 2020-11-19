@@ -8,13 +8,11 @@ import okhttp3.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 @Service
@@ -206,6 +204,7 @@ public class BibleApiService {
 
         String verse = JsonPath.parse(verseJson).read("$.data.content");
         verse = verse
+                .replaceAll("¶", "")
                 .replaceAll("\n", "")
                 .replaceAll("\r", "").trim()
                 .replaceAll("\\s+", " ");
@@ -216,18 +215,18 @@ public class BibleApiService {
     public String getRuVerse(String enBookAbbreviation, int chapterNumber, int verseFrom, Integer verseTo) throws IOException {
         String verse = "";
         String fileName = Constants.bookAbbrsAndDatFiles.get(enBookAbbreviation).get(1);
-        log.info("ru .dat file:  " + fileName);
+        log.info(".dat file:  " + fileName);
         List<String> bookArr = readFileIntoArray("static/bible/rst/" + fileName);
-        log.info("bookArr size: " + bookArr.size());
+        log.info(fileName + " number of lines: " + bookArr.size());
 
         if(verseTo == null || verseTo == verseFrom) {
             // single verse
-            verse = findLineFromArrayThatStartsWithPrefix(bookArr, "#" + chapterNumber + ":" + verseFrom + "#");
+            verse = findLineFromArray_usingPrefix_cleanItUp(bookArr, "#" + chapterNumber + ":" + verseFrom + "#");
         }
         else {
             // verse range
             for(int i = verseFrom; i <= verseTo; i++){
-                String v = findLineFromArrayThatStartsWithPrefix(bookArr, "#" + chapterNumber + ":" + i + "#");
+                String v = findLineFromArray_usingPrefix_cleanItUp(bookArr, "#" + chapterNumber + ":" + i + "#");
                 verse = (i == verseFrom) ? v : verse + " " + v;
             }
         }
@@ -239,7 +238,7 @@ public class BibleApiService {
     }
 
     private List<String> readFileIntoArray(String filePath) throws IOException {
-        log.info("readFileIntoArray(): filePath: " + filePath);
+        log.debug("readFileIntoArray(): filePath: " + filePath);
         List<String> arr = new ArrayList<>();
 
         InputStream is = new ClassPathResource(filePath).getInputStream();
@@ -253,10 +252,10 @@ public class BibleApiService {
         return arr;
     }
 
-    private String findLineFromArrayThatStartsWithPrefix(List<String> arr, String prefix){
+    private String findLineFromArray_usingPrefix_cleanItUp(List<String> arr, String prefix){
         for(String str : arr){
             if(str.startsWith(prefix)){
-                log.info("Line that matched " + prefix + ": " + str);
+                log.info("Line matched: " + str);
                 return str
                     .replace(prefix, "")
                     .replaceAll("(\\r|\\n|\\t)", "")
