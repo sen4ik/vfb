@@ -1,6 +1,5 @@
 package com.sen4ik.vfb.services.currentUser;
 
-import com.sen4ik.vfb.entities.CurrentUser;
 import com.sen4ik.vfb.entities.User;
 
 public interface CurrentUserService {
