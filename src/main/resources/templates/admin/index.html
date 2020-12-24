@@ -313,8 +313,6 @@
                             <th>Name</th>
                             <th>Phone Number</th>
                             <th>Bible Translation</th>
-<!--                            <th>Send Time</th>-->
-<!--                            <th>TZ</th>-->
                             <th>Send Time</th>
                             <th>Subscription Confirmed</th>
                             <th>Actions</th>
@@ -326,8 +324,6 @@
                                 <td th:text="${c.name}"></td>
                                 <td th:text="${c.phoneNumber}"></td>
                                 <td th:text="${c.bibleTranslation}"></td>
-<!--                                <td th:text="${c.selectedSendTime} + @{''}"></td>-->
-<!--                                <td th:text="${c.selectedTimeZone}"></td>-->
                                 <td th:text="|${c.selectedSendTime} ${c.selectedTimeZone} (${c.selectedSendTimePacific} pacific)|"></td>
                                 <td th:text="${c.subscriptionConfirmed}"></td>
                                 <td>
@@ -344,7 +340,6 @@
     </section>
 
     <section id="view_log" class="bg-light">
-<!--        <div class="container">-->
         <div class="container-fluid pl-5 pr-5">
             <div class="row">
                 <div class="col-lg-12 mx-auto">
@@ -370,16 +365,6 @@
                                 <td th:text="${al.notes}"></td>
                             </tr>
                         </tbody>
-<!--                        <tfoot>-->
-<!--                            <tr>-->
-<!--                                <th>Time</th>-->
-<!--                                <th>To</th>-->
-<!--                                <th>From</th>-->
-<!--                                <th>Action</th>-->
-<!--                                <th>Body</th>-->
-<!--                                <th>Notes</th>-->
-<!--                            </tr>-->
-<!--                        </tfoot>-->
                     </table>
                     <i><small>* Showing last 500 action log records</small></i>
                 </div>

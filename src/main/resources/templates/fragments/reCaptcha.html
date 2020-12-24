@@ -78,26 +78,13 @@
 
         function addEventToForm(formId){
             document.getElementById(formId).addEventListener("submit", function (evt) {
-
-                // let response = grecaptcha.getResponse();
-                // if (response.length == 0) {
-                //     $("#" + formId + "CaptchaError").show().html("Please verify that you are not a robot.");
-                //     evt.preventDefault();
-                //     return false;
-                // }
-                // // captcha verified
-                // $("#" + formId + "CaptchaError").html("").hide();
-                // return true;
-
                 if( !$("#" + formId + "HiddenRecaptcha").val() ) {
                     $("#" + formId + "CaptchaError").show().html("Please verify that you are not a robot.");
                     evt.preventDefault();
                     return false;
                 }
-
                 $("#" + formId + "CaptchaError").html("").hide();
                 return true;
-
             });
         }
 

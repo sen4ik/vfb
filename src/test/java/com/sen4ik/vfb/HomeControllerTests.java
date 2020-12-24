@@ -27,7 +27,6 @@ public class HomeControllerTests {
 		ResultActions resultActions = mockMvc.perform(get("/index"))
 				.andExpect(status().isOk())
 				.andExpect(view().name("index"))
-//				.andExpect(model().attribute("attr", hasSize(2))
 				.andExpect(content().string(containsString("About")))
 				.andExpect(content().string(containsString("Sign Up")))
 				.andExpect(model().attribute("verse", hasItem(
@@ -39,7 +38,6 @@ public class HomeControllerTests {
 
 		MvcResult mvcResult = resultActions.andReturn();
 		ModelAndView mv = mvcResult.getModelAndView();
-
 	}
 
 }
