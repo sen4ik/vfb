@@ -1,0 +1,380 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<div th:replace="fragments/head :: head"></div>
+
+<body id="page-top">
+
+    <div th:replace="admin/navigation :: navigation"></div>
+
+    <section id="add_verse">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 mx-auto">
+                    <h2 class="mb-5">Add/Edit Verse</h2>
+
+                    <div th:if="${addVerseSuccessMessage}" class="alert alert-success alert-dismissible alert-primary fade show auto_fade" role="alert">
+                        <span th:utext=${addVerseSuccessMessage}></span>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div th:if="${addVerseErrorMessage}" class="alert alert-danger alert-dismissible alert-primary fade show" role="alert">
+                        <span th:utext=${addVerseErrorMessage}></span>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <form autocomplete="off" action="#" th:action="@{/add_verse}" th:object="${verse}" id="add_verse_form" name="add_verse_form" class="needs-validation" method="post">
+                        <input type="hidden" th:field="*{id}" name="id" />
+                        <div class="form-row">
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group required">
+                                    <label for="add_verse_en_esv" class="control-label">ESV</label>
+                                    <textarea th:field="*{enEsv}" class="form-control" id="add_verse_en_esv" name="add_verse_en_esv" rows="4" maxlength = "500" placeholder="ESV Translation Text" required></textarea>
+                                    <div class="invalid-feedback">
+                                        Please type in EN ESV text.
+                                    </div>
+                                    <span th:if="${#fields.hasErrors('enEsv')}" th:errors="*{enEsv}"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group required">
+                                    <label for="add_verse_en_kjv" class="control-label">KJV</label>
+                                    <textarea th:field="*{enKjv}" class="form-control" id="add_verse_en_kjv" name="add_verse_en_kjv" rows="4" maxlength = "500" placeholder="KJV Translation Text" required></textarea>
+                                    <div class="invalid-feedback">
+                                        Please type in EN KJV text.
+                                    </div>
+                                    <span th:if="${#fields.hasErrors('enKjv')}" th:errors="*{enKjv}"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group required">
+                                    <label for="add_verse_en_niv" class="control-label">NIV</label>
+                                    <textarea th:field="*{enNiv}" class="form-control" id="add_verse_en_niv" name="add_verse_en_niv" rows="4" maxlength = "500" placeholder="NIV Translation Text" required></textarea>
+                                    <div class="invalid-feedback">
+                                        Please type in EN NIV text.
+                                    </div>
+                                    <span th:if="${#fields.hasErrors('enNiv')}" th:errors="*{enNiv}"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group required">
+                                    <label for="add_verse_ru_synodal" class="control-label">RU Synodal</label>
+                                    <textarea th:field="*{ruSynodal}" class="form-control" id="add_verse_ru_synodal" name="add_verse_ru_synodal" rows="4" maxlength = "500" placeholder="RU Synodal Translation Text" required></textarea>
+                                    <div class="invalid-feedback">
+                                        Please type in RU Synodal text.
+                                    </div>
+                                    <span th:if="${#fields.hasErrors('ruSynodal')}" th:errors="*{ruSynodal}"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group required">
+                                    <label for="en_verse_location" class="control-label">EN Verse Location</label>
+                                    <input th:field="*{enVerseLocation}" type="text" class="form-control" id="en_verse_location" name="en_verse_location" maxlength="40" placeholder="English Translations Verse Location" required>
+                                    <div class="invalid-feedback">
+                                        Please provide a EN Verse Location.
+                                    </div>
+                                    <span th:if="${#fields.hasErrors('enVerseLocation')}" th:errors="*{enVerseLocation}"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group required">
+                                    <label for="ru_verse_location" class="control-label">RU Verse Location</label>
+                                    <input th:field="*{ruVerseLocation}" type="text" class="form-control" id="ru_verse_location" name="ru_verse_location" maxlength="40" placeholder="Russian Translations Verse Location" required>
+                                    <div class="invalid-feedback">
+                                        Please provide a RU Verse Location.
+                                    </div>
+                                    <span th:if="${#fields.hasErrors('ruVerseLocation')}" th:errors="*{ruVerseLocation}"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group required">
+                                    <label for="add_verse_date" class="control-label">Date</label>
+                                    <!-- https://uxsolutions.github.io/bootstrap-datepicker -->
+                                    <input th:field="*{date}" type="text" id="add_verse_date" name="add_verse_date" class="form-control" required><span class="input-group-addon"></span>
+                                    <div class="invalid-feedback">
+                                        Please provide a date.
+                                    </div>
+                                    <span th:if="${#fields.hasErrors('date')}" th:errors="*{date}"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <!-- <div th:if="*{id}">
+                                    <button type="submit" id="edit_verse_form_submit" form="add_verse_form" class="btn btn-primary">Edit Verse</button>
+                                </div> -->
+                                <button type="submit" id="add_verse_form_submit" form="add_verse_form" class="btn btn-primary" th:text="${verse.id} ? 'Edit Verse' : 'Add Verse'">Add Verse</button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <form autocomplete="off" action="#" th:action="@{/admin/lookup_verse}" id="lookup_verse_form" name="lookup_verse_form" class="needs-validation pt-5" method="post">
+                        <div class="form-row">
+                            <div class="col-md-3 mb-3">
+                                <select autocomplete="off" class="form-control" id="book_name" name="book_name" required>
+                                    <option></option>
+                                    <option th:value="Genesis" th:text="'Genesis'"></option>
+                                    <option th:value="Exodus" th:text="'Exodus'"></option>
+                                    <option th:value="Leviticus" th:text="'Leviticus'"></option>
+                                    <option th:value="Numbers" th:text="'Numbers'"></option>
+                                    <option th:value="Deuteronomy" th:text="'Deuteronomy'"></option>
+                                    <option th:value="Joshua" th:text="'Joshua'"></option>
+                                    <option th:value="Judges" th:text="'Judges'"></option>
+                                    <option th:value="Ruth" th:text="'Ruth'"></option>
+                                    <option th:value="'1 Samuel'" th:utext="'1 Samuel (1 Царств)'"></option>
+                                    <option th:value="'2 Samuel'" th:utext="'2 Samuel (2 Царств)'"></option>
+                                    <option th:value="'1 Kings'" th:utext="'1 Kings (3 Царств)'"></option>
+                                    <option th:value="'2 Kings'" th:utext="'2 Kings (4 Царств)'"></option>
+                                    <option th:value="'1 Chronicles'" th:utext="'1 Chronicles (1 Паралипоменон)'"></option>
+                                    <option th:value="'2 Chronicles'" th:utext="'2 Chronicles (2 Паралипоменон)'"></option>
+                                    <option th:value="Ezra" th:text="'Ezra'"></option>
+                                    <option th:value="Nehemiah" th:text="'Nehemiah'"></option>
+                                    <option th:value="Esther" th:text="'Esther'"></option>
+                                    <option th:value="Job" th:text="'Job'"></option>
+                                    <option th:value="Psalm" th:text="'Psalm'"></option>
+                                    <option th:value="Proverbs" th:text="'Proverbs'"></option>
+                                    <option th:value="Ecclesiastes" th:text="'Ecclesiastes'"></option>
+                                    <option th:value="'Song of Solomon'" th:text="'Song of Solomon'"></option>
+                                    <option th:value="Isaiah" th:text="'Isaiah'"></option>
+                                    <option th:value="Jeremiah" th:text="'Jeremiah'"></option>
+                                    <option th:value="Lamentations" th:text="'Lamentations'"></option>
+                                    <option th:value="Ezekiel" th:text="'Ezekiel'"></option>
+                                    <option th:value="Daniel" th:text="'Daniel'"></option>
+                                    <option th:value="Hosea" th:text="'Hosea'"></option>
+                                    <option th:value="Joel" th:text="'Joel'"></option>
+                                    <option th:value="Amos" th:text="'Amos'"></option>
+                                    <option th:value="Obadiah" th:text="'Obadiah'"></option>
+                                    <option th:value="Jonah" th:text="'Jonah'"></option>
+                                    <option th:value="Micah" th:text="'Micah'"></option>
+                                    <option th:value="Nahum" th:text="'Nahum'"></option>
+                                    <option th:value="Habakkuk" th:text="'Habakkuk'"></option>
+                                    <option th:value="Zephaniah" th:text="'Zephaniah'"></option>
+                                    <option th:value="Haggai" th:text="'Haggai'"></option>
+                                    <option th:value="Zechariah" th:text="'Zechariah'"></option>
+                                    <option th:value="Malachi" th:text="'Malachi'"></option>
+                                    <option th:value="Matthew" th:text="'Matthew'"></option>
+                                    <option th:value="Mark" th:text="'Mark'"></option>
+                                    <option th:value="Luke" th:text="'Luke'"></option>
+                                    <option th:value="John" th:text="'John'"></option>
+                                    <option th:value="Acts" th:text="'Acts'"></option>
+                                    <option th:value="Romans" th:text="'Romans'"></option>
+                                    <option th:value="'1 Corinthians'" th:text="'1 Corinthians'"></option>
+                                    <option th:value="'2 Corinthians'" th:text="'2 Corinthians'"></option>
+                                    <option th:value="Galatians" th:text="'Galatians'"></option>
+                                    <option th:value="Ephesians" th:text="'Ephesians'"></option>
+                                    <option th:value="Philippians" th:text="'Philippians'"></option>
+                                    <option th:value="Colossians" th:text="'Colossians'"></option>
+                                    <option th:value="'1 Thessalonians'" th:text="'1 Thessalonians'"></option>
+                                    <option th:value="'2 Thessalonians'" th:text="'2 Thessalonians'"></option>
+                                    <option th:value="'1 Timothy'" th:text="'1 Timothy'"></option>
+                                    <option th:value="'2 Timothy'" th:text="'2 Timothy'"></option>
+                                    <option th:value="Titus" th:text="'Titus'"></option>
+                                    <option th:value="Philemon" th:text="'Philemon'"></option>
+                                    <option th:value="Hebrews" th:text="'Hebrews'"></option>
+                                    <option th:value="James" th:text="'James'"></option>
+                                    <option th:value="'1 Peter'" th:text="'1 Peter'"></option>
+                                    <option th:value="'2 Peter'" th:text="'2 Peter'"></option>
+                                    <option th:value="'1 John'" th:text="'1 John'"></option>
+                                    <option th:value="'2 John'" th:text="'2 John'"></option>
+                                    <option th:value="'3 John'" th:text="'3 John'"></option>
+                                    <option th:value="Jude" th:text="'Jude'"></option>
+                                    <option th:value="Revelation" th:text="'Revelation'"></option>
+                                </select>
+                            </div>
+                            <div class="col-md-1 mb-3">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" id="chapter_number" name="chapter_number" maxlength="3" placeholder="Chapter" required>
+                                    <div class="invalid-feedback">
+                                        Please provide chapter number.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-1">
+                                <div class="form-group">
+                                    &nbsp; : &nbsp;
+                                </div>
+                            </div>
+                            <div class="col-md-1 mb-3">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" id="verse_number" name="verse_number" maxlength="3" placeholder="From" required>
+                                    <div class="invalid-feedback">
+                                        Please provide verse number.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-1">
+                                <div class="form-group">
+                                    &nbsp; - &nbsp;
+                                </div>
+                            </div>
+                            <div class="col-md-1 mb-3">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" id="verse_number_to" name="verse_number_to" maxlength="3" placeholder="To">
+                                    <div class="invalid-feedback">
+                                        Please provide verse number.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-md-2 mb-3">
+                                <button type="submit" id="lookup_verse_form_submit" form="lookup_verse_form" class="btn btn-primary">Lookup</button>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="view_verses" class="bg-light">
+<!--        <div class="container">-->
+        <div class="container-fluid pl-5 pr-5">
+            <div class="row">
+                <div class="col-lg-12 mx-auto">
+                    <h2>Verses</h2>
+                    <div th:if="${verseActionSuccessMessage}" class="alert alert-success alert-dismissible alert-primary fade show" role="alert">
+                        <span th:utext=${verseActionSuccessMessage}></span>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <table id="verses_table" class="table table-striped table-bordered" style="width:100%">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Date</th>
+                            <th>EN ESV</th>
+                            <th>EN KJV</th>
+                            <th>EN NIV</th>
+                            <th>EN Verse Location</th>
+                            <th>RU Synodal</th>
+                            <th>RU Verse Location</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="v : ${verses}">
+                            <td th:text="${v.id}"></td>
+                            <td th:text="${v.date}"></td>
+                            <td th:text="${v.enEsv}"></td>
+                            <td th:text="${v.enKjv}"></td>
+                            <td th:text="${v.enNiv}"></td>
+                            <td th:text="${v.enVerseLocation}"></td>
+                            <td th:text="${v.ruSynodal}"></td>
+                            <td th:text="${v.ruVerseLocation}"></td>
+                            <td>
+                                <a th:href="@{/admin/verse/} + ${v.id} + @{/edit}">Edit</a>
+                                <a th:href="@{/admin/verse/} + ${v.id} + @{/delete}" onclick="return confirm('Are you sure you want to delete the verse?')">Delete</a>  <!-- class="btn btn-danger btn-sm"-->
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="view_contacts">
+<!--        <div class="container">-->
+        <div class="container-fluid pl-5 pr-5">
+            <div class="row">
+                <div class="col-lg-12 mx-auto">
+                    <h2>Contacts</h2>
+
+                    <div th:if="${contactActionSuccessMessage}" class="alert alert-success alert-dismissible alert-primary fade show" role="alert">
+                        <span th:utext=${contactActionSuccessMessage}></span>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div th:if="${contactActionErrorMessage}" class="alert alert-danger alert-dismissible alert-primary fade show" role="alert">
+                        <span th:utext=${contactActionErrorMessage}></span>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <table id="contacts_table" class="table table-striped table-bordered" style="width:100%">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Phone Number</th>
+                            <th>Bible Translation</th>
+                            <th>Send Time</th>
+                            <th>Subscription Confirmed</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="c : ${contacts}">
+                                <td th:text="${c.id}"></td>
+                                <td th:text="${c.name}"></td>
+                                <td th:text="${c.phoneNumber}"></td>
+                                <td th:text="${c.bibleTranslation}"></td>
+                                <td th:text="|${c.selectedSendTime} ${c.selectedTimeZone} (${c.selectedSendTimePacific} pacific)|"></td>
+                                <td th:text="${c.subscriptionConfirmed}"></td>
+                                <td>
+                                    <span th:if="${c.subscriptionConfirmed == 0}">[</span><a th:href="@{/admin/contact/} + ${c.id} + @{/resendConfirmation}" th:if="${c.subscriptionConfirmed == 0}">Resend Confirmation</a><span th:if="${c.subscriptionConfirmed == 0}">]</span>
+                                    [<a th:href="@{/admin/contact/} + ${c.id} + @{/resendVerse}" onclick="return confirm('Are you sure you want to resend today\'s verse?')">Resend Today's Verse</a>]
+                                    [<a th:href="@{/admin/contact/} + ${c.id} + @{/delete}" onclick="return confirm('Are you sure you want to delete the contact?')">Delete</a>]
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="view_log" class="bg-light">
+        <div class="container-fluid pl-5 pr-5">
+            <div class="row">
+                <div class="col-lg-12 mx-auto">
+                    <h2>Log</h2>
+                    <table id="log_table" class="table table-striped table-bordered" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>From</th>
+                                <th>To</th>
+                                <th>Action</th>
+                                <th>Body</th>
+                                <th>Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="al : ${actionlogs}">
+                                <td th:text="${al.timestamp}"></td>
+                                <td th:text="${al.from}" th:class="${al.from != null && twilioPhoneNumber.contains(al.from)} ? twilioPhoneClass : ''"></td>
+                                <td th:text="${al.to}" th:class="${al.to != null && twilioPhoneNumber.contains(al.to)} ? twilioPhoneClass : ''"></td>
+                                <td th:text="${al.action}"></td>
+                                <td th:text="${al.messageBody}"></td>
+                                <td th:text="${al.notes}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <i><small>* Showing last 500 action log records</small></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div th:replace="fragments/footer :: footer"></div>
+
+    <div th:replace="fragments/bottom_page_scripts :: bottom_page_scripts"></div>
+
+</body>
+</html>

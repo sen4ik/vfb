@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<div th:replace="fragments/head :: head"></div>
+<style>
+    html,
+    body {
+        height: 100%;
+    }
+</style>
+<body class="text-center bcl">
+    <form class="form-signin" th:action="@{/login}" th:object="${user}" method="post">
+         <img class="mb-4" th:src="@{/img/android-chrome-192x192.png}" alt="" width="72" height="72">
+         <div th:if="${successMessage}" class="alert alert-success" role="alert" th:text=${successMessage}></div>
+         <div th:if="${param.error}">
+             <div class="alert alert-danger">
+                Invalid username or password.
+             </div>
+         </div>
+         <div th:if="${param.logout}">
+             <div class="alert alert-info">
+                You have been logged out.
+             </div>
+         </div>
+         <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+         <label for="username" class="sr-only">Email</label>
+         <input type="email" id="username" name="username" placeholder="Username"th:field="*{email}" class="form-control" required autofocus maxlength="50">
+         <label for="password" class="sr-only">Password</label>
+         <input type="password" id="password" name="password" placeholder="Password" th:field="*{password}" class="form-control" required maxlength="50">
+<!--        <div class="checkbox mb-3">-->
+<!--            <label>-->
+<!--                <input type="checkbox" value="remember-me"> Remember me-->
+<!--            </label>-->
+<!--        </div>-->
+         <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+<!--         <a th:href="@{/register}" class="btn btn-lg btn-secondary btn-block">Register</a>-->
+        <p class="mt-5 mb-3 text-muted"><a href="/">VerseFromBible.com</a> &copy; <script>document.write(new Date().getFullYear())</script></p>
+    </form>
+
+    <div th:replace="fragments/bottom_page_scripts :: bottom_page_scripts"></div>
+
+</body>
+</html>

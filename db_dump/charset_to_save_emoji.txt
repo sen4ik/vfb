@@ -1,0 +1,7 @@
+-- Issue was:
+ALTER TABLE vfb_buggy.action_log CHARACTER SET = utf8 COLLATE = utf8_general_ci;
+ALTER TABLE vfb_buggy.action_log CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+-- Here is the fix:
+ALTER TABLE action_log CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+ALTER TABLE action_log CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

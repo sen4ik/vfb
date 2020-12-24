@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<div th:replace="fragments/head :: head"></div>
+<style>
+  html,
+  body {
+    height: 100%;
+  }
+</style>
+<body class="text-center bcl">
+
+    <div class="container">
+
+        <h4>Set Your Password</h4>
+
+        <div th:if="${successMessage}" class="alert alert-success" role="alert" th:text=${successMessage}></div>
+
+        <div th:if="${errorMessage}" class="alert alert-danger" role="alert" th:utext=${errorMessage}></div>
+
+        <div th:if="${invalidToken}" class="alert alert-danger" role="alert" th:text=${invalidToken}></div>
+
+        <form th:if="!${invalidToken}" class="fcl" role="form" action="#" th:object="${setPassword}" th:action="@{/confirm}" method="post">
+            <input type="hidden" name="token" th:value=${confirmationToken}>
+            <div class="form-group text-left">
+                <label for="password" class="control-label">Password</label>
+                <input type="password" name="password" id="password" placeholder="Password" class="form-control" required/>
+            </div>
+            <div class="form-group text-left">
+                <label for="ConfirmPassword" class="control-label">Confirm Password</label>
+                <input type="password" name="ConfirmPassword" id="ConfirmPassword" class="form-control" placeholder="Confirm Password" />
+            </div>
+
+            <button type="submit" class="btn btn-primary block full-width m-b">Save</button>
+
+        </form>
+
+    </div>
+
+    <div th:replace="fragments/bottom_page_scripts :: bottom_page_scripts"></div>
+
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+
+<div th:replace="fragments/head :: head"></div>
+
+<body id="page-top">
+
+    <div th:replace="admin/navigation :: navigation"></div>
+
+    <section id="profile">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <h2 class="mb-5">Profile</h2>
+
+                    <div th:if="${updateProfileSuccessMessage}" class="alert alert-success alert-dismissible alert-primary fade show auto_fade" role="alert">
+                        <span th:utext=${updateProfileSuccessMessage}></span>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div th:if="${updateProfileErrorMessage}" class="alert alert-danger alert-dismissible alert-primary fade show" role="alert">
+                        <span th:utext=${updateProfileErrorMessage}></span>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <form sec:authorize="isAuthenticated()" autocomplete="off" action="#" th:action="@{/admin/update_profile}" th:object="${user}" id="update_profile_form" name="update_profile_form" class="needs-validation" method="post">
+                        <input type="hidden" th:field="*{id}" name="id" />
+                        <div class="form-row">
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group required">
+                                    <label class="control-label">First Name</label>
+                                    <input th:field="*{firstName}" type="text" class="form-control" maxlength="40" required>
+                                    <span th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group required">
+                                    <label class="control-label">Last Name</label>
+                                    <input th:field="*{lastName}" type="text" class="form-control" maxlength="40" required>
+                                    <span th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group required">
+                                    <label class="control-label">Phone Number</label>
+                                    <input th:field="*{phoneNumber}" type="text" class="form-control" pattern="(?:\(\d{3}\)|\d{3})[- ]?\d{3}[- ]?\d{4}" maxlength="20" placeholder="XXX-XXX-XXXX" required>
+                                    <span th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group required">
+                                    <label class="control-label">Email</label>
+                                    <input th:field="*{email}" type="text" class="form-control" maxlength="40" disabled required>
+                                    <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group required">
+                                    <label class="control-label">Password</label>
+                                    <input th:field="*{password}" type="password" class="form-control" minlength="8" maxlength="40" required>
+                                    <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="col-md-12 mb-3 float-right text-right">
+                                <button type="button" id="cancel" class="btn btn-secondary" onClick="window.location='/admin/index';">Cancel</button>
+                                <button type="submit" id="update_profile_form_submit" form="update_profile_form" class="btn btn-primary">Submit</button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <br><br><br><br><br><br>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div th:replace="fragments/footer :: footer"></div>
+
+    <div th:replace="fragments/bottom_page_scripts :: bottom_page_scripts"></div>
+
+</body>
+</html>

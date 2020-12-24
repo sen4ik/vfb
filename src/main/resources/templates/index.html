@@ -1,0 +1,268 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<div th:replace="fragments/head :: head"></div>
+
+<body id="page-top">
+    <!-- https://startbootstrap.com/template-overviews/scrolling-nav/ -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
+        <div class="container">
+            <a class="navbar-brand js-scroll-trigger" href="#page-top">
+                <div class="float-left mr-2">
+                    <img class="" th:src="@{/img/android-chrome-192x192.png}" alt="" width="35" height="35">
+                </div>
+                <div class="float-left pt-1">Verse From Bible</div>
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link js-scroll-trigger" href="#about">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link js-scroll-trigger" href="#sign_up">Sign Up</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link js-scroll-trigger" href="#unsubscribe">Unsubscribe</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link js-scroll-trigger" href="#contact_me">Contact Us</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <header class="bg-primary text-white">
+        <div class="container text-center">
+            <h1 th:text="${verse.getEnEsv()}"><!--Jesus answered him, “Truly, truly, I say to you, unless one is born again he cannot see the kingdom of God.”--></h1>
+            <h2 th:text="${verse.getEnVerseLocation()}" class="col-12 float-right text-right"><!--John 3:3--></h2>
+        </div>
+    </header>
+
+    <section id="about">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <h2>About</h2>
+                    <p class="lead">
+                        A few years ago, when I was a youth pastor, I sent a Bible verse to all the youth members each morning. I received positive feedback. Often it was a great conversation starter. Later on, I decided to automate the process, and this is how this website came to life.
+                        </br></br>
+                        If you reside in the USA or Canada and wish to receive daily text messages with an inspirational Bible verse, please use the Sign-Up form below to subscribe.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="sign_up" class="bg-light">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <h2>Sign Up</h2>
+                    <p class="lead">
+                    <div th:if="${addContactSuccessMessage}" class="alert alert-success alert-dismissible alert-primary fade show" role="alert">
+                        <span th:utext=${addContactSuccessMessage}></span>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div th:if="${addContactErrorMessage}" class="alert alert-danger alert-dismissible alert-primary fade show" role="alert">
+                        <span th:utext=${addContactErrorMessage}></span>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form autocomplete="off" action="#" th:action="@{/index}" th:object="${contact}" id="signupform" name="signupform" class="needs-validation" method="post">
+                        <div class="form-group required">
+                            <label for="contact_name" class="control-label">Name</label>
+                            <input th:field="*{name}" type="text" class="form-control" id="contact_name" maxlength="40" placeholder="Name" required>
+                            <div class="invalid-feedback">
+                                Please provide a name.
+                            </div>
+                            <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+                        </div>
+                        <div class="form-group required">
+                            <label for="phone_number" class="control-label">Phone Number</label>
+                            <input th:field="*{phoneNumber}" type="tel" pattern="(?:\(\d{3}\)|\d{3})[- ]?\d{3}[- ]?\d{4}" class="form-control" id="phone_number" maxlength="20" placeholder="XXX XXX XXXX" required>
+                            <div class="invalid-feedback">
+                                Please provide a phone number.
+                            </div>
+                            <span th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="bible_translation">Choose Bible Translation</label>
+                            <select autocomplete="off" th:field="*{bibleTranslation}" class="form-control" id="bible_translation" name="bible_translation">
+                                <option value="en_esv" selected="selected">English - ESV</option>
+                                <option value="en_niv">English - NIV</option>
+                                <option value="en_kjv">English - KJV</option>
+                                <option value="ru_synodal">Russian - Synodal</option>
+                            </select>
+                            <span th:if="${#fields.hasErrors('bibleTranslation')}" th:errors="*{bibleTranslation}"></span>
+                        </div>
+                        <div class="form-group">
+                            <div class="form-row">
+                                <div class="col-lg-6">
+                                    <label for="send_time">Select time you want to receive verses</label>
+                                    <select autocomplete="off" th:field="*{selectedSendTime}" class="form-control" id="send_time">
+                                        <option th:value="5.0" th:text="'5:00 AM'">5:00 AM</option>
+                                        <option th:value="6.0" th:text="'6:00 AM'">6:00 AM</option>
+                                        <option th:value="7.0" th:text="'7:00 AM'">7:00 AM</option>
+                                        <option th:value="8.0" th:text="'8:00 AM'" selected>8:00 AM</option>
+                                        <option th:value="9.0" th:text="'9:00 AM'">9:00 AM</option>
+                                        <option th:value="10.0" th:text="'10:00 AM'">10:00 AM</option>
+                                        <option th:value="11.0" th:text="'11:00 AM'">11:00 AM</option>
+                                    </select>
+                                    <span th:if="${#fields.hasErrors('selectedSendTime')}" th:errors="*{selectedSendTime}"></span>
+                                </div>
+                                <div class="col-lg-6">
+                                    <label for="timezone">Time Zone</label>
+                                    <select autocomplete="off" th:field="*{selectedTimeZone}" class="form-control" id="timezone">
+                                        <option th:value="pacific" th:text="'Pacific Time'"></option>
+                                        <option th:value="mountain" th:text="'Mountain Time'"></option>
+                                        <option th:value="central" th:text="'Central Time'"></option>
+                                        <option th:value="eastern" th:text="'Eastern Time'"></option>
+                                        <option th:value="alaska" th:text="'Alaska Time'"></option>
+                                        <option th:value="hawaii" th:text="'Hawaii Time'"></option>
+                                    </select>
+                                    <span th:if="${#fields.hasErrors('selectedTimeZone')}" th:errors="*{selectedTimeZone}"></span>
+                                </div>
+                            </div>
+                        </div>
+<!--                        <div class="form-group required">-->
+<!--                            <label for="gcptch" class="control-label">Are you a robot?</label>-->
+<!--                            <div id="gcptch" class="g-recaptcha" th:attr="data-sitekey=${@captchaService.getReCaptchaSite()}" data-callback="onReCaptchaSuccess" data-expired-callback="onReCaptchaExpired"></div>-->
+<!--                            <div id="signupformCaptchaError" class="alert alert-danger col-lg-6 mt-2" style="display:none"></div>-->
+<!--                        </div>-->
+                        <div class="form-group required">
+                            <label for="RecaptchaField1" class="control-label">Are you a robot?</label>
+                            <div id="RecaptchaField1"></div>
+                            <div id="signupformCaptchaError" class="alert alert-danger col-lg-6 mt-2" style="display:none"></div>
+                            <input type="hidden" class="hiddenRecaptcha" name="signupformHiddenRecaptcha" id="signupformHiddenRecaptcha">
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" id="signup_submit" form="signupform" class="btn btn-primary">Sign Up</button>
+                        </div>
+                    </form>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="unsubscribe">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <h2>Unsubscribe</h2>
+                    <p class="lead">
+                        If you no longer wish to receive the verses from the Bible, please reply word 'STOP' to the number you are receiving verses from or use below form.
+                    </p>
+                    <p class="lead">
+                    <div th:if="${unsubscribeSuccessMessage}" class="alert alert-success alert-dismissible alert-primary fade show" role="alert">
+                        <span th:text=${unsubscribeSuccessMessage}></span>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div th:if="${unsubscribeErrorMessage}" class="alert alert-danger alert-dismissible alert-primary fade show" role="alert">
+                        <span th:utext=${unsubscribeErrorMessage}></span>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form action="#" th:action="@{/unsubscribe}" id="unsubscribeform" name="unsubscribeform" class="needs-validation" method="post">
+                        <div class="form-group required">
+                            <label for="unsubscribe_phone_number" class="control-label">Phone Number</label>
+                            <input type="tel" pattern="(?:\(\d{3}\)|\d{3})[- ]?\d{3}[- ]?\d{4}" class="form-control" id="unsubscribe_phone_number" name="unsubscribe_phone_number" maxlength="20" placeholder="XXX-XXX-XXXX" required>
+                        </div>
+                        <div class="form-group required">
+                            <label for="RecaptchaField2" class="control-label">Are you a robot?</label>
+                            <div id="RecaptchaField2"></div>
+                            <div id="unsubscribeformCaptchaError" class="alert alert-danger col-lg-6 mt-2" style="display:none"></div>
+                            <input type="hidden" class="hiddenRecaptcha" name="unsubscribeformHiddenRecaptcha" id="unsubscribeformHiddenRecaptcha">
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" id="unsubscribe_submit" form="unsubscribeform" class="btn btn-primary">Unsubscribe</button>
+                        </div>
+                    </form>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact_me" class="bg-light">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <h2>Contact Us</h2>
+                    <p class="lead">
+                        If you have any questions, feel free to message me using form below.
+                    </p>
+                    <p class="lead">
+                    <div th:if="${contactMeSuccessMessage}" class="alert alert-success alert-dismissible alert-primary fade show" role="alert">
+                        <span th:utext=${contactMeSuccessMessage}></span>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div th:if="${contactMeErrorMessage}" class="alert alert-danger alert-dismissible alert-primary fade show" role="alert">
+                        <span th:utext=${contactMeErrorMessage}></span>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form autocomplete="off" action="#" th:action="@{/contact_me}" id="contact_me_form" name="contact_me_form" class="needs-validation" method="post">
+                        <div class="form-group required">
+                            <label for="cm_contact_name" class="control-label">Name</label>
+                            <input type="text" class="form-control" id="cm_contact_name" name="cm_contact_name" maxlength="40" placeholder="Name" required>
+                            <div class="invalid-feedback">
+                                Please provide a name.
+                            </div>
+                        </div>
+                        <div class="form-group required">
+                            <label for="cm_email" class="control-label">Email</label>
+                            <input type="email" class="form-control" id="cm_email" name="cm_email" maxlength="40" placeholder="Email" required>
+                            <div class="invalid-feedback">
+                                Please provide an email.
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="cm_phone_number">Phone Number</label>
+                            <input type="tel" pattern="(?:\(\d{3}\)|\d{3})[- ]?\d{3}[- ]?\d{4}" class="form-control" id="cm_phone_number" name="cm_phone_number" maxlength="20" placeholder="XXX-XXX-XXXX">
+                        </div>
+                        <div class="form-group required">
+                            <label for="cm_message" class="control-label">Message</label>
+                            <textarea class="form-control" id="cm_message" name="cm_message" rows="6" maxlength = "1000" placeholder="Message" required></textarea>
+                            <div class="invalid-feedback">
+                                Please type in your message.
+                            </div>
+                        </div>
+                        <div class="form-group required">
+                            <label for="RecaptchaField3" class="control-label">Are you a robot?</label>
+                            <div id="RecaptchaField3"></div>
+                            <div id="contact_me_formCaptchaError" class="alert alert-danger col-lg-6 mt-2" style="display:none"></div>
+                            <input type="hidden" class="hiddenRecaptcha" name="contact_me_formHiddenRecaptcha" id="contact_me_formHiddenRecaptcha">
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" id="cm_submit" form="contact_me_form" class="btn btn-primary">Send Message</button>
+                        </div>
+                    </form>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div th:replace="fragments/footer :: footer"></div>
+
+    <div th:replace="fragments/bottom_page_scripts :: bottom_page_scripts"></div>
+
+    <div th:replace="fragments/reCaptcha :: reCaptchaFragm"></div>
+
+</body>
+
+</html>
