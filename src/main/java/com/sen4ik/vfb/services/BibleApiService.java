@@ -86,6 +86,12 @@ public class BibleApiService {
                 }
             }
 
+            if(currentBibleId.equals(nivId)){
+                if(currentBookName.equals("Song of Solomon")){
+                    currentBookName = "Song of Songs";
+                }
+            }
+
             net.minidev.json.JSONArray bookArr = JsonPath.parse(booksJson).read("$.data[?(@." + bookNameField + " == '" + currentBookName + "')].id");
             String bookId = bookArr.get(0).toString();
 
