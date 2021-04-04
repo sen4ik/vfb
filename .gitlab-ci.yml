@@ -1,0 +1,69 @@
+image: java:8
+
+variables:
+  MAVEN_CLI_OPTS: "-s .m2/settings.xml --batch-mode"
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+
+cache:
+  paths:
+    - .m2/repository/
+    - .mvn
+
+stages:
+  - build
+  - deploy
+  - deploy_dev
+
+build:
+  stage: build
+  script:
+    - chmod +x mvnw
+    - ./mvnw clean package -DskipTests=true
+
+deploy:
+  stage: deploy
+  script:
+#    - echo $CI_COMMIT_SHA
+#    - echo $CI_COMMIT_SHORT_SHA
+#    - echo $CI_JOB_ID
+    - if echo $CI_COMMIT_MESSAGE | grep -iqF skip; then
+    -   exit;
+    - fi
+    - ./scripts/deploy.sh "vfb" $DEPLOY_SERVER_IP $DEPLOY_SERVER_PORT $TWILIO_SID $TWILIO_AUTH_TOKEN $TWILIO_PHONE_NUMBER $BIBLE_API_KEY $MY_EMAIL $MY_PHONE $MAIL_HOST $MAIL_USERNAME $MAIL_PASSWORD $RECAPTCHA_SITE_KEY_V2 $RECAPTCHA_SECRET_V2 $APP_PROP
+#    - |
+#      ssh -A sen4ik@$DEPLOY_SERVER_IP -p$DEPLOY_SERVER_PORT "cd /home/sen4ik/workspace/vfb && \
+#      sudo systemctl stop vfb && \
+#      git fetch origin && \
+#      git reset --hard origin/master && \
+#      sed -i "/spring.devtools.restart.enabled=/c\spring.devtools.restart.enabled=false" ${APP_PROP} && \
+#      sed -i "/scheduler.enabled=/c\scheduler.enabled=true" ${APP_PROP} && \
+#      sed -i "/twilio.sid=/c\twilio.sid=${TWILIO_SID}" ${APP_PROP} && \
+#      sed -i "/twilio.auth-token=/c\twilio.auth-token=${TWILIO_AUTH_TOKEN}" ${APP_PROP} && \
+#      sed -i "/twilio.phone-number=/c\twilio.phone-number=${TWILIO_PHONE_NUMBER}" ${APP_PROP} && \
+#      sed -i "/twilio.enabled=/c\twilio.enabled=true" ${APP_PROP} && \
+#      sed -i "/bible.api.key=/c\bible.api.key=${BIBLE_API_KEY}" ${APP_PROP} && \
+#      sed -i "/my.email=/c\my.email=${MY_EMAIL}" ${APP_PROP} && \
+#      sed -i "/my.phone=/c\my.phone=${MY_PHONE}" ${APP_PROP} && \
+#      sed -i "/spring.mail.host=/c\spring.mail.host=${MAIL_HOST}" ${APP_PROP} && \
+#      sed -i "/spring.mail.username=/c\spring.mail.username=${MAIL_USERNAME}" ${APP_PROP} && \
+#      sed -i "/spring.mail.password=/c\spring.mail.password=${MAIL_PASSWORD}" ${APP_PROP} && \
+#      sed -i "/recaptcha.validation.key-site=/c\recaptcha.validation.key-site=${RECAPTCHA_SITE_KEY_V2}" ${APP_PROP} && \
+#      sed -i "/recaptcha.validation.secret-key=/c\recaptcha.validation.secret-key=${RECAPTCHA_SECRET_V2}" ${APP_PROP} && \
+#      sed -i "/recaptcha.testing.enabled=/c\recaptcha.testing.enabled=false" ${APP_PROP} && \
+#      sed -i "/test.env.prefix=/c\test.env.prefix=" ${APP_PROP} && \
+#      mvn clean package -DskipTests=true && \
+#      cp target/vfb.war /opt/vfb/current/ && \
+#      sudo systemctl start vfb && \
+#      sleep 10 && \
+#      tail -n 15 /opt/vfb/logs/spring.log"
+  environment:
+    name: prod
+    url: https://$DOMAIN/
+
+deploy_dev:
+  stage: deploy_dev
+  script:
+    - ./scripts/deploy.sh "vfb_buggy" $DEPLOY_SERVER_IP $DEPLOY_SERVER_PORT $TEST01_TWILIO_SID $TEST01_TWILIO_AUTH_TOKEN $TEST01_TWILIO_PHONE_NUMBER $BIBLE_API_KEY $MY_EMAIL $MY_PHONE $MAIL_HOST $MAIL_USERNAME $MAIL_PASSWORD $TEST01_RECAPTCHA_KEY $TEST01_RECAPTCHA_SECRET $APP_PROP
+  environment:
+    name: dev
+    url: http://dev.$DOMAIN/
